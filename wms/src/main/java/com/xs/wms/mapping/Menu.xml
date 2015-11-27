@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xs.wms.dao.IMenu" >
+  <resultMap id="BaseResultMap" type="com.xs.wms.pojo.Menu" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="mname" property="mname" jdbcType="VARCHAR" />
+    <result column="pid" property="pid" jdbcType="INTEGER" />
+    <result column="orderid" property="orderid" jdbcType="INTEGER" />
+    <result column="icon" property="icon" jdbcType="VARCHAR" />
+    <result column="url" property="url" jdbcType="VARCHAR" />
+    <result column="disable" property="disable" jdbcType="BIT" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, mname, pid, orderid, icon, url, disable
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_menu
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="getDatagridTotal" resultType="long">
+		select count(1) from t_menu where pid=0
+		<if test="mname != null and mname != ''">
+            and name like concat('%',#{mname},'%')
+        </if>
+	</select>
+
+	<select id="datagridMenu" resultType="com.xs.wms.pojo.Menu">
+		select id,mname,url from t_menu where pid=0
+		<if test="orderid>0">
+            order by #{sort} #{order}
+        </if>
+        <if test="page > 0">
+            limit #{start},#{end}
+        </if>
+	</select>
+	
+	<select id="getAll" resultType="com.xs.wms.pojo.Menu">
+		select id,pid,orderid,icon,mname,url,disable from sysmenu where 1=1
+		<if test="orderid>0">
+            order by #{sort} #{order}
+        </if>
+        <if test="page > 0">
+            limit #{start},#{end}
+        </if>
+	</select>
+	
+	<select id="listAllParentMenu" resultMap="BaseResultMap">
+		select * from t_menu where pid = 0 and disable=0
+	</select>
+	<select id="listSubMenuByparentid" parameterType="int" resultMap="BaseResultMap">
+		select * from t_menu where pid=#{pid}
+	</select>
+	<select id="getMenuById" parameterType="int" resultMap="BaseResultMap">
+		select * from t_menu where id=#{id}
+	</select>
+	<select id="listAllSubMenu" resultMap="BaseResultMap">
+		select * from t_menu where pid >0
+	</select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from t_menu
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.xs.wms.pojo.Menu" >
+    insert into t_menu (id, mname, pid, 
+      orderid, icon, url, 
+      disable)
+    values (#{id,jdbcType=INTEGER}, #{mname,jdbcType=VARCHAR}, #{pid,jdbcType=INTEGER}, 
+      #{orderid,jdbcType=INTEGER}, #{icon,jdbcType=VARCHAR}, #{url,jdbcType=VARCHAR}, 
+      #{disable,jdbcType=BIT})
+  </insert>
+  <insert id="insertSelective" parameterType="com.xs.wms.pojo.Menu" >
+    insert into t_menu
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="mname != null" >
+        mname,
+      </if>
+      <if test="pid != null" >
+        pid,
+      </if>
+      <if test="orderid != null" >
+        orderid,
+      </if>
+      <if test="icon != null" >
+        icon,
+      </if>
+      <if test="url != null" >
+        url,
+      </if>
+      <if test="disable != null" >
+        disable,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="mname != null" >
+        #{mname,jdbcType=VARCHAR},
+      </if>
+      <if test="pid != null" >
+        #{pid,jdbcType=INTEGER},
+      </if>
+      <if test="orderid != null" >
+        #{orderid,jdbcType=INTEGER},
+      </if>
+      <if test="icon != null" >
+        #{icon,jdbcType=VARCHAR},
+      </if>
+      <if test="url != null" >
+        #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="disable != null" >
+        #{disable,jdbcType=BIT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.xs.wms.pojo.Menu" >
+    update t_menu
+    <set >
+      <if test="mname != null" >
+        mname = #{mname,jdbcType=VARCHAR},
+      </if>
+      <if test="pid != null" >
+        pid = #{pid,jdbcType=INTEGER},
+      </if>
+      <if test="orderid != null" >
+        orderid = #{orderid,jdbcType=INTEGER},
+      </if>
+      <if test="icon != null" >
+        icon = #{icon,jdbcType=VARCHAR},
+      </if>
+      <if test="url != null" >
+        url = #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="disable != null" >
+        disable = #{disable,jdbcType=BIT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.xs.wms.pojo.Menu" >
+    update t_menu
+    set mname = #{mname,jdbcType=VARCHAR},
+      pid = #{pid,jdbcType=INTEGER},
+      orderid = #{orderid,jdbcType=INTEGER},
+      icon = #{icon,jdbcType=VARCHAR},
+      url = #{url,jdbcType=VARCHAR},
+      disable = #{disable,jdbcType=BIT}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>
