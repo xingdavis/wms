@@ -73,17 +73,34 @@
 			limit #{page.start},#{page.end}
 		</if>
 	</select>
-	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+	<delete id="deleteUser" parameterType="java.lang.Integer">
 		delete from t_user
-		where id = #{id,jdbcType=INTEGER}
+		where id
+		= #{id,jdbcType=INTEGER}
 	</delete>
-	<insert id="insert" parameterType="com.xs.wms.pojo.User">
-		insert into t_user (id, uname,
-		pwd,
-		age,roleid)
-		values (#{id,jdbcType=INTEGER}, #{uname,jdbcType=VARCHAR},
-		#{pwd,jdbcType=VARCHAR},
-		#{age,jdbcType=INTEGER},#{roleid,jdbcType=INTEGER})
+	<insert id="addUser" parameterType="com.xs.wms.pojo.User"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into t_user
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			uname,
+			pwd,
+			<if test="age != null">
+				age,
+			</if>
+			<if test="roleid != null">
+				roleid
+			</if>
+		</trim>
+		<trim prefix=" values (" suffix=")" suffixOverrides=",">
+			#{uname,jdbcType=VARCHAR},
+			#{pwd,jdbcType=VARCHAR},
+			<if test="age != null">
+				#{age,jdbcType=INTEGER},
+			</if>
+			<if test="roleid != null">
+				#{roleid,jdbcType=INTEGER},
+			</if>
+		</trim>
 	</insert>
 	<insert id="insertSelective" parameterType="com.xs.wms.pojo.User">
 		insert into t_user
@@ -122,7 +139,7 @@
 			</if>
 		</trim>
 	</insert>
-	<update id="updateByPrimaryKeySelective" parameterType="com.xs.wms.pojo.User">
+	<update id="updateUser" parameterType="com.xs.wms.pojo.User">
 		update t_user
 		<set>
 			<if test="uname != null">
@@ -149,6 +166,7 @@
 		#{age,jdbcType=INTEGER},
 		roleid =
 		#{roleid,jdbcType=INTEGER}
-		where id = #{id,jdbcType=INTEGER}
+		where id =
+		#{id,jdbcType=INTEGER}
 	</update>
 </mapper>

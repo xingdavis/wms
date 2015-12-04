@@ -8,18 +8,14 @@ import com.xs.wms.pojo.User;
 import com.xs.wms.pojo.easyui.PageHelper;
 
 public interface IUser {
-    int deleteByPrimaryKey(Integer id);
+    int deleteUser(Integer id);
 
-    int insert(User record);
-
-    int insertSelective(User record);
+    int addUser(User record);
 
     User selectByPrimaryKey(Integer id);
     User selectByUname(String uname);
 
-    int updateByPrimaryKeySelective(User record);
-
-    int updateByPrimaryKey(User record);
+    int updateUser(User record);
     
     List<Menu> getMenuByUserId(Integer userId);
     
