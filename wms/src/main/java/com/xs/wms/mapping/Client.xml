@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xs.wms.dao.IClient">
+	<resultMap id="BaseResultMap" type="com.xs.wms.pojo.Client">
+		<id column="id" property="id" jdbcType="INTEGER" />
+		<result column="cname" property="cname" jdbcType="VARCHAR" />
+		<result column="contact_man" property="contactMan" jdbcType="VARCHAR" />
+		<result column="contact_tel" property="contactTel" jdbcType="VARCHAR" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		id, cname, contact_man contactMan, contact_tel contactTel
+	</sql>
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+		parameterType="java.lang.Integer">
+		select
+		<include refid="Base_Column_List" />
+		from t_client
+		where id = #{id,jdbcType=INTEGER}
+	</select>
+	<select id="selectByNameKey" resultMap="BaseResultMap"
+		parameterType="java.lang.String">
+		select
+		<include refid="Base_Column_List" />
+		from t_client
+		where cname like
+		CONCAT('%',#{cname,jdbcType=VARCHAR},'%')
+	</select>
+	<select id="repeatClientNum" resultType="java.lang.Integer">
+		select count(1) from t_client
+		where cname = #{cname,jdbcType=VARCHAR}
+	</select>
+	<select id="getDatagridTotal" resultType="long">
+		select
+		count(1)
+		from t_client
+		<where>
+			<if test="client.cname!=null and client.cname != ''">
+				cname like concat('%',#{client.cname},'%')
+			</if>
+		</where>
+	</select>
+	<select id="datagridClient" resultType="com.xs.wms.pojo.Client">
+		select
+		<include refid="Base_Column_List" />
+		from t_client
+		<where>
+			<if test="client.cname!=null and client.cname != ''">
+				cname like concat('%',#{client.cname},'%')
+			</if>
+		</where>
+		<if test="page.sort != null and page.sort != ''">
+			order by #{page.sort} #{page.order}
+		</if>
+		<if test="page.page > 0">
+			limit #{page.start},#{page.end}
+		</if>
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+		delete from
+		t_client
+		where id = #{id,jdbcType=INTEGER}
+	</delete>
+	<insert id="insert" parameterType="com.xs.wms.pojo.Client"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into t_client ( cname,
+		contact_man,
+		contact_tel)
+		values ( #{cname,jdbcType=VARCHAR},
+		#{contactMan,jdbcType=VARCHAR},
+		#{contactTel,jdbcType=VARCHAR})
+	</insert>
+	<insert id="insertSelective" parameterType="com.xs.wms.pojo.Client">
+		insert into t_client
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				id,
+			</if>
+			<if test="cname != null">
+				cname,
+			</if>
+			<if test="contactMan != null">
+				contact_man,
+			</if>
+			<if test="contactTel != null">
+				contact_tel,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id,jdbcType=INTEGER},
+			</if>
+			<if test="cname != null">
+				#{cname,jdbcType=VARCHAR},
+			</if>
+			<if test="contactMan != null">
+				#{contactMan,jdbcType=VARCHAR},
+			</if>
+			<if test="contactTel != null">
+				#{contactTel,jdbcType=VARCHAR},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.xs.wms.pojo.Client">
+		update t_client
+		<set>
+			<if test="cname != null">
+				cname = #{cname,jdbcType=VARCHAR},
+			</if>
+			<if test="contactMan != null">
+				contact_man = #{contactMan,jdbcType=VARCHAR},
+			</if>
+			<if test="contactTel != null">
+				contact_tel = #{contactTel,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where id = #{id,jdbcType=INTEGER}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="com.xs.wms.pojo.Client">
+		update t_client
+		set cname = #{cname,jdbcType=VARCHAR},
+		contact_man =
+		#{contactMan,jdbcType=VARCHAR},
+		contact_tel =
+		#{contactTel,jdbcType=VARCHAR}
+		where id = #{id,jdbcType=INTEGER}
+	</update>
+</mapper>

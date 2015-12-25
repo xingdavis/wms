@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xs.wms.dao.IOrder">
+	<resultMap id="BaseResultMap" type="com.xs.wms.pojo.Order">
+		<id column="id" jdbcType="INTEGER" property="id" />
+		<result column="code" jdbcType="VARCHAR" property="code" />
+		<result column="client_id" jdbcType="INTEGER" property="clientId" />
+		<result column="contact_man" jdbcType="VARCHAR" property="contactMan" />
+		<result column="contact_tel" jdbcType="VARCHAR" property="contactTel" />
+		<result column="order_date" jdbcType="TIMESTAMP" property="orderDate" />
+		<result column="flag" property="flag" jdbcType="TINYINT" />
+		<collection property="order_details" column="id" javaType="ArrayList"
+			select="com.xs.wms.mapping.Order_detail.getDetailsByOrderId" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		id, code, client_id clientId, contact_man contactMan, contact_tel contactTel, order_date orderDate,
+		flag
+	</sql>
+	<select id="selectByPrimaryKey" parameterType="java.lang.Integer"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from t_order
+		where id = #{id,jdbcType=INTEGER}
+	</select>
+	<select id="selectByCode" parameterType="java.lang.String"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from t_order
+		where code = #{code,jdbcType=VARCHAR}
+	</select>
+	<select id="repeatCodeNum" resultType="java.lang.Integer">
+		select count(1) from t_order
+		where code = #{code,jdbcType=VARCHAR} and client=#{client,jdbcType=INTEGER}
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+		delete from
+		t_order
+		where id = #{id,jdbcType=INTEGER}
+	</delete>
+	<insert id="insert" parameterType="com.xs.wms.pojo.Order"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into t_order ( code, client_id, contact_man, contact_tel,
+		order_date, flag ) values (
+		<choose>
+			<when test="code != null and code != ''">
+				#{code,jdbcType=VARCHAR},
+			</when>
+			<otherwise>
+			    GetOrderCode(),
+			</otherwise>
+		</choose>
+		#{clientId,jdbcType=INTEGER},
+		#{contactMan,jdbcType=VARCHAR},
+		#{contactTel,jdbcType=VARCHAR},
+		#{orderDate,jdbcType=TIMESTAMP},
+		#{flag,jdbcType=TINYINT} )
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.xs.wms.pojo.Order">
+		update t_order
+		<set>
+			<if test="code != null">
+				code = #{code,jdbcType=VARCHAR},
+			</if>
+			<if test="clientId != null">
+				client_id = #{clientId,jdbcType=INTEGER},
+			</if>
+			<if test="contactMan != null">
+				contact_man = #{contactMan,jdbcType=VARCHAR},
+			</if>
+			<if test="contactTel != null">
+				contact_tel = #{contactTel,jdbcType=VARCHAR},
+			</if>
+			<if test="orderDate != null">
+				order_date = #{orderDate,jdbcType=TIMESTAMP},
+			</if>
+		</set>
+		where id = #{id,jdbcType=INTEGER}
+	</update>
+</mapper>

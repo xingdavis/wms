@@ -1,52 +1,65 @@
 package com.xs.wms.pojo;
 
 public class User {
-    private Integer id;
+	private Integer id;
 
-    private String uname;
+	private String uname;
 
-    private String pwd;
+	private String pwd;
 
-    private Integer age;
-    
-    private Integer roleid;
+	private Integer age;
 
-    public Integer getId() {
-        return id;
-    }
+	private Integer roleid;
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
+	public User() {
+		id = 0;
+	}
 
-    public String getUname() {
-        return uname;
-    }
+	public User(Integer id, String uname, String pwd, Integer age, Integer roleid) {
+		this.id = id;
+		this.uname = uname;
+		this.pwd = pwd;
+		this.age = age;
+		this.roleid = roleid;
+	}
 
-    public void setUname(String uname) {
-        this.uname = uname == null ? null : uname.trim();
-    }
+	public Integer getId() {
+		return id;
+	}
 
-    public String getPwd() {
-        return pwd;
-    }
+	public void setId(Integer id) {
+		this.id = id;
+	}
 
-    public void setPwd(String pwd) {
-        this.pwd = pwd == null ? null : pwd.trim();
-    }
+	public String getUname() {
+		return uname;
+	}
 
-    public Integer getAge() {
-        return age;
-    }
+	public void setUname(String uname) {
+		this.uname = uname == null ? null : uname.trim();
+	}
 
-    public void setAge(Integer age) {
-        this.age = age;
-    }
-    public Integer getRoleid() {
-        return roleid;
-    }
+	public String getPwd() {
+		return pwd;
+	}
 
-    public void setRoleId(Integer roleid) {
-        this.roleid = roleid;
-    }
+	public void setPwd(String pwd) {
+		this.pwd = pwd == null ? null : pwd.trim();
+	}
+
+	public Integer getAge() {
+		return age;
+	}
+
+	public void setAge(Integer age) {
+		this.age = age;
+	}
+
+	public Integer getRoleid() {
+		return roleid;
+	}
+
+	public void setRoleId(Integer roleid) {
+		this.roleid = roleid;
+	}
 }

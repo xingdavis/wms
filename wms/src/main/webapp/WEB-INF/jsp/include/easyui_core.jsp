@@ -1,11 +1,6 @@
 <%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <c:set value="${pageContext.request.contextPath}" var="path" scope="page"/>
-<%@page import="com.xs.wms.pojo.User"%>
-
-<%
-	User user = (User)request.getSession().getAttribute("USER");
-%>
 
 <script type="text/javascript">
     var path = "${path}";

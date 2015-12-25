@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xs.wms.dao.IStock_in" >
+  <resultMap id="BaseResultMap" type="com.xs.wms.pojo.Stock_in" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="code" property="code" jdbcType="VARCHAR" />
+    <result column="client_id" property="clientId" jdbcType="INTEGER" />
+    <result column="car_no" property="carNo" jdbcType="VARCHAR" />
+    <result column="in_date" property="inDate" jdbcType="TIMESTAMP" />
+    <result column="cr_date" property="crDate" jdbcType="TIMESTAMP" />
+    <result column="flag" property="flag" jdbcType="TINYINT" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, code, client_id, car_no, in_date, cr_date, flag
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_stock_in
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from t_stock_in
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.xs.wms.pojo.Stock_in" >
+    insert into t_stock_in (id, code, client_id, 
+      car_no, in_date, cr_date, 
+      flag)
+    values (#{id,jdbcType=INTEGER}, #{code,jdbcType=VARCHAR}, #{clientId,jdbcType=INTEGER}, 
+      #{carNo,jdbcType=VARCHAR}, #{inDate,jdbcType=TIMESTAMP}, #{crDate,jdbcType=TIMESTAMP}, 
+      #{flag,jdbcType=TINYINT})
+  </insert>
+  <insert id="insertSelective" parameterType="com.xs.wms.pojo.Stock_in" >
+    insert into t_stock_in
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="code != null" >
+        code,
+      </if>
+      <if test="clientId != null" >
+        client_id,
+      </if>
+      <if test="carNo != null" >
+        car_no,
+      </if>
+      <if test="inDate != null" >
+        in_date,
+      </if>
+      <if test="crDate != null" >
+        cr_date,
+      </if>
+      <if test="flag != null" >
+        flag,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="code != null" >
+        #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="clientId != null" >
+        #{clientId,jdbcType=INTEGER},
+      </if>
+      <if test="carNo != null" >
+        #{carNo,jdbcType=VARCHAR},
+      </if>
+      <if test="inDate != null" >
+        #{inDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="crDate != null" >
+        #{crDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="flag != null" >
+        #{flag,jdbcType=TINYINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.xs.wms.pojo.Stock_in" >
+    update t_stock_in
+    <set >
+      <if test="code != null" >
+        code = #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="clientId != null" >
+        client_id = #{clientId,jdbcType=INTEGER},
+      </if>
+      <if test="carNo != null" >
+        car_no = #{carNo,jdbcType=VARCHAR},
+      </if>
+      <if test="inDate != null" >
+        in_date = #{inDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="crDate != null" >
+        cr_date = #{crDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="flag != null" >
+        flag = #{flag,jdbcType=TINYINT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.xs.wms.pojo.Stock_in" >
+    update t_stock_in
+    set code = #{code,jdbcType=VARCHAR},
+      client_id = #{clientId,jdbcType=INTEGER},
+      car_no = #{carNo,jdbcType=VARCHAR},
+      in_date = #{inDate,jdbcType=TIMESTAMP},
+      cr_date = #{crDate,jdbcType=TIMESTAMP},
+      flag = #{flag,jdbcType=TINYINT}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

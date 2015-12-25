@@ -19,7 +19,7 @@ public interface IUser {
     
     List<Menu> getMenuByUserId(Integer userId);
     
-    Long getDatagridTotal(@Param("user")User user,@Param("sysid")Integer sysid);
+    Long getDatagridTotal(@Param("user")User user);
     
-    List<User> datagridUser(@Param("page")PageHelper page,@Param("sysid")Integer sysid); 
+    List<User> datagridUser(@Param("page")PageHelper page,@Param("user")User user); 
 }

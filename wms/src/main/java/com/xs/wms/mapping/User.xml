@@ -66,6 +66,9 @@
 		select
 		u.id,u.uname,u.pwd,u.age,u.roleid
 		from t_user u where 1=1
+		<if test="user.uname!=null and user.uname != ''">
+			and uname like concat('%',#{user.uname},'%')
+		</if>
 		<if test="page.sort != null and page.sort != ''">
 			order by #{page.sort} #{page.order}
 		</if>

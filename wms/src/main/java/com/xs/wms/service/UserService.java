@@ -58,8 +58,8 @@ public class UserService {
 	 * @param user
 	 * @return
 	 */
-	public Long getDatagridTotal(User user,Integer sysid) {
-		return userMapper.getDatagridTotal(user,sysid);  
+	public Long getDatagridTotal(User user) {
+		return userMapper.getDatagridTotal(user);  
 	}
 
 	/**
@@ -67,10 +67,10 @@ public class UserService {
 	 * @param page
 	 * @return
 	 */
-	public List<User> datagridUser(PageHelper page,Integer sysid) {
+	public List<User> datagridUser(PageHelper page,User user) {
 		page.setStart((page.getPage()-1)*page.getRows());
 		page.setEnd(page.getPage()*page.getRows());
-		return userMapper.datagridUser(page,sysid);  
+		return userMapper.datagridUser(page,user);  
 	}
 	
 	/**

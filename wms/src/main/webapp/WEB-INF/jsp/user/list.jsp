@@ -16,6 +16,7 @@
 	function addUser() {
 		$('#dlg').dialog('open').dialog('setTitle', '新增用户');
 		$('#fm').form('clear');
+		//$('#fm').attr("method", "POST");
 		$('#roleid').val("1");//默认选中1
 		url = path + "/users";
 		mesTitle = '新增用户成功';
@@ -23,12 +24,14 @@
 
 	//编辑用户信息
 	function editUser() {
-		var row = $('#datagrid').datagrid('getSelected');
+		var row = $('#dg').datagrid('getSelected');
 		if (row) {
 			var id = row.id;
 			$('#dlg').dialog('open').dialog('setTitle', '编辑用户');
 			$('#fm').form('load', row);//这句话有问题，第一次加载时正确的，第二次就出错了，还保持第一次的数据
-			url = path + "/user/editUser?id=" + id;
+			//$('#fm').attr("method", "PUT");
+			$('#userid').val(id);
+			url = path + "/users/" + id;
 			mesTitle = '编辑用户成功';
 		} else {
 			$.messager.alert('提示', '请选择要编辑的记录！', 'error');
@@ -37,12 +40,12 @@
 
 	//删除用信息
 	function deleteUser() {
-		var row = $('#datagrid').datagrid('getSelected');
+		var row = $('#dg').datagrid('getSelected');
 		if (row) {
 			var id = row.id;
 			$('#dlg_delete').dialog('open').dialog('setTitle', '删除用户');
 			$('#fm').form('load', row);//这句话有问题，第一次加载时正确的，第二次就出错了，还保持第一次的数据
-			url = path + "/user/deleteUser?id=" + id;
+			url = path + "/users/" + id;
 			mesTitle = '删除用户成功';
 		} else {
 			$.messager.alert('提示', '请选择要删除的记录！', 'error');
@@ -51,13 +54,20 @@
 
 	//保存添加、修改内容
 	function saveUser() {
-		$('#fm').form('submit', {
+		var method = 'POST';
+		//$('#_method').val('POST');
+		if ($('#userid').val() != '') {
+			method = 'PUT';
+			//$('#_method').val('PUT');
+		}
+		//alert($('#roleid').val());
+		/* $('#fm').form('submit', {
 			url : url,
 			onSubmit : function() {
 				return $(this).form('validate');
 			},
 			success : function(result) {
-				/* console.info(result); */
+
 				var result = eval('(' + result + ')');
 				if (result.success) {
 					$('#dlg').dialog('close');
@@ -70,12 +80,38 @@
 					msg : result.msg
 				});
 			}
+		}); */
+		var d = JSON.stringify($('#fm').serializeObject());
+		$.ajax({
+			type : method,
+			url : url,
+			data : d,
+			async : false,
+			contentType : 'application/json',
+			dataType : 'json',
+			error : function(data) {
+				alert("error:" + data.responseText);
+			},
+			success : function(result) {
+				//var result = eval('(' + result + ')');
+				if (result.success) {
+					$('#dlg').dialog('close');
+					$('#dg').datagrid('reload');
+				} else {
+					mesTitle = '保存用户失败';
+				}
+				$.messager.show({
+					title : mesTitle,
+					msg : result.msg
+				});
+			}
 		});
 	}
 
 	//提交删除内容
 	function saveUser_del() {
-		$('#fm').form('submit', {
+		$('#_method').val('DELETE');
+		/* $('#fm').form('submit', {
 			url : url,
 			success : function(result) {
 				var result = eval('(' + result + ')');
@@ -90,34 +126,64 @@
 					msg : result.msg
 				});
 			}
+		}); */
+
+		$.ajax({
+			type : "DELETE",
+			url : url,
+			async : false,
+			error : function(request) {
+				alert("发生异常！");
+			},
+			success : function(result) {
+				//var result = eval('(' + result + ')');
+				if (result.success) {
+					$('#dlg_delete').dialog('close');
+					$('#dg').datagrid('reload');
+				} else {
+					mesTitle = '删除用户失败';
+				}
+				$.messager.show({
+					title : mesTitle,
+					msg : result.msg
+				});
+			}
 		});
 	}
 
-	//快速查询
-	function searchUserQ() {
-		var row = $('#datagrid').datagrid('getSelected');
-		url = path + "/user/editUser?username=" + $('#search_username').val;
-	}
-
-	//查询
-	function searchUser() {
-		$('#dlgsearch').dialog('open').dialog('setTitle', '查询');
-		$('#fmsearch').form('clear');
-		url = path + "/users/searchUser";
-		mesTitle = '查询用户成功';
+	function search() {
+		$('#dg').datagrid('load', {
+			uname : $('#suname').val()
+		});
 	}
 
 	//刷新
 	function reload() {
-		$('#datagrid').datagrid('reload');
+		$('#dg').datagrid('reload');
 	}
+
+	$.fn.serializeObject = function() {
+		var o = {};
+		var a = this.serializeArray();
+		$.each(a, function() {
+			if (o[this.name] !== undefined) {
+				if (!o[this.name].push) {
+					o[this.name] = [ o[this.name] ];
+				}
+				o[this.name].push(this.value || '');
+			} else {
+				o[this.name] = this.value || '';
+			}
+		});
+		return o;
+	};
 </script>
 
 </head>
 <body class="easyui-layout" fit="true">
 	<div region="center" border="false" style="overflow: hidden;">
 		<!-- 用户信息列表 title="用户管理" -->
-		<table id="datagrid" class="easyui-datagrid" fit="true"
+		<table id="dg" class="easyui-datagrid" fit="true"
 			url="${path}/users/datagrid" toolbar="#toolbar" pagination="true"
 			fitColumns="true" singleSelect="true" rownumbers="true"
 			striped="true" border="false" nowrap="false">
@@ -141,31 +207,31 @@
 				iconCls="icon-edit" plain="true" onclick="editUser();">编辑</a> <a
 				href="javascript:void(0);" class="easyui-linkbutton"
 				iconCls="icon-remove" plain="true" onclick="deleteUser();">删除</a> <span>用户名:</span><input
-				name="search_username" id="search_username" value="" size=10 /> <a
-				href="javascript:FindData()" class="easyui-linkbutton"
-				data-options="iconCls:'icon-search'">查询</a> <a
-				href="javascript:void(0);" class="easyui-linkbutton"
-				iconCls="icon-jright" plain="true" onclick="searchUser();">更多查询</a>
+				name="search_username" id="suname" value="" size=10 /> <a
+				href="javascript:search()" class="easyui-linkbutton"
+				data-options="iconCls:'icon-search'">查询</a>
 		</div>
 
 		<!-- 添加/修改对话框 -->
 		<div id="dlg" class="easyui-dialog"
 			style="width: 400px; height: 400px; padding: 30px 20px" closed="true"
 			buttons="#dlg-buttons">
-			<form id="fm" method="post" novalidate>
+			<form id="fm" method="post">
+				<!-- <input type="hidden" id="_method" name="_method" value="PUT" /> -->
+				<input type="hidden" id="userid" name="id" />
 				<div class="fitem">
 					<label>用户名:</label> <input name="uname" class="easyui-textbox"
-						required="true">
+						required="true" readonly="readonly">
 				</div>
 				<div class="fitem">
 					<label>密码:</label> <input name="pwd" class="easyui-textbox"
-						required="true">
+						required="true" type="password">
 				</div>
 				<div class="fitem">
 					<label>年龄:</label> <input name="age" class="easyui-textbox">
 				</div>
 				<div class="fitem">
-					<label>角色:</label> <select id="roleid">
+					<label>角色:</label> <select id="roleid" name="roleid">
 						<option value="1" selected="selected">操作员</option>
 						<option value="0">管理员</option>
 					</select>
@@ -199,34 +265,6 @@
 			<a href="javascript:void(0)" class="easyui-linkbutton"
 				iconCls="icon-cancel"
 				onclick="javascript:$('#dlg_delete').dialog('close')"
-				style="width: 90px">取消</a>
-		</div>
-
-		<!-- 查询对话框 -->
-		<div id="dlgsearch" class="easyui-dialog"
-			style="width: 400px; height: 380px; padding: 30px 20px" closed="true"
-			buttons="#dlg-buttons">
-			<form id="fmsearch" method="post" novalidate>
-				<div class="fitem">
-					<label>用户名:</label> <input name="suname" class="easyui-textbox">
-				</div>
-				<div class="fitem">
-					<label>角色:</label> <input type="radio" name="gender" id="gender"
-						value="" style="width: 30px;">全部</input> <input type="radio"
-						name="gender" id="gender" value="1" style="width: 30px;">普通</input>
-					<input type="radio" name="gender" id="gender" value="0"
-						style="width: 30px;">管理</input>
-				</div>
-			</form>
-		</div>
-
-		<!-- 查询对话框按钮 -->
-		<div id="dlg-buttons">
-			<a href="javascript:void(0)" class="easyui-linkbutton c6"
-				iconCls="icon-ok" onclick="searchUser()" style="width: 90px">查询</a>
-			<a href="javascript:void(0)" class="easyui-linkbutton"
-				iconCls="icon-cancel"
-				onclick="javascript:$('#dlgsearch').dialog('close')"
 				style="width: 90px">取消</a>
 		</div>
 
