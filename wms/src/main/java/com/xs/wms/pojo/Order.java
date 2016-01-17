@@ -4,81 +4,97 @@ import java.util.Date;
 import java.util.List;
 
 public class Order {
-    private Integer id;
+	private Integer id;
 
-    private String code;
+	private String code;
 
-    private Integer clientId;
+	private Integer clientId;
 
-    private String contactMan;
+	private String contactMan;
 
-    private String contactTel;
+	private String contactTel;
 
-    private Date orderDate;
-    private Integer flag;
-    private List<Order_detail> order_details;
+	private Integer orderDate;
+	private Integer flag;
+	private List<Order_detail> order_details;
 
-    public Integer getId() {
-        return id;
-    }
+	public Order() {
+		id = 0;
+	}
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
+	public Order(Integer id, String code, Integer clientId, String contactMan, String contactTel, Integer orderDate,
+			Integer flag, List<Order_detail> order_details) {
 
-    public String getCode() {
-        return code;
-    }
+		this.id = id;
+		this.code = code;
+		this.clientId = clientId;
+		this.contactMan = contactMan;
+		this.contactTel = contactTel;
+		this.orderDate = orderDate;
+		this.order_details = order_details;
+	}
 
-    public void setCode(String code) {
-        this.code = code == null ? null : code.trim();
-    }
+	public Integer getId() {
+		return id;
+	}
 
-    public Integer getClientId() {
-        return clientId;
-    }
+	public void setId(Integer id) {
+		this.id = id;
+	}
 
-    public void setClientId(Integer clientId) {
-        this.clientId = clientId;
-    }
+	public String getCode() {
+		return code;
+	}
 
-    public String getContactMan() {
-        return contactMan;
-    }
+	public void setCode(String code) {
+		this.code = code == null ? null : code.trim();
+	}
 
-    public void setContactMan(String contactMan) {
-        this.contactMan = contactMan == null ? null : contactMan.trim();
-    }
+	public Integer getClientId() {
+		return clientId;
+	}
 
-    public String getContactTel() {
-        return contactTel;
-    }
+	public void setClientId(Integer clientId) {
+		this.clientId = clientId;
+	}
 
-    public void setContactTel(String contactTel) {
-        this.contactTel = contactTel == null ? null : contactTel.trim();
-    }
+	public String getContactMan() {
+		return contactMan;
+	}
 
-    public Date getOrderDate() {
-        return orderDate;
-    }
+	public void setContactMan(String contactMan) {
+		this.contactMan = contactMan == null ? null : contactMan.trim();
+	}
 
-    public void setOrderDate(Date orderDate) {
-        this.orderDate = orderDate;
-    }
-    
-    public Integer getFlag() {
-        return flag;
-    }
+	public String getContactTel() {
+		return contactTel;
+	}
 
-    public void setFlag(Integer flag) {
-        this.flag = flag;
-    }
-    
-    public List<Order_detail> getOrder_details() {
-        return order_details;
-    }
+	public void setContactTel(String contactTel) {
+		this.contactTel = contactTel == null ? null : contactTel.trim();
+	}
 
-    public void setOrder_details(List<Order_detail> details) {
-        this.order_details = details;
-    }
+	public Integer getOrderDate() {
+		return orderDate;
+	}
+
+	public void setOrderDate(Integer orderDate) {
+		this.orderDate = orderDate;
+	}
+
+	public Integer getFlag() {
+		return flag;
+	}
+
+	public void setFlag(Integer flag) {
+		this.flag = flag;
+	}
+
+	public List<Order_detail> getOrder_details() {
+		return order_details;
+	}
+
+	public void setOrder_details(List<Order_detail> details) {
+		this.order_details = details;
+	}
 }

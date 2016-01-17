@@ -460,3 +460,10 @@ Caused by: org.springframework.beans.factory.NoSuchBeanDefinitionException: No q
 [INFO] [2015-12-23 11:34:24][org.springframework.beans.factory.xml.XmlBeanDefinitionReader]Loading XML bean definitions from class path resource [org/springframework/jdbc/support/sql-error-codes.xml]
 [INFO] [2015-12-23 11:34:24][org.springframework.jdbc.support.SQLErrorCodesFactory]SQLErrorCodes loaded: [DB2, Derby, H2, HSQL, Informix, MS-SQL, MySQL, Oracle, PostgreSQL, Sybase]
 [INFO] [2015-12-23 11:34:25][org.springframework.context.support.GenericApplicationContext]Closing org.springframework.context.support.GenericApplicationContext@548a9f61: startup date [Wed Dec 23 11:34:23 CST 2015]; root of context hierarchy
+[INFO] [2016-01-10 17:33:10][org.springframework.beans.factory.xml.XmlBeanDefinitionReader]Loading XML bean definitions from URL [file:src/main/resources/spring-mybatis.xml]
+[INFO] [2016-01-10 17:33:11][org.springframework.context.support.GenericApplicationContext]Refreshing org.springframework.context.support.GenericApplicationContext@548a9f61: startup date [Sun Jan 10 17:33:11 CST 2016]; root of context hierarchy
+[INFO] [2016-01-10 17:33:11][org.springframework.beans.factory.config.PropertyPlaceholderConfigurer]Loading properties file from class path resource [jdbc.properties]
+[INFO] [2016-01-10 17:33:11][org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor]JSR-330 'javax.inject.Inject' annotation found and supported for autowiring
+[INFO] [2016-01-10 17:33:16][com.xs.wms.testprj.MainTest]orderid=24
+[INFO] [2016-01-10 17:33:16][com.xs.wms.testprj.MainTest]com.xs.wms.pojo.Order_detail@6ad59d92
+[INFO] [2016-01-10 17:33:16][org.springframework.context.support.GenericApplicationContext]Closing org.springframework.context.support.GenericApplicationContext@548a9f61: startup date [Sun Jan 10 17:33:11 CST 2016]; root of context hierarchy

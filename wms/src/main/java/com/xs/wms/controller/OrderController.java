@@ -52,8 +52,10 @@ public class OrderController {
 						orderService.insert(order);
 						int order_id = order.getId();
 						for (Order_detail i : items) {
-							i.setOrderId(order_id);
-							order_detailService.insert(i);
+							if (i != null) {
+								i.setOrderId(order_id);
+								order_detailService.insert(i);
+							}
 						}
 						j.setSuccess(true);
 						j.setMsg("用户新增成功！");

@@ -1,5 +1,7 @@
 package com.xs.wms.dao;
 
+import org.apache.ibatis.annotations.Param;
+
 import com.xs.wms.pojo.Order;
 
 public interface IOrder {
@@ -13,7 +15,7 @@ public interface IOrder {
     
     Order selectByCode(String code);
     
-    int repeatCodeNum(String code,Integer client);
+    int repeatCodeNum(@Param("code") String code,@Param("client") Integer client);
 
     int updateByPrimaryKeySelective(Order record);
 

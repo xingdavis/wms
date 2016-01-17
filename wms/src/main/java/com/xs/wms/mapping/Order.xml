@@ -32,7 +32,7 @@
 	</select>
 	<select id="repeatCodeNum" resultType="java.lang.Integer">
 		select count(1) from t_order
-		where code = #{code,jdbcType=VARCHAR} and client=#{client,jdbcType=INTEGER}
+		where code = #{code,jdbcType=VARCHAR} and client_id=#{client,jdbcType=INTEGER}
 	</select>
 	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
 		delete from
@@ -55,7 +55,7 @@
 		#{contactMan,jdbcType=VARCHAR},
 		#{contactTel,jdbcType=VARCHAR},
 		#{orderDate,jdbcType=TIMESTAMP},
-		#{flag,jdbcType=TINYINT} )
+		0 )
 	</insert>
 	<update id="updateByPrimaryKeySelective" parameterType="com.xs.wms.pojo.Order">
 		update t_order

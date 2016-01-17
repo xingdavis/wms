@@ -49,7 +49,8 @@
 	function append() {
 		if (endEditing()) {
 			$('#dg').datagrid('appendRow', {
-				status : 'P'
+				id : 0,
+				orderId:0
 			});
 			editIndex = $('#dg').datagrid('getRows').length - 1;
 			$('#dg').datagrid('selectRow', editIndex).datagrid('beginEdit',
@@ -94,14 +95,17 @@
 			});
 			return;
 		}
-		var d = JSON.stringify($('#fm').serializeObject());
-		d.order_details=items;
-		
+				
+		//$('#e_order_details').val(items);
+		var order=$('#fm').serializeObject();
+		order.order_details=items;
+		var d = JSON.stringify(order);
+		//return;
 		$.ajax({
 			url : path + '/orders/myorder',
 			data : d,
 			async : false,
-			method:'post',
+			//method:'post',
 			contentType : 'application/json',
 			dataType : 'json',
 			error : function(data) {
@@ -110,7 +114,7 @@
 			success : function(result) {
 				//var result = eval('(' + result + ')');
 				if (result.success) {
-					alert(result.Obj);
+					//alert(result.obj);
 					mesTitle='订单已提交!';
 				} else {
 					mesTitle = '保存失败!';
@@ -126,7 +130,10 @@
 	function submitClientForm(){	 
         if (!$('#fm_client').form('validate'))
         	return;
-		var d = JSON.stringify($('#fm_client').serializeObject());
+        
+		var order = JSON.stringify($('#fm_client').serializeObject());
+		
+		
 		$.ajax({
 			url : path + '/clients',
 			data : d,
@@ -226,7 +233,8 @@
 	<div class="easyui-panel" title="New Topic" style="width: auto">
 		<div style="padding: 10px 60px 20px 60px">
 			<form id="fm" method="post">
-				<input type="hidden" name="order_details" id="e_order_details" />
+				<input type="hidden" name="order_details" id="e_order_details" /> <input
+					type="hidden" name="orderDate" /> <input type="hidden" name="flag" />
 				<table cellpadding="5">
 					<tr>
 						<td>公司:</td>
@@ -263,9 +271,10 @@
                 method: 'get',onClickCell: onClickCell">
 					<thead>
 						<tr>
-							<th data-options="field:'id',width:0,hidden:true">Item ID</th>
-							<th data-options="field:'order_id',width:0,hidden:true">Order
+							<!-- <th data-options="field:'id',width:0,hidden:true">Item ID</th>
+							<th data-options="field:'orderId',width:0,hidden:true">Order
 								ID</th>
+								 -->
 							<th
 								data-options="field:'cname',width:100,editor:{type:'validatebox',options:{required:true}}">货名</th>
 							<th
@@ -274,10 +283,6 @@
 								data-options="field:'vol',width:80,align:'right',editor:{type:'numberbox',options:{precision:2}}">体积</th>
 							<th
 								data-options="field:'weight',width:80,editor:{type:'numberbox',options:{precision:2}}">重量</th>
-							<!-- 
-							<th
-								data-options="field:'status',width:60,align:'center',editor:{type:'checkbox',options:{on:'P',off:''}}">Status</th>
-								 -->
 						</tr>
 					</thead>
 				</table>
