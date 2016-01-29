@@ -1,15 +1,18 @@
 package com.xs.wms.pojo;
 
 import java.util.Date;
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 public class Stock_in {
     private Integer id;
 
     private String code;
     
-    private Integer order_id;
+    private Integer orderId;
 
-    private String order_code;
+    private String orderCode;
 
     private Integer clientId;
 
@@ -20,7 +23,28 @@ public class Stock_in {
     private Date crDate;
 
     private Integer flag;
+    @JsonManagedReference
+    private List<Stock_in_detail> items;
 
+	public Stock_in() {
+		id = 0;
+	}
+
+	public Stock_in(Integer id, String code,Integer orderId,String orderCode, Integer clientId, String carNo, Date inDate, Date crDate,
+			Integer flag, List<Stock_in_detail> items) {
+
+		this.id = id;
+		this.code = code;
+		this.orderId=orderId;
+		this.orderCode = orderCode;
+		this.clientId = clientId;
+		this.carNo = carNo;
+		this.inDate = inDate;
+		this.crDate = crDate;
+		this.flag = flag;
+		this.items = items;
+	}
+	
     public Integer getId() {
         return id;
     }
@@ -37,20 +61,20 @@ public class Stock_in {
         this.code = code == null ? null : code.trim();
     }
     
-    public Integer getOrder_id() {
-        return order_id;
+    public Integer getOrderId() {
+        return orderId;
     }
 
-    public void setOrder_id(Integer order_id) {
-        this.order_id = order_id;
+    public void setOrderId(Integer orderId) {
+        this.orderId = orderId;
     }
 
-    public String getOrder_code() {
-        return order_code;
+    public String getOrderCode() {
+        return orderCode;
     }
 
-    public void setOrder_code(String order_code) {
-        this.order_code = order_code == null ? null : order_code.trim();
+    public void setOrderCode(String orderCode) {
+        this.orderCode = orderCode == null ? null : orderCode.trim();
     }
 
     public Integer getClientId() {
@@ -92,4 +116,12 @@ public class Stock_in {
     public void setFlag(Integer flag) {
         this.flag = flag;
     }
+    
+	public List<Stock_in_detail> getItems() {
+		return items;
+	}
+
+	public void setItems(List<Stock_in_detail> items) {
+		this.items = items;
+	}
 }

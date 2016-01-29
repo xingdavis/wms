@@ -2,6 +2,9 @@ package com.xs.wms.pojo;
 
 import java.math.BigDecimal;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 public class Order_detail {
     private Integer id;
 
@@ -15,6 +18,7 @@ public class Order_detail {
 
     private Double weight;
     
+    @JsonBackReference 
     private Order order;
 
     public Integer getId() {

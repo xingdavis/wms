@@ -1,7 +1,14 @@
 package com.xs.wms.pojo;
 
+
 import java.util.Date;
 import java.util.List;
+
+import org.codehaus.jackson.annotate.JsonMethod;
+
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 public class Order {
 	private Integer id;
@@ -14,15 +21,16 @@ public class Order {
 
 	private String contactTel;
 
-	private Integer orderDate;
+	private Date orderDate;
 	private Integer flag;
+	@JsonManagedReference
 	private List<Order_detail> order_details;
 
 	public Order() {
 		id = 0;
 	}
 
-	public Order(Integer id, String code, Integer clientId, String contactMan, String contactTel, Integer orderDate,
+	public Order(Integer id, String code, Integer clientId, String contactMan, String contactTel, Date orderDate,
 			Integer flag, List<Order_detail> order_details) {
 
 		this.id = id;
@@ -74,11 +82,11 @@ public class Order {
 		this.contactTel = contactTel == null ? null : contactTel.trim();
 	}
 
-	public Integer getOrderDate() {
+	public Date getOrderDate() {
 		return orderDate;
 	}
 
-	public void setOrderDate(Integer orderDate) {
+	public void setOrderDate(Date orderDate) {
 		this.orderDate = orderDate;
 	}
 

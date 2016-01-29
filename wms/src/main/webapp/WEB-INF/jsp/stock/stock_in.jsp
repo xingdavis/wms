@@ -3,7 +3,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<title>客户提交订单</title>
+<title>进仓登记</title>
 <%@include file="/WEB-INF/jsp/include/easyui_core.jsp"%>
 
 <script type="text/javascript">
@@ -12,14 +12,7 @@
 		if (editIndex == undefined) {
 			return true
 		}
-		if ($('#dg').datagrid('validateRow', editIndex)) {
-			/* var ed = $('#dg').datagrid('getEditor', {
-				index : editIndex,
-				field : 'id'
-			});
-			var cname = $(ed.target).combobox('getText');
-			$('#dg').datagrid('getRows')[editIndex]['cname'] = cname;
-			$('#dg').datagrid('endEdit', editIndex); */
+		if ($('#dg').datagrid('validateRow', editIndex)) {			
 			editIndex = undefined;
 			return true;
 		} else {
@@ -97,12 +90,12 @@
 		}
 				
 		//$('#e_order_details').val(items);
-		var order=$('#fm').serializeObject();
-		order.order_details=items;
-		var d = JSON.stringify(order);
+		var bill=$('#fm').serializeObject();
+		bill.items=items;
+		var d = JSON.stringify(bill);
 		//return;
 		$.ajax({
-			url : path + '/orders/myorder',
+			url : path + '/stock_in',
 			data : d,
 			async : false,
 			//method:'post',
@@ -113,10 +106,9 @@
 			},
 			success : function(result) {
 				//var result = eval('(' + result + ')');
-				if (result.success) {
-					//alert(result.obj);
-					mesTitle='订单已提交!';
-					location.href = '${path}/orders/myorder'
+				if (result.success) {					
+					mesTitle='入仓单已提交!';
+					//location.href = '${path}/orders/myorder'
 				} else {
 					mesTitle = '保存失败!';
 				}
@@ -128,45 +120,7 @@
 		});
 	}
 	
-	function submitClientForm(){	 
-        if (!$('#fm_client').form('validate'))
-        	return;
-        
-		var order = JSON.stringify($('#fm_client').serializeObject());
-		
-		
-		$.ajax({
-			url : path + '/clients',
-			data : d,
-			async : false,
-			method:'post',
-			contentType : 'application/json',
-			dataType : 'json',
-			error : function(data) {
-				alert("error:" + data.responseText);
-			},
-			success : function(result) {
-				//var result = eval('(' + result + ')');
-				if (result.success) {
-					$('#dlg').dialog('close');
-					//$('#e_client').combogrid('setValue', result.obj);
-					$('#e_client').combogrid("grid").datagrid("load", result.obj);
-					//$('#e_client').combogrid('setValue', result.obj.id);
-					$('#e_client').combogrid("grid").datagrid('selectRecord', result.obj.id);
-					$('#e_client').combogrid('setValue', result.obj.id);
-					$('#e_contact_man').textbox("setValue",result.obj.contactMan);
-					$('#e_contact_tel').textbox("setValue",result.obj.contactTel);
-					//$('#e_client').combogrid('setValue', result.obj.id);
-				} else {
-					$.messager.show({
-						title : '新增客户失败！',
-						msg : result.msg
-					});
-				}
-				
-			}
-		});
-	}
+	
 	
 	//页面所有东西加载完执行（包括js、图片）
 	$(window).load(function() {
@@ -175,6 +129,7 @@
 	
 	//DOM加载完毕执行
 	$(document).ready(function(){
+		$('#e_inDate').datebox('setValue', FormatterDate(new Date()));	
 		$('#e_client').combogrid({
 		    panelWidth:300,
 		    queryParams:{cname:$('#e_client').val()},
@@ -201,50 +156,94 @@
             /* onChange:function(newValue,oldValue){
             	alert(newValue);
             } */
-            onSelect:function(index,row){
-    			$('#e_contact_man').textbox('setValue',row.contactMan);
-    			$('#e_contact_tel').textbox('setValue',row.contactTel);
+            onSelect:function(index,row){    			          	
+            	$('#e_orderCode').combogrid("grid").datagrid("reload", { 'clientId': row.id });
     		}
 		});
 		
-		/* $('#e_client').combogrid("grid").datagrid("onSelect",  function(index,row){
-			$('#e_contact_man').textbox('setValue',row.contact_man);
-			$('#e_contact_tel').textbox('setValue',row.contact_tel);
-		}); */
 		
+		$('#e_orderCode').combogrid({
+		    panelWidth:300,
+		    queryParams:{code:$('#e_orderCode').val()},
+		    mode:'remote',
+		    idField:'id',
+		    textField:'code',
+		    method:'get',
+		    url: path + '/orders',
+		    fitColumns: true,
+		    columns:[[
+		              {field:'id',title:'id',hidden:true},
+		              {field:'code',title:'单号',width:200}
+		    ]],
+		    keyHandler: {
+                up: function() {},
+                down: function() {},
+                enter: function() {},
+                query: function(q) {
+                    //动态搜索
+                    $('#e_orderCode').combogrid("grid").datagrid("reload", { 'code': q });
+                    $('#e_orderCode').combogrid("setValue", q);
+                }
+            },
+            /* onChange:function(newValue,oldValue){
+            	alert(newValue);
+            } */
+            onSelect:function(index,row){
+            	getOrder(row.id);
+    		}
+		});
 	});
+	
+	function getOrder(id){
+		$.ajax({
+			type : 'GET',
+			url : path + '/orders/' + id,
+			async : false,
+			contentType : 'application/json',
+			dataType : 'json',
+			error : function(data) {
+				alert("error:" + data.responseText);
+			},
+			success : function(result) {
+				//var result = eval('(' + result + ')');
+				if (result.success) {
+					$('#dg').datagrid('loadData', result.obj.order_details);
+				} else {
+					alert('获取订单失败！');
+				}
+				
+			}
+		});
+	}
 </script>
 </head>
 <body>
 	<div class="easyui-panel" title="New Topic" style="width: auto">
 		<div style="padding: 10px 60px 20px 60px">
 			<form id="fm" method="post">
-				<input type="hidden" name="order_details" id="e_order_details" /> <input
-					type="hidden" name="orderDate" /> <input type="hidden" name="flag" />
+				<input type="hidden" name="items" id="e_items" /> <input
+					type="hidden" name="crDate" /> <input type="hidden" name="flag" />
 				<table cellpadding="5">
 					<tr>
 						<td>公司:</td>
 						<td><input class="easyui-textbox" type="text" name="clientId"
-							id="e_client" data-options="required:true" /><a
-							href="javascript:$('#dlg').dialog('open')"
-							class="easyui-linkbutton">没找到？添加一个</a></td>
+							id="e_client" data-options="required:true" /></td>
 					</tr>
 					<tr>
 						<td>订单号:</td>
 						<td><input class="easyui-textbox"
-							data-options="prompt:'输入公司自有单号，或留空有系统自动生成'" type="text"
-							name="code" id="e_code" /><a href="javascript:autocode()"
-							class="easyui-linkbutton">系统自动生成</a></td>
+							data-options="required:true" type="text" name="orderCode"
+							id="e_orderCode" data-options="required:true" /></td>
 					</tr>
 					<tr>
-						<td>联系人:</td>
+						<td>车牌号:</td>
 						<td><input class="easyui-textbox" type="text"
-							id="e_contact_man" name="contactMan" /></td>
+							id="e_contact_man" name="carNo" /></td>
 					</tr>
 					<tr>
-						<td>联系电话:</td>
-						<td><input class="easyui-textbox" name="contactTel"
-							id="e_contact_tel"></input></td>
+						<td>进仓日期:</td>
+						<td><input name="inDate" id="e_inDate" type="text"
+							class="easyui-datebox" required="required" /></td>
 					</tr>
 				</table>
 
@@ -269,6 +268,8 @@
 								data-options="field:'vol',width:80,align:'right',editor:{type:'numberbox',options:{precision:2}}">体积</th>
 							<th
 								data-options="field:'weight',width:80,editor:{type:'numberbox',options:{precision:2}}">重量</th>
+							<th
+								data-options="field:'yard',width:100,editor:{type:'validatebox',options:{required:true}}">堆位</th>
 						</tr>
 					</thead>
 				</table>
@@ -290,33 +291,6 @@
 			<div style="text-align: center; padding: 5px">
 				<a href="javascript:void(0)" class="easyui-linkbutton"
 					onclick="submitForm()">提交订单</a>
-			</div>
-			<div id="dlg" class="easyui-dialog" title="客户登记"
-				data-options="iconCls:'icon-save',closed:true"
-				style="width: 400px; height: 200px; padding: 10px">
-				<form id="fm_client" method="post">
-					<table cellpadding="5">
-						<tr>
-							<td>公司名称:</td>
-							<td><input class="easyui-textbox" type="text" name="cname"
-								data-options="required:true" /></td>
-						</tr>
-						<tr>
-							<td>联系人:</td>
-							<td><input class="easyui-textbox" type="text"
-								name="contactMan" /></td>
-						</tr>
-						<tr>
-							<td>联系电话:</td>
-							<td><input class="easyui-textbox" name="contactTel"></input></td>
-						</tr>
-					</table>
-					<div style="text-align: center; padding: 5px">
-						<a href="javascript:void(0)" class="easyui-linkbutton"
-							onclick="submitClientForm()">保存</a> <a href="javascript:void(0)"
-							class="easyui-linkbutton" onclick="$('#dlg').dialog('close')">关闭</a>
-					</div>
-				</form>
 			</div>
 		</div>
 	</div>

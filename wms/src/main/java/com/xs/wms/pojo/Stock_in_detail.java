@@ -1,6 +1,6 @@
 package com.xs.wms.pojo;
 
-import java.math.BigDecimal;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 public class Stock_in_detail {
     private Integer id;
@@ -11,11 +11,13 @@ public class Stock_in_detail {
 
     private Integer num;
 
-    private BigDecimal vol;
+    private Double vol;
 
-    private BigDecimal weight;
+    private Double weight;
 
     private String yard;
+    @JsonBackReference
+    private Stock_in stock_in;
 
     public Integer getId() {
         return id;
@@ -49,19 +51,19 @@ public class Stock_in_detail {
         this.num = num;
     }
 
-    public BigDecimal getVol() {
+    public Double getVol() {
         return vol;
     }
 
-    public void setVol(BigDecimal vol) {
+    public void setVol(Double vol) {
         this.vol = vol;
     }
 
-    public BigDecimal getWeight() {
+    public Double getWeight() {
         return weight;
     }
 
-    public void setWeight(BigDecimal weight) {
+    public void setWeight(Double weight) {
         this.weight = weight;
     }
 
@@ -71,5 +73,13 @@ public class Stock_in_detail {
 
     public void setYard(String yard) {
         this.yard = yard == null ? null : yard.trim();
+    }
+    
+    public Stock_in getOrder() {
+        return stock_in;
+    }
+
+    public void setOrder(Stock_in o) {
+        this.stock_in = o;
     }
 }

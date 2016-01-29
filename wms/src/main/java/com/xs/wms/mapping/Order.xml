@@ -10,10 +10,11 @@
 		<result column="order_date" jdbcType="TIMESTAMP" property="orderDate" />
 		<result column="flag" property="flag" jdbcType="TINYINT" />
 		<collection property="order_details" column="id" javaType="ArrayList"
-			select="com.xs.wms.mapping.Order_detail.getDetailsByOrderId" />
+			select="com.xs.wms.dao.IOrder_detail.getDetailsByOrderId" />
 	</resultMap>
 	<sql id="Base_Column_List">
-		id, code, client_id clientId, contact_man contactMan, contact_tel contactTel, order_date orderDate,
+		id, code, client_id clientId, contact_man contactMan,
+		contact_tel contactTel, order_date orderDate,
 		flag
 	</sql>
 	<select id="selectByPrimaryKey" parameterType="java.lang.Integer"
@@ -31,8 +32,39 @@
 		where code = #{code,jdbcType=VARCHAR}
 	</select>
 	<select id="repeatCodeNum" resultType="java.lang.Integer">
-		select count(1) from t_order
-		where code = #{code,jdbcType=VARCHAR} and client_id=#{client,jdbcType=INTEGER}
+		select count(1) from
+		t_order
+		where code = #{code,jdbcType=VARCHAR} and
+		client_id=#{client,jdbcType=INTEGER}
+	</select>
+	<select id="getDatagridTotal" resultType="long">
+		select
+		count(1)
+		from t_order where flag>=0
+		<if test="order.clientId!=null and order.clientId>0">
+		    and client_id=#{order.clientId}
+		</if>
+		<if test="order.code!=null and order.code != ''">
+			and code like concat('%',#{order.code},'%')
+		</if>
+	</select>
+
+	<select id="datagridOrder" resultType="com.xs.wms.pojo.Order">
+		select
+		<include refid="Base_Column_List" />
+		from t_order o where o.flag>=0
+		<if test="order.clientId!=null and order.clientId>0">
+		    and client_id=#{order.clientId}
+		</if>
+		<if test="order.code!=null and order.code != ''">
+			and code like concat('%',#{order.code},'%')
+		</if>
+		<if test="page.sort != null and page.sort != ''">
+			order by #{page.sort} #{page.order}
+		</if>
+		<if test="page.page > 0">
+			limit #{page.start},#{page.end}
+		</if>
 	</select>
 	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
 		delete from
@@ -48,7 +80,7 @@
 				#{code,jdbcType=VARCHAR},
 			</when>
 			<otherwise>
-			    GetOrderCode(),
+				GetOrderCode(),
 			</otherwise>
 		</choose>
 		#{clientId,jdbcType=INTEGER},

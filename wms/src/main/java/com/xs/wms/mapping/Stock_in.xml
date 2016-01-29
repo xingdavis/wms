@@ -4,11 +4,15 @@
   <resultMap id="BaseResultMap" type="com.xs.wms.pojo.Stock_in" >
     <id column="id" property="id" jdbcType="INTEGER" />
     <result column="code" property="code" jdbcType="VARCHAR" />
+    <result column="order_id" property="orderId" jdbcType="INTEGER" />
+    <result column="order_code" property="orderCode" jdbcType="VARCHAR" />
     <result column="client_id" property="clientId" jdbcType="INTEGER" />
     <result column="car_no" property="carNo" jdbcType="VARCHAR" />
     <result column="in_date" property="inDate" jdbcType="TIMESTAMP" />
     <result column="cr_date" property="crDate" jdbcType="TIMESTAMP" />
     <result column="flag" property="flag" jdbcType="TINYINT" />
+    <collection property="items" column="id" javaType="ArrayList"
+			select="com.xs.wms.mapping.Stock_in_detail.getDetailsByStockInId" />
   </resultMap>
   <sql id="Base_Column_List" >
     id, code, client_id, car_no, in_date, cr_date, flag
@@ -23,11 +27,11 @@
     delete from t_stock_in
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.xs.wms.pojo.Stock_in" >
-    insert into t_stock_in (id, code, client_id, 
+  <insert id="insert" parameterType="com.xs.wms.pojo.Stock_in" useGeneratedKeys="true" keyProperty="id">
+    insert into t_stock_in ( code, order_id,order_code,client_id, 
       car_no, in_date, cr_date, 
       flag)
-    values (#{id,jdbcType=INTEGER}, #{code,jdbcType=VARCHAR}, #{clientId,jdbcType=INTEGER}, 
+    values (GetStockInCode(), #{orderId,jdbcType=INTEGER},#{orderCode,jdbcType=VARCHAR},#{clientId,jdbcType=INTEGER}, 
       #{carNo,jdbcType=VARCHAR}, #{inDate,jdbcType=TIMESTAMP}, #{crDate,jdbcType=TIMESTAMP}, 
       #{flag,jdbcType=TINYINT})
   </insert>

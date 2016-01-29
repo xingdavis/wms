@@ -7,55 +7,62 @@
 <%@include file="/WEB-INF/jsp/include/easyui_core.jsp"%>
 
 <script type="text/javascript">
-//DOM加载完毕执行
-$(document).ready(function(){
-	$('#q_client').combogrid({
-	    panelWidth:300,
-	    queryParams:{cname:$('#q_client').val()},
-	    mode:'remote',
-	    idField:'id',
-	    textField:'cname',
-	    method:'get',
-	    url: path + '/clients',
-	    fitColumns: true,
-	    columns:[[
-	              {field:'id',title:'id',hidden:true},
-	              {field:'cname',title:'名称',width:200}
-	    ]],
-	    keyHandler: {
-            up: function() {},
-            down: function() {},
-            enter: function() {},
-            query: function(q) {
-                //动态搜索
-                $('#q_client').combogrid("grid").datagrid("reload", { 'cname': q });
-                $('#q_client').combogrid("setValue", q);
-            }
-        },
-        /* onChange:function(newValue,oldValue){
-        	alert(newValue);
-        } */
-        onSelect:function(index,row){
-			//$('#e_contact_man').textbox('setValue',row.contactMan);
-			//$('#e_contact_tel').textbox('setValue',row.contactTel);
-		}
-	});
-
-	$.fn.serializeObject = function() {
-		var o = {};
-		var a = this.serializeArray();
-		$.each(a, function() {
-			if (o[this.name] !== undefined) {
-				if (!o[this.name].push) {
-					o[this.name] = [ o[this.name] ];
+	//DOM加载完毕执行
+	$(document).ready(function() {
+		$('#q_client').combogrid({
+			panelWidth : 300,
+			queryParams : {
+				cname : $('#q_client').val()
+			},
+			mode : 'remote',
+			idField : 'id',
+			textField : 'cname',
+			method : 'get',
+			url : path + '/clients',
+			fitColumns : true,
+			columns : [ [ {
+				field : 'id',
+				title : 'id',
+				hidden : true
+			}, {
+				field : 'cname',
+				title : '名称',
+				width : 200
+			} ] ],
+			keyHandler : {
+				up : function() {
+				},
+				down : function() {
+				},
+				enter : function() {
+				},
+				query : function(q) {
+					//动态搜索
+					$('#q_client').combogrid("grid").datagrid("reload", {
+						'cname' : q
+					});
+					$('#q_client').combogrid("setValue", q);
 				}
-				o[this.name].push(this.value || '');
-			} else {
-				o[this.name] = this.value || '';
+			},
+			/* onChange:function(newValue,oldValue){
+				alert(newValue);
+			} */
+			onSelect : function(index, row) {
+				//$('#e_contact_man').textbox('setValue',row.contactMan);
+				//$('#e_contact_tel').textbox('setValue',row.contactTel);
 			}
 		});
-		return o;
-	};
+	});
+	function search() {
+		$('#dg').datagrid('load', {
+			uname : $('#suname').val()
+		});
+	}
+
+	//刷新
+	function reload() {
+		$('#dg').datagrid('reload');
+	}
 </script>
 
 </head>
@@ -65,10 +72,12 @@ $(document).ready(function(){
 			<input class="easyui-textbox" type="text" name="clientId"
 				id="q_client" data-options="required:true" /> <a
 				href="javascript:search()" class="easyui-linkbutton"
-				data-options="iconCls:'icon-search'">查询</a>
+				data-options="iconCls:'icon-search'">查询</a> <a
+				href="${path}/orders/new" class="easyui-linkbutton"
+				data-options="iconCls:'icon-add'">新增</a>
 		</div>
 		<table id="dg" class="easyui-datagrid" fit="true"
-			url="${path}/users/datagrid" toolbar="#toolbar" pagination="true"
+			url="${path}/orders" method="GET" toolbar="#toolbar" pagination="true"
 			fitColumns="true" singleSelect="true" rownumbers="true"
 			striped="true" border="false" nowrap="false">
 			<thead>

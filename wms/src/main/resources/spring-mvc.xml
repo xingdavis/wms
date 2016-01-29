@@ -58,7 +58,7 @@
 			<mvc:mapping path="/**" />
 			<mvc:exclude-mapping path="/code" />
 			<mvc:exclude-mapping path="/logout" />
-			<mvc:exclude-mapping path="/orders/myorder" />
+			<mvc:exclude-mapping path="/orders/**" />
 			<mvc:exclude-mapping path="/clients" />
 
 			<bean class="com.xs.wms.interceptor.CommonInterceptor"></bean>

@@ -9,6 +9,8 @@
     <result column="vol" property="vol" jdbcType="DECIMAL" />
     <result column="weight" property="weight" jdbcType="DECIMAL" />
     <result column="yard" property="yard" jdbcType="VARCHAR" />
+    <association property="stock_in" column="bill_id"
+			select="com.xs.wms.dao.IStock_in.selectByPrimaryKey" />
   </resultMap>
   <sql id="Base_Column_List" >
     id, bill_id, cname, num, vol, weight, yard

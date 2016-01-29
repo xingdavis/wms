@@ -1,5 +1,7 @@
 package com.xs.wms.dao;
 
+import java.util.List;
+
 import com.xs.wms.pojo.Stock_in_detail;
 
 public interface IStock_in_detail {
