@@ -3,7 +3,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<title>进仓登记</title>
+<title>修改入仓单</title>
 <%@include file="/WEB-INF/jsp/include/easyui_core.jsp"%>
 
 <script type="text/javascript">
@@ -12,15 +12,15 @@
 		if (editIndex == undefined) {
 			return true
 		}
-		if ($('#dg').datagrid('validateRow', editIndex)) {
+		if ($('#dg').datagrid('validateRow', editIndex)) {			
 			editIndex = undefined;
 			return true;
 		} else {
 			return false;
 		}
 	}
-
-	function onClickCell(index, field, value) {
+	
+	function onClickCell(index,field,value) {
 		if (editIndex != index) {
 			if (endEditing()) {
 				$('#dg').datagrid('selectRow', index).datagrid('beginEdit',
@@ -43,7 +43,7 @@
 		if (endEditing()) {
 			$('#dg').datagrid('appendRow', {
 				id : 0,
-				billId:0
+				orderId:0
 			});
 			editIndex = $('#dg').datagrid('getRows').length - 1;
 			$('#dg').datagrid('selectRow', editIndex).datagrid('beginEdit',
@@ -52,9 +52,7 @@
 	}
 	function removeit() {
 		if (editIndex == undefined) {
-			return
-			
-
+			return
 		}
 		$('#dg').datagrid('cancelEdit', editIndex).datagrid('deleteRow',
 				editIndex);
@@ -73,40 +71,34 @@
 		var rows = $('#dg').datagrid('getChanges');
 		alert(rows.length + ' rows are changed!');
 	}
-
-	function autocode() {
+	
+	function autocode(){
 		$('#e_code').textbox('clear');
 	}
-
-	function submitForm(flag) {
+	
+	function submitForm(){
 		if (!$('#fm').form('validate'))
-			return;
-		var mesTitle = '';
-		var method = 'POST';
-		var url =path+'/stock_ins/bills';
-		if ($('#e_id').val() != '') {
-			method = 'PUT';
-			url += '/' + $('#e_id').val();			
-		}
-
+        	return;
+		var mesTitle='';
 		var items = $('#dg').datagrid('getData').rows;
-		if (items.length == 0) {
-			alert('请录入货物明细！')
+		if (items.length==0){
+			$.messager.show({
+				title : '提示',
+				msg : '请录入货物明细！'
+			});
 			return;
 		}
-
+				
 		//$('#e_order_details').val(items);
-		var bill = $('#fm').serializeObject();
-		bill.items = items;
-		bill.flag=flag
-
+		var bill=$('#fm').serializeObject();
+		bill.items=items;
 		var d = JSON.stringify(bill);
 		//return;
 		$.ajax({
-			url : url,
+			url : path + '/stock_in/newbill',
 			data : d,
 			async : false,
-			type : method,
+			//method:'post',
 			contentType : 'application/json',
 			dataType : 'json',
 			error : function(data) {
@@ -114,146 +106,104 @@
 			},
 			success : function(result) {
 				//var result = eval('(' + result + ')');
-				if (result.success) {
-					alert('已保存!');					
+				if (result.success) {					
+					mesTitle='入仓单已提交!';
+					//location.href = '${path}/orders/myorder'
 				} else {
-					alert(result.msg);
+					mesTitle = '保存失败!';
 				}
-				location.href = '${path}/stock_ins/billpage'
-			}
-		});
-	}
-
-	//页面所有东西加载完执行（包括js、图片）
-	$(window).load(function() {
-
-	});
-
-	function getStockIn(id) {
-		$.ajax({
-			url : path + '/stock_ins/' + id,
-			method : 'GET',
-			contentType : 'application/json',
-			dataType : 'json',
-			error : function(data) {
-				alert("error:" + data.responseText);
-			},
-			success : function(result) {
-				//var result = eval('(' + result + ')');
-				if (result.success) {
-					$('#e_client').combogrid("setValue", result.obj.id);
-					$('#e_orderId').combogrid("setValue", result.obj.orderId);
-					$('#e_carNo').textbox("setValue", result.obj.carNo);
-					$('#e_inDate').datebox('setValue',
-							FormatterDate(new Date(result.obj.inDate)));
-					$('#dg').datagrid('loadData', result.obj.items);
-				} else {
-					alert(result.msg);
-				}
-			}
-		});
-	}
-
-	//DOM加载完毕执行
-	$(document).ready(function() {
-		if ($('#e_id').val() != '') {
-			getStockIn($('#e_id').val());
-			$('#btn_save_and_verify').linkbutton('disable');
-		} else {
-			$('#e_inDate').datebox('setValue', FormatterDate(new Date()));
-		}
-
-		$('#e_client').combogrid({
-			panelWidth : 300,
-			queryParams : {
-				cname : $('#e_client').val()
-			},
-			mode : 'remote',
-			idField : 'id',
-			textField : 'cname',
-			method : 'get',
-			url : path + '/clients',
-			fitColumns : true,
-			columns : [ [ {
-				field : 'id',
-				title : 'id',
-				hidden : true
-			}, {
-				field : 'cname',
-				title : '名称',
-				width : 200
-			} ] ],
-			keyHandler : {
-				up : function() {
-				},
-				down : function() {
-				},
-				enter : function() {
-				},
-				query : function(q) {
-					//动态搜索
-					$('#e_client').combogrid("grid").datagrid("reload", {
-						'cname' : q
-					});
-					$('#e_client').combogrid("setValue", q);
-				}
-			},
-			/* onChange:function(newValue,oldValue){
-				alert(newValue);
-			} */
-			onSelect : function(index, row) {
-				$('#e_orderId').combogrid("grid").datagrid("reload", {
-					'clientId' : row.id
+				$.messager.show({
+					title : mesTitle,
+					msg : result.msg
 				});
 			}
 		});
-
-		$('#e_orderId').combogrid({
-			panelWidth : 300,
-			queryParams : {
-				code : $('#e_orderId').val()
-			},
-			mode : 'remote',
-			idField : 'id',
-			textField : 'code',
-			method : 'get',
-			url : path + '/orders',
-			fitColumns : true,
-			columns : [ [ {
-				field : 'id',
-				title : 'id',
-				hidden : true
-			}, {
-				field : 'code',
-				title : '单号',
-				width : 200
-			} ] ],
-			keyHandler : {
-				up : function() {
-				},
-				down : function() {
-				},
-				enter : function() {
-				},
-				query : function(q) {
-					//动态搜索
-					$('#e_orderId').combogrid("grid").datagrid("reload", {
-						'code' : q
-					});
-					$('#e_orderId').combogrid("setValue", q);
-				}
-			},
-			/* onChange:function(newValue,oldValue){
-				alert(newValue);
-			} */
-			onSelect : function(index, row) {
-				$('#e_orderCode').val(row.code);
-				getOrder(row.id);
-			}
-		});
+	}
+	
+	
+	
+	//页面所有东西加载完执行（包括js、图片）
+	$(window).load(function() {
+		
 	});
-
-	function getOrder(id) {
+	
+	//DOM加载完毕执行
+	$(document).ready(function(){
+		//var obj = ${stock_in};
+		$('#e_inDate').datebox('setValue', FormatterDate(new Date()));	
+		$('#e_client').combogrid({
+		    panelWidth:300,
+		    queryParams:{cname:$('#e_client').val()},
+		    mode:'remote',
+		    idField:'id',
+		    textField:'cname',
+		    method:'get',
+		    url: path + '/clients',
+		    fitColumns: true,
+		    columns:[[
+		              {field:'id',title:'id',hidden:true},
+		              {field:'cname',title:'名称',width:200}
+		    ]],
+		    keyHandler: {
+                up: function() {},
+                down: function() {},
+                enter: function() {},
+                query: function(q) {
+                    //动态搜索
+                    $('#e_client').combogrid("grid").datagrid("reload", { 'cname': q });
+                    $('#e_client').combogrid("setValue", q);
+                }
+            },
+            /* onChange:function(newValue,oldValue){
+            	alert(newValue);
+            } */
+            onSelect:function(index,row){    			          	
+            	$('#e_orderId').combogrid("grid").datagrid("reload", { 'clientId': row.id });
+    		}
+		});
+		
+		//$('#e_client').combogrid('setValue', stock_in.clientId);
+		
+		
+		$('#e_orderId').combogrid({
+		    panelWidth:300,
+		    queryParams:{code:$('#e_orderId').val()},
+		    mode:'remote',
+		    idField:'id',
+		    textField:'code',
+		    method:'get',
+		    url: path + '/orders',
+		    fitColumns: true,
+		    columns:[[
+		              {field:'id',title:'id',hidden:true},
+		              {field:'code',title:'单号',width:200}
+		    ]],
+		    keyHandler: {
+                up: function() {},
+                down: function() {},
+                enter: function() {},
+                query: function(q) {
+                    //动态搜索
+                    $('#e_orderId').combogrid("grid").datagrid("reload", { 'code': q });
+                    $('#e_orderId').combogrid("setValue", q);
+                }
+            },
+            /* onChange:function(newValue,oldValue){
+            	alert(newValue);
+            } */
+            onSelect:function(index,row){            	
+            	$('#e_orderCode').val(row.code);
+            	getOrder(row.id);
+    		}
+		});
+		
+		//$('#e_orderId').combogrid('setValue', stock_in.orderId);
+		//$('#e_carNo').val(stock_in.carNo);
+		//$('#e_inDate').val(stock_in.inDate);
+		//$('#dg').datagrid('loadData', stock_in.items);
+	});
+	
+	function getOrder(id){
 		$.ajax({
 			type : 'GET',
 			url : path + '/orders/' + id,
@@ -267,21 +217,21 @@
 				//var result = eval('(' + result + ')');
 				if (result.success) {
 					//$('#dg').datagrid('loadData', result.obj.order_details);
-					for (var i = 0; i < result.obj.order_details.length; i++) {
-						var obj = result.obj.order_details[i];
-						$('#dg').datagrid('appendRow', {
-							cname : obj.cname,
-							num : obj.num,
-							vol : obj.vol,
-							weight : obj.weight,
-							yard : ''
-						});
-
-					}
+					 for (var i = 0; i < result.obj.order_details.length; i++) {
+						 var obj =result.obj.order_details[i];
+						 $('#dg').datagrid('appendRow',{
+								cname: obj.cname,
+								num: obj.num,
+								vol: obj.vol,
+								weight:obj.weight,
+								yard:''
+							});
+						 
+					 }
 				} else {
 					alert('获取订单失败！');
 				}
-
+				
 			}
 		});
 	}
@@ -291,10 +241,9 @@
 	<div class="easyui-panel" title="New Topic" style="width: auto">
 		<div style="padding: 10px 60px 20px 60px">
 			<form id="fm" method="post">
-				<input type="hidden" name="id" id="e_id" value="${stock_in_id}" />
-				<input type="hidden" name="crDate" /> <input type="hidden"
-					name="flag" /> <input type="hidden" name="orderCode"
-					id="e_orderCode" />
+				<input type="hidden" name="items" id="e_items" /> <input
+					type="hidden" name="crDate" /> <input type="hidden" name="flag" />
+					 <input type="hidden" name="orderCode" id="e_orderCode" />
 				<table cellpadding="5">
 					<tr>
 						<td>公司:</td>
@@ -309,8 +258,8 @@
 					</tr>
 					<tr>
 						<td>车牌号:</td>
-						<td><input class="easyui-textbox" type="text" id="e_carNo"
-							name="carNo" /></td>
+						<td><input class="easyui-textbox" type="text"
+							id="e_carNo" name="carNo" /></td>
 					</tr>
 					<tr>
 						<td>进仓日期:</td>
@@ -328,7 +277,9 @@
                 method: 'get',onClickCell: onClickCell">
 					<thead>
 						<tr>
-							<!-- <th data-options="field:'id',width:0,hidden:true">Item ID</th>							
+							<!-- <th data-options="field:'id',width:0,hidden:true">Item ID</th>
+							<th data-options="field:'orderId',width:0,hidden:true">Order
+								ID</th>
 								 -->
 							<th
 								data-options="field:'cname',width:100,editor:{type:'validatebox',options:{required:true}}">货名</th>
@@ -360,8 +311,7 @@
 
 			<div style="text-align: center; padding: 5px">
 				<a href="javascript:void(0)" class="easyui-linkbutton"
-					onclick="submitForm(0)">保存</a> <a href="javascript:void(0)"
-					class="easyui-linkbutton" onclick="submitForm(1)" id="btn_save_and_verify">保存并审批</a>
+					onclick="submitForm()">提交订单</a>
 			</div>
 		</div>
 	</div>

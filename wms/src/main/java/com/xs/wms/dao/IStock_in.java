@@ -1,9 +1,14 @@
 package com.xs.wms.dao;
 
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
+
 import com.xs.wms.pojo.Stock_in;
+import com.xs.wms.pojo.easyui.PageHelper;
 
 public interface IStock_in {
-    int deleteByPrimaryKey(Integer id);
 
     int insert(Stock_in record);
 
@@ -14,4 +19,10 @@ public interface IStock_in {
     int updateByPrimaryKeySelective(Stock_in record);
 
     int updateByPrimaryKey(Stock_in record);
+    
+    Long getDatagridTotal(@Param("key") String key,@Param("sdate") String sdate,@Param("edate") String edate);
+
+	List<Stock_in> getDatagrid(@Param("page") PageHelper page, @Param("key") String key,@Param("sdate") String sdate,@Param("edate") String edate);
+	
+	String updateBill(@Param("billId") Integer billId,@Param("op") String op,@Param("flag") Integer flag);
 }

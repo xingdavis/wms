@@ -21,9 +21,16 @@
     from t_stock_in_detail
     where id = #{id,jdbcType=INTEGER}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+  <select id="getDetailsByBillId" resultMap="BaseResultMap"
+		parameterType="java.lang.Integer">
+		select
+		<include refid="Base_Column_List" />
+		from t_stock_in_detail
+		where bill_id = #{id,jdbcType=INTEGER}
+	</select>
+  <delete id="deleteByBillId" parameterType="java.lang.Integer" >
     delete from t_stock_in_detail
-    where id = #{id,jdbcType=INTEGER}
+    where bill_id = #{id,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.xs.wms.pojo.Stock_in_detail" >
     insert into t_stock_in_detail (id, bill_id, cname, 

@@ -1,121 +1,182 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.xs.wms.dao.IStock_in" >
-  <resultMap id="BaseResultMap" type="com.xs.wms.pojo.Stock_in" >
-    <id column="id" property="id" jdbcType="INTEGER" />
-    <result column="code" property="code" jdbcType="VARCHAR" />
-    <result column="order_id" property="orderId" jdbcType="INTEGER" />
-    <result column="order_code" property="orderCode" jdbcType="VARCHAR" />
-    <result column="client_id" property="clientId" jdbcType="INTEGER" />
-    <result column="car_no" property="carNo" jdbcType="VARCHAR" />
-    <result column="in_date" property="inDate" jdbcType="TIMESTAMP" />
-    <result column="cr_date" property="crDate" jdbcType="TIMESTAMP" />
-    <result column="flag" property="flag" jdbcType="TINYINT" />
-    <collection property="items" column="id" javaType="ArrayList"
-			select="com.xs.wms.mapping.Stock_in_detail.getDetailsByStockInId" />
-  </resultMap>
-  <sql id="Base_Column_List" >
-    id, code, client_id, car_no, in_date, cr_date, flag
-  </sql>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
-    select 
-    <include refid="Base_Column_List" />
-    from t_stock_in
-    where id = #{id,jdbcType=INTEGER}
-  </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
-    delete from t_stock_in
-    where id = #{id,jdbcType=INTEGER}
-  </delete>
-  <insert id="insert" parameterType="com.xs.wms.pojo.Stock_in" useGeneratedKeys="true" keyProperty="id">
-    insert into t_stock_in ( code, order_id,order_code,client_id, 
-      car_no, in_date, cr_date, 
-      flag)
-    values (GetStockInCode(), #{orderId,jdbcType=INTEGER},#{orderCode,jdbcType=VARCHAR},#{clientId,jdbcType=INTEGER}, 
-      #{carNo,jdbcType=VARCHAR}, #{inDate,jdbcType=TIMESTAMP}, #{crDate,jdbcType=TIMESTAMP}, 
-      #{flag,jdbcType=TINYINT})
-  </insert>
-  <insert id="insertSelective" parameterType="com.xs.wms.pojo.Stock_in" >
-    insert into t_stock_in
-    <trim prefix="(" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
-        id,
-      </if>
-      <if test="code != null" >
-        code,
-      </if>
-      <if test="clientId != null" >
-        client_id,
-      </if>
-      <if test="carNo != null" >
-        car_no,
-      </if>
-      <if test="inDate != null" >
-        in_date,
-      </if>
-      <if test="crDate != null" >
-        cr_date,
-      </if>
-      <if test="flag != null" >
-        flag,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
-        #{id,jdbcType=INTEGER},
-      </if>
-      <if test="code != null" >
-        #{code,jdbcType=VARCHAR},
-      </if>
-      <if test="clientId != null" >
-        #{clientId,jdbcType=INTEGER},
-      </if>
-      <if test="carNo != null" >
-        #{carNo,jdbcType=VARCHAR},
-      </if>
-      <if test="inDate != null" >
-        #{inDate,jdbcType=TIMESTAMP},
-      </if>
-      <if test="crDate != null" >
-        #{crDate,jdbcType=TIMESTAMP},
-      </if>
-      <if test="flag != null" >
-        #{flag,jdbcType=TINYINT},
-      </if>
-    </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.xs.wms.pojo.Stock_in" >
-    update t_stock_in
-    <set >
-      <if test="code != null" >
-        code = #{code,jdbcType=VARCHAR},
-      </if>
-      <if test="clientId != null" >
-        client_id = #{clientId,jdbcType=INTEGER},
-      </if>
-      <if test="carNo != null" >
-        car_no = #{carNo,jdbcType=VARCHAR},
-      </if>
-      <if test="inDate != null" >
-        in_date = #{inDate,jdbcType=TIMESTAMP},
-      </if>
-      <if test="crDate != null" >
-        cr_date = #{crDate,jdbcType=TIMESTAMP},
-      </if>
-      <if test="flag != null" >
-        flag = #{flag,jdbcType=TINYINT},
-      </if>
-    </set>
-    where id = #{id,jdbcType=INTEGER}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.xs.wms.pojo.Stock_in" >
-    update t_stock_in
-    set code = #{code,jdbcType=VARCHAR},
-      client_id = #{clientId,jdbcType=INTEGER},
-      car_no = #{carNo,jdbcType=VARCHAR},
-      in_date = #{inDate,jdbcType=TIMESTAMP},
-      cr_date = #{crDate,jdbcType=TIMESTAMP},
-      flag = #{flag,jdbcType=TINYINT}
-    where id = #{id,jdbcType=INTEGER}
-  </update>
+<mapper namespace="com.xs.wms.dao.IStock_in">
+	<resultMap id="BaseResultMap" type="com.xs.wms.pojo.Stock_in">
+		<id column="id" property="id" jdbcType="INTEGER" />
+		<result column="code" property="code" jdbcType="VARCHAR" />
+		<result column="uid" property="uid" jdbcType="INTEGER" />
+		<result column="order_id" property="orderId" jdbcType="INTEGER" />
+		<result column="order_code" property="orderCode" jdbcType="VARCHAR" />
+		<result column="client_id" property="clientId" jdbcType="INTEGER" />
+		<result column="car_no" property="carNo" jdbcType="VARCHAR" />
+		<result column="in_date" property="inDate" jdbcType="TIMESTAMP" />
+		<result column="cr_date" property="crDate" jdbcType="TIMESTAMP" />
+		<result column="out_date" property="outDate" jdbcType="TIMESTAMP" />
+		<result column="flag" property="flag" jdbcType="TINYINT" />
+		<collection property="items" column="id" javaType="ArrayList"
+			select="com.xs.wms.dao.IStock_in_detail.getDetailsByBillId" />
+	</resultMap>
+	<resultMap id="BillResultMap" type="com.xs.wms.pojo.Stock_in">
+		<id column="id" property="id" jdbcType="INTEGER" />
+		<result column="uid" property="uid" jdbcType="INTEGER" />
+		<result column="code" property="code" jdbcType="VARCHAR" />
+		<result column="order_code" property="orderCode" jdbcType="VARCHAR" />
+		<result column="car_no" property="carNo" jdbcType="VARCHAR" />
+		<result column="in_date" property="inDate" jdbcType="TIMESTAMP" />
+		<result column="cr_date" property="crDate" jdbcType="TIMESTAMP" />
+		<result column="out_date" property="outDate" jdbcType="TIMESTAMP" />
+		<result column="flag" property="flag" jdbcType="TINYINT" />
+		<association property="client" column="client_id"
+			javaType="com.xs.wms.pojo.Client">
+			<id property="id" column="id" />
+			<result column="cname" property="cname" jdbcType="INTEGER" />
+		</association>
+	</resultMap>
+	<sql id="Base_Column_List">
+		id,uid, code,order_id,order_code, client_id, car_no,
+		in_date,out_date, cr_date, flag
+	</sql>
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+		parameterType="java.lang.Integer">
+		select
+		<include refid="Base_Column_List" />
+		from t_stock_in
+		where id = #{id,jdbcType=INTEGER}
+	</select>
+
+	<select id="getDatagridTotal" resultType="long">
+		select count(1) from t_stock_in s,t_client c where s.client_id=c.id
+		and s.flag>=0
+		<if test="key!=null and key!=''">
+			and (c.cname like concat('%',#{key},'%') or s.order_code
+			like
+			concat('%',#{key},'%'))
+		</if>
+		<if test="sdate!=null and sdate != '' and edate!=null and edate != ''">
+			and s.in_date BETWEEN #{sdate} and #{edate}'
+		</if>
+	</select>
+	<select id="getDatagrid" resultMap="BillResultMap">
+		select
+		s.id,s.uid,s.code,s.order_code,c.cname,s.car_no,s.in_date,s.out_date,s.flag
+		from
+		t_stock_in s,t_client c where s.client_id=c.id
+		and s.flag>=0
+		<if test="key!=null and key!=''">
+			and (c.cname like concat('%',#{key},'%') or s.order_code
+			like
+			concat('%',#{key},'%'))
+		</if>
+		<if test="sdate!=null and sdate != '' and edate!=null and edate != ''">
+			and s.in_date BETWEEN sdate and edate
+		</if>
+		<if test="page.sort != null and page.sort != ''">
+			order by #{page.sort} #{page.order}
+		</if>
+		<if test="page.page > 0">
+			limit #{page.start},#{page.end}
+		</if>
+	</select>
+	<select id="updateBill" resultType="String">
+		SELECT
+		UpdateBill(#{billId},#{op},#{flag});
+	</select>
+	<insert id="insert" parameterType="com.xs.wms.pojo.Stock_in"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into t_stock_in ( uid,code,
+		order_id,order_code,client_id,
+		car_no, in_date, cr_date,
+		flag)
+		values
+		(#{uid,jdbcType=INTEGER},GetStockInCode(),
+		#{orderId,jdbcType=INTEGER},#{orderCode,jdbcType=VARCHAR},#{clientId,jdbcType=INTEGER},
+		#{carNo,jdbcType=VARCHAR}, #{inDate,jdbcType=TIMESTAMP},
+		#{crDate,jdbcType=TIMESTAMP},
+		#{flag,jdbcType=TINYINT})
+	</insert>
+	<insert id="insertSelective" parameterType="com.xs.wms.pojo.Stock_in">
+		insert into t_stock_in
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				id,
+			</if>
+			<if test="code != null">
+				code,
+			</if>
+			<if test="clientId != null">
+				client_id,
+			</if>
+			<if test="carNo != null">
+				car_no,
+			</if>
+			<if test="inDate != null">
+				in_date,
+			</if>
+			<if test="crDate != null">
+				cr_date,
+			</if>
+			<if test="flag != null">
+				flag,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id,jdbcType=INTEGER},
+			</if>
+			<if test="code != null">
+				#{code,jdbcType=VARCHAR},
+			</if>
+			<if test="clientId != null">
+				#{clientId,jdbcType=INTEGER},
+			</if>
+			<if test="carNo != null">
+				#{carNo,jdbcType=VARCHAR},
+			</if>
+			<if test="inDate != null">
+				#{inDate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="crDate != null">
+				#{crDate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="flag != null">
+				#{flag,jdbcType=TINYINT},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.xs.wms.pojo.Stock_in">
+		update t_stock_in
+		<set>
+			<if test="code != null">
+				code = #{code,jdbcType=VARCHAR},
+			</if>
+			<if test="clientId != null">
+				client_id = #{clientId,jdbcType=INTEGER},
+			</if>
+			<if test="carNo != null">
+				car_no = #{carNo,jdbcType=VARCHAR},
+			</if>
+			<if test="inDate != null">
+				in_date = #{inDate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="crDate != null">
+				cr_date = #{crDate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="flag != null">
+				flag = #{flag,jdbcType=TINYINT},
+			</if>
+		</set>
+		where id = #{id,jdbcType=INTEGER}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="com.xs.wms.pojo.Stock_in">
+		update t_stock_in
+		set client_id =
+		#{clientId,jdbcType=INTEGER},
+		uid =
+		#{uid,jdbcType=INTEGER},
+		car_no = #{carNo,jdbcType=VARCHAR},
+		in_date =
+		#{inDate,jdbcType=TIMESTAMP}
+		where id =
+		#{id,jdbcType=INTEGER}
+	</update>
 </mapper>

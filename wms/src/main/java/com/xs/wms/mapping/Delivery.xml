@@ -1,0 +1,337 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xs.wms.dao.IDelivery">
+	<resultMap id="BaseResultMap" type="com.xs.wms.pojo.Delivery">
+		<id column="id" property="id" jdbcType="INTEGER" />
+		<result column="code" property="code" jdbcType="VARCHAR" />
+		<result column="car_no" property="carNo" jdbcType="VARCHAR" />
+		<result column="driver" property="driver" jdbcType="VARCHAR" />
+		<result column="driver_phone" property="driverPhone" jdbcType="VARCHAR" />
+		<result column="dport" property="dport" jdbcType="VARCHAR" />
+		<result column="rport" property="rport" jdbcType="VARCHAR" />
+		<result column="consignee" property="consignee" jdbcType="VARCHAR" />
+		<result column="ddate" property="ddate" jdbcType="TIMESTAMP" />
+		<result column="cr_date" property="crDate" jdbcType="TIMESTAMP" />
+		<result column="op" property="op" jdbcType="INTEGER" />
+		<result column="goods_name" property="goodsName" jdbcType="VARCHAR" />
+		<result column="weigh" property="weigh" jdbcType="VARCHAR" />
+		<result column="case_model" property="caseModel" jdbcType="VARCHAR" />
+		<result column="case_no" property="caseNo" jdbcType="VARCHAR" />
+		<result column="seal_no" property="sealNo" jdbcType="VARCHAR" />
+		<result column="address" property="address" jdbcType="VARCHAR" />
+		<result column="contact" property="contact" jdbcType="VARCHAR" />
+		<result column="arrival_time" property="arrivalTime" jdbcType="TIMESTAMP" />
+		<result column="attention" property="attention" jdbcType="VARCHAR" />
+		<result column="sign_time" property="signTime" jdbcType="TIMESTAMP" />
+		<result column="start_port" property="startPort" jdbcType="VARCHAR" />
+		<result column="end_port" property="endPort" jdbcType="VARCHAR" />
+		<result column="memo" property="memo" jdbcType="VARCHAR" />
+		<result column="flag" property="flag" jdbcType="TINYINT" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		id, code, car_no, driver, driver_phone, dport, rport, consignee, ddate,
+		cr_date,
+		op, goods_name, weigh, case_model, case_no, seal_no, address, contact,
+		arrival_time, attention,
+		sign_time, start_port, end_port, memo, flag
+	</sql>
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+		parameterType="java.lang.Integer">
+		select
+		<include refid="Base_Column_List" />
+		from t_delivery
+		where id = #{id,jdbcType=INTEGER}
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+		delete from t_delivery
+		where id = #{id,jdbcType=INTEGER}
+	</delete>
+	<insert id="insert" parameterType="com.xs.wms.pojo.Delivery">
+		insert into t_delivery (id, code, car_no,
+		driver, driver_phone, dport,
+		rport, consignee, ddate,
+		cr_date, op, goods_name,
+		weigh, case_no, case_no, seal_no,
+		address, contact, arrival_time,
+		attention, sign_time, start_port,
+		end_port, memo, flag
+		)
+		values (#{id,jdbcType=INTEGER}, #{code,jdbcType=VARCHAR},
+		#{carNo,jdbcType=VARCHAR},
+		#{driver,jdbcType=VARCHAR}, #{driverPhone,jdbcType=VARCHAR}, #{dport,jdbcType=VARCHAR},
+		#{rport,jdbcType=VARCHAR}, #{consignee,jdbcType=VARCHAR},
+		#{ddate,jdbcType=TIMESTAMP},
+		#{crDate,jdbcType=TIMESTAMP}, #{op,jdbcType=INTEGER}, #{goodsName,jdbcType=VARCHAR},
+		#{weigh,jdbcType=VARCHAR}, #{caseModel,jdbcType=VARCHAR},
+		#{caseNo,jdbcType=VARCHAR}, #{sealNo,jdbcType=VARCHAR},
+		#{address,jdbcType=VARCHAR}, #{contact,jdbcType=VARCHAR},
+		#{arrivalTime,jdbcType=TIMESTAMP},
+		#{attention,jdbcType=VARCHAR}, #{signTime,jdbcType=TIMESTAMP}, #{startPort,jdbcType=VARCHAR},
+		#{endPort,jdbcType=VARCHAR}, #{memo,jdbcType=VARCHAR},
+		#{flag,jdbcType=TINYINT}
+		)
+	</insert>
+	<insert id="insertSelective" parameterType="com.xs.wms.pojo.Delivery">
+		insert into t_delivery
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				id,
+			</if>
+			<if test="code != null">
+				code,
+			</if>
+			<if test="carNo != null">
+				car_no,
+			</if>
+			<if test="driver != null">
+				driver,
+			</if>
+			<if test="driverPhone != null">
+				driver_phone,
+			</if>
+			<if test="dport != null">
+				dport,
+			</if>
+			<if test="rport != null">
+				rport,
+			</if>
+			<if test="consignee != null">
+				consignee,
+			</if>
+			<if test="ddate != null">
+				ddate,
+			</if>
+			<if test="crDate != null">
+				cr_date,
+			</if>
+			<if test="op != null">
+				op,
+			</if>
+			<if test="goodsName != null">
+				goods_name,
+			</if>
+			<if test="weigh != null">
+				weigh,
+			</if>
+			<if test="caseModel != null">
+				case_model,
+			</if>
+			<if test="caseNo != null">
+				case_no,
+			</if>
+			<if test="sealNo != null">
+				seal_no,
+			</if>
+			<if test="address != null">
+				address,
+			</if>
+			<if test="contact != null">
+				contact,
+			</if>
+			<if test="arrivalTime != null">
+				arrival_time,
+			</if>
+			<if test="attention != null">
+				attention,
+			</if>
+			<if test="signTime != null">
+				sign_time,
+			</if>
+			<if test="startPort != null">
+				start_port,
+			</if>
+			<if test="endPort != null">
+				end_port,
+			</if>
+			<if test="memo != null">
+				memo,
+			</if>
+			<if test="flag != null">
+				flag,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id,jdbcType=INTEGER},
+			</if>
+			<if test="code != null">
+				#{code,jdbcType=VARCHAR},
+			</if>
+			<if test="carNo != null">
+				#{carNo,jdbcType=VARCHAR},
+			</if>
+			<if test="driver != null">
+				#{driver,jdbcType=VARCHAR},
+			</if>
+			<if test="driverPhone != null">
+				#{driverPhone,jdbcType=VARCHAR},
+			</if>
+			<if test="dport != null">
+				#{dport,jdbcType=VARCHAR},
+			</if>
+			<if test="rport != null">
+				#{rport,jdbcType=VARCHAR},
+			</if>
+			<if test="consignee != null">
+				#{consignee,jdbcType=VARCHAR},
+			</if>
+			<if test="ddate != null">
+				#{ddate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="crDate != null">
+				#{crDate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="op != null">
+				#{op,jdbcType=INTEGER},
+			</if>
+			<if test="goodsName != null">
+				#{goodsName,jdbcType=VARCHAR},
+			</if>
+			<if test="weigh != null">
+				#{weigh,jdbcType=VARCHAR},
+			</if>
+			<if test="caseModel != null">
+				#{caseModel,jdbcType=VARCHAR},
+			</if>
+			<if test="caseNo != null">
+				#{caseNo,jdbcType=VARCHAR},
+			</if>
+			<if test="sealNo != null">
+				#{sealNo,jdbcType=VARCHAR},
+			</if>
+			<if test="address != null">
+				#{address,jdbcType=VARCHAR},
+			</if>
+			<if test="contact != null">
+				#{contact,jdbcType=VARCHAR},
+			</if>
+			<if test="arrivalTime != null">
+				#{arrivalTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="attention != null">
+				#{attention,jdbcType=VARCHAR},
+			</if>
+			<if test="signTime != null">
+				#{signTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="startPort != null">
+				#{startPort,jdbcType=VARCHAR},
+			</if>
+			<if test="endPort != null">
+				#{endPort,jdbcType=VARCHAR},
+			</if>
+			<if test="memo != null">
+				#{memo,jdbcType=VARCHAR},
+			</if>
+			<if test="flag != null">
+				#{flag,jdbcType=TINYINT},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.xs.wms.pojo.Delivery">
+		update t_delivery
+		<set>
+			<if test="code != null">
+				code = #{code,jdbcType=VARCHAR},
+			</if>
+			<if test="carNo != null">
+				car_no = #{carNo,jdbcType=VARCHAR},
+			</if>
+			<if test="driver != null">
+				driver = #{driver,jdbcType=VARCHAR},
+			</if>
+			<if test="driverPhone != null">
+				driver_phone = #{driverPhone,jdbcType=VARCHAR},
+			</if>
+			<if test="dport != null">
+				dport = #{dport,jdbcType=VARCHAR},
+			</if>
+			<if test="rport != null">
+				rport = #{rport,jdbcType=VARCHAR},
+			</if>
+			<if test="consignee != null">
+				consignee = #{consignee,jdbcType=VARCHAR},
+			</if>
+			<if test="ddate != null">
+				ddate = #{ddate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="crDate != null">
+				cr_date = #{crDate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="op != null">
+				op = #{op,jdbcType=INTEGER},
+			</if>
+			<if test="goodsName != null">
+				goods_name = #{goodsName,jdbcType=VARCHAR},
+			</if>
+			<if test="weigh != null">
+				weigh = #{weigh,jdbcType=VARCHAR},
+			</if>
+			<if test="caseModel != null">
+				case_model = #{caseModel,jdbcType=VARCHAR},
+			</if>
+			<if test="caseNo != null">
+				case_no = #{caseNo,jdbcType=VARCHAR},
+			</if>
+			<if test="sealNo != null">
+				seal_no = #{sealNo,jdbcType=VARCHAR},
+			</if>
+			<if test="address != null">
+				address = #{address,jdbcType=VARCHAR},
+			</if>
+			<if test="contact != null">
+				contact = #{contact,jdbcType=VARCHAR},
+			</if>
+			<if test="arrivalTime != null">
+				arrival_time = #{arrivalTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="attention != null">
+				attention = #{attention,jdbcType=VARCHAR},
+			</if>
+			<if test="signTime != null">
+				sign_time = #{signTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="startPort != null">
+				start_port = #{startPort,jdbcType=VARCHAR},
+			</if>
+			<if test="endPort != null">
+				end_port = #{endPort,jdbcType=VARCHAR},
+			</if>
+			<if test="memo != null">
+				memo = #{memo,jdbcType=VARCHAR},
+			</if>
+			<if test="flag != null">
+				flag = #{flag,jdbcType=TINYINT},
+			</if>
+		</set>
+		where id = #{id,jdbcType=INTEGER}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="com.xs.wms.pojo.Delivery">
+		update t_delivery
+		set code = #{code,jdbcType=VARCHAR},
+		car_no = #{carNo,jdbcType=VARCHAR},
+		driver = #{driver,jdbcType=VARCHAR},
+		driver_phone = #{driverPhone,jdbcType=VARCHAR},
+		dport = #{dport,jdbcType=VARCHAR},
+		rport = #{rport,jdbcType=VARCHAR},
+		consignee = #{consignee,jdbcType=VARCHAR},
+		ddate = #{ddate,jdbcType=TIMESTAMP},
+		cr_date = #{crDate,jdbcType=TIMESTAMP},
+		op = #{op,jdbcType=INTEGER},
+		goods_name = #{goodsName,jdbcType=VARCHAR},
+		weigh = #{weigh,jdbcType=VARCHAR},
+		case_model = #{caseModel,jdbcType=VARCHAR},
+		case_no = #{caseNo,jdbcType=VARCHAR},
+		seal_no = #{sealNo,jdbcType=VARCHAR},
+		address = #{address,jdbcType=VARCHAR},
+		contact = #{contact,jdbcType=VARCHAR},
+		arrival_time = #{arrivalTime,jdbcType=TIMESTAMP},
+		attention = #{attention,jdbcType=VARCHAR},
+		sign_time = #{signTime,jdbcType=TIMESTAMP},
+		start_port = #{startPort,jdbcType=VARCHAR},
+		end_port = #{endPort,jdbcType=VARCHAR},
+		memo = #{memo,jdbcType=VARCHAR},
+		flag = #{flag,jdbcType=TINYINT}
+		where id = #{id,jdbcType=INTEGER}
+	</update>
+</mapper>

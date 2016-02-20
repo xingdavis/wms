@@ -20,5 +20,7 @@ public class StockInDetailService {
 		return stockInDetailMapper.insert(item);
 	}
 	
-	
+	public int deleteAllByBillId(Integer id){
+		return stockInDetailMapper.deleteByBillId(id);
+	}
 }

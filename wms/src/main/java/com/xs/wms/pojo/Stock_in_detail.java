@@ -1,6 +1,8 @@
 package com.xs.wms.pojo;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 public class Stock_in_detail {
     private Integer id;
@@ -16,7 +18,7 @@ public class Stock_in_detail {
     private Double weight;
 
     private String yard;
-    @JsonBackReference
+    
     private Stock_in stock_in;
 
     public Integer getId() {
@@ -75,11 +77,12 @@ public class Stock_in_detail {
         this.yard = yard == null ? null : yard.trim();
     }
     
-    public Stock_in getOrder() {
+    public Stock_in getStockIn() {
         return stock_in;
     }
 
-    public void setOrder(Stock_in o) {
+    @JsonBackReference
+    public void setStockIn(Stock_in o) {
         this.stock_in = o;
     }
 }

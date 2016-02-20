@@ -5,7 +5,7 @@ import java.util.List;
 import com.xs.wms.pojo.Stock_in_detail;
 
 public interface IStock_in_detail {
-    int deleteByPrimaryKey(Integer id);
+    int deleteByBillId(Integer id);
 
     int insert(Stock_in_detail record);
 
@@ -16,4 +16,6 @@ public interface IStock_in_detail {
     int updateByPrimaryKeySelective(Stock_in_detail record);
 
     int updateByPrimaryKey(Stock_in_detail record);
-}
+    
+    List<Stock_in_detail> getDetailsByBillId(int id);
+} 
