@@ -93,13 +93,10 @@
 		}
 
 		$('#e_caseModel').combobox({
-			url : path + '/options/list',
+			url : path + '/options/list?otype=' +encodeURIComponent('柜型'),
 			valueField : 'id',
 			textField : 'oname',
-			method : 'GET',
-			queryParams : {
-				otype : '柜型'
-			}
+			method : 'GET'
 		});
 	});
 
