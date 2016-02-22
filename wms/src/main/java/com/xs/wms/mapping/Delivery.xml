@@ -4,6 +4,7 @@
 	<resultMap id="BaseResultMap" type="com.xs.wms.pojo.Delivery">
 		<id column="id" property="id" jdbcType="INTEGER" />
 		<result column="code" property="code" jdbcType="VARCHAR" />
+		<result column="order_code" property="orderCode" jdbcType="VARCHAR" />
 		<result column="car_no" property="carNo" jdbcType="VARCHAR" />
 		<result column="driver" property="driver" jdbcType="VARCHAR" />
 		<result column="driver_phone" property="driverPhone" jdbcType="VARCHAR" />
@@ -29,7 +30,7 @@
 		<result column="flag" property="flag" jdbcType="TINYINT" />
 	</resultMap>
 	<sql id="Base_Column_List">
-		id, code, car_no, driver, driver_phone, dport, rport, consignee, ddate,
+		id, code, orderCode, car_no, driver, driver_phone, dport, rport, consignee, ddate,
 		cr_date,
 		op, goods_name, weigh, case_model, case_no, seal_no, address, contact,
 		arrival_time, attention,
@@ -42,12 +43,34 @@
 		from t_delivery
 		where id = #{id,jdbcType=INTEGER}
 	</select>
+	<select id="getDatagridTotal" resultType="long">
+		select
+		count(1)
+		from t_delivery where 1=1
+		<if test="delivery.code!=null and delivery.code != ''">
+			and code=#{delivery.code,jdbcType=VARCHAR}
+		</if>
+	</select>
+	<select id="datagrid" resultType="com.xs.wms.pojo.Delivery">
+		select
+		<include refid="Base_Column_List" />
+		from t_delivery where 1=1
+		<if test="delivery.code!=null and delivery.code != ''">
+			and code=#{delivery.code,jdbcType=VARCHAR}
+		</if>
+		<if test="page.sort != null and page.sort != ''">
+			order by #{page.sort} #{page.order}
+		</if>
+		<if test="page.page > 0">
+			limit #{page.start},#{page.end}
+		</if>
+	</select>
 	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
 		delete from t_delivery
 		where id = #{id,jdbcType=INTEGER}
 	</delete>
 	<insert id="insert" parameterType="com.xs.wms.pojo.Delivery">
-		insert into t_delivery (id, code, car_no,
+		insert into t_delivery (id, code, orderCode, car_no,
 		driver, driver_phone, dport,
 		rport, consignee, ddate,
 		cr_date, op, goods_name,
@@ -56,7 +79,7 @@
 		attention, sign_time, start_port,
 		end_port, memo, flag
 		)
-		values (#{id,jdbcType=INTEGER}, #{code,jdbcType=VARCHAR},
+		values (#{id,jdbcType=INTEGER}, #{code,jdbcType=VARCHAR},#{orderCode,jdbcType=VARCHAR},
 		#{carNo,jdbcType=VARCHAR},
 		#{driver,jdbcType=VARCHAR}, #{driverPhone,jdbcType=VARCHAR}, #{dport,jdbcType=VARCHAR},
 		#{rport,jdbcType=VARCHAR}, #{consignee,jdbcType=VARCHAR},
@@ -79,6 +102,9 @@
 			</if>
 			<if test="code != null">
 				code,
+			</if>
+			<if test="orderCode != null">
+				order_code,
 			</if>
 			<if test="carNo != null">
 				car_no,
@@ -157,6 +183,9 @@
 			<if test="code != null">
 				#{code,jdbcType=VARCHAR},
 			</if>
+			<if test="orderCode != null">
+				#{orderCode,jdbcType=VARCHAR},
+			</if>
 			<if test="carNo != null">
 				#{carNo,jdbcType=VARCHAR},
 			</if>
@@ -234,6 +263,9 @@
 			<if test="code != null">
 				code = #{code,jdbcType=VARCHAR},
 			</if>
+			<if test="orderCode != null">
+				order_code = #{orderCode,jdbcType=VARCHAR},
+			</if>
 			<if test="carNo != null">
 				car_no = #{carNo,jdbcType=VARCHAR},
 			</if>
@@ -309,6 +341,7 @@
 	<update id="updateByPrimaryKey" parameterType="com.xs.wms.pojo.Delivery">
 		update t_delivery
 		set code = #{code,jdbcType=VARCHAR},
+		order_code = #{orderCode,jdbcType=VARCHAR},
 		car_no = #{carNo,jdbcType=VARCHAR},
 		driver = #{driver,jdbcType=VARCHAR},
 		driver_phone = #{driverPhone,jdbcType=VARCHAR},
@@ -316,7 +349,6 @@
 		rport = #{rport,jdbcType=VARCHAR},
 		consignee = #{consignee,jdbcType=VARCHAR},
 		ddate = #{ddate,jdbcType=TIMESTAMP},
-		cr_date = #{crDate,jdbcType=TIMESTAMP},
 		op = #{op,jdbcType=INTEGER},
 		goods_name = #{goodsName,jdbcType=VARCHAR},
 		weigh = #{weigh,jdbcType=VARCHAR},
@@ -330,8 +362,7 @@
 		sign_time = #{signTime,jdbcType=TIMESTAMP},
 		start_port = #{startPort,jdbcType=VARCHAR},
 		end_port = #{endPort,jdbcType=VARCHAR},
-		memo = #{memo,jdbcType=VARCHAR},
-		flag = #{flag,jdbcType=TINYINT}
+		memo = #{memo,jdbcType=VARCHAR}
 		where id = #{id,jdbcType=INTEGER}
 	</update>
 </mapper>

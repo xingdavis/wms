@@ -6,6 +6,8 @@ public class Delivery {
 	private Integer id;
 
 	private String code;
+	
+	private String orderCode;
 
 	private String carNo;
 
@@ -57,12 +59,13 @@ public class Delivery {
 		id = 0;
 	}
 
-	public Delivery(Integer id, String code,String caseModel, String carNo, String driver, String driverPhone, String dport,
+	public Delivery(Integer id, String code, String orderCode,String caseModel, String carNo, String driver, String driverPhone, String dport,
 			String rport, String consignee, Date ddate, Date crDate, Integer op, String goodsName, String weigh,
 			String caseNo, String sealNo, String address, String contact, Date arrivalTime, String attention,
 			Date signTime, String startPort, String endPort, String memo, Integer flag) {
 		this.id = id;
 		this.code = code;
+		this.orderCode = orderCode;
 		this.caseModel = caseModel;
 		this.carNo = carNo;
 		this.driver = driver;
@@ -103,6 +106,14 @@ public class Delivery {
 
 	public void setCode(String code) {
 		this.code = code == null ? null : code.trim();
+	}
+	
+	public String getOrderCode() {
+		return orderCode;
+	}
+
+	public void setOrderCode(String orderCode) {
+		this.orderCode = orderCode == null ? null : orderCode.trim();
 	}
 
 	public String getCarNo() {

@@ -1,6 +1,12 @@
 package com.xs.wms.dao;
 
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
 import com.xs.wms.pojo.Delivery;
+import com.xs.wms.pojo.Option;
+import com.xs.wms.pojo.easyui.PageHelper;
 
 public interface IDelivery {
     int deleteByPrimaryKey(Integer id);
@@ -14,4 +20,8 @@ public interface IDelivery {
     int updateByPrimaryKeySelective(Delivery record);
 
     int updateByPrimaryKey(Delivery record);
+    
+    Long getDatagridTotal(@Param("delivery") Delivery delivery);
+
+	List<Option> datagrid(@Param("page") PageHelper page, @Param("delivery") Delivery delivery);
 }

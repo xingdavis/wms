@@ -1,5 +1,6 @@
 package com.xs.wms.controller;
 
+import java.net.URLDecoder;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -35,7 +36,8 @@ public class OptionController {
 	public Json list(HttpServletRequest request) {
 		Json j = new Json();
 		try {
-			String otype = request.getParameter("otype").toString();
+			//String otype = request.getParameter("otype");
+			String otype = new String(request.getParameter("otype").getBytes("iso-8859-1"), "utf-8");
 			Option o = new Option();
 			o.setOtype(otype);
 			List<Option> list = optionService.getList(o);

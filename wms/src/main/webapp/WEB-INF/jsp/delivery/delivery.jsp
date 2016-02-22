@@ -91,19 +91,63 @@
 		} else {
 			//$('#e_inDate').datebox('setValue', FormatterDate(new Date()));
 		}
-
-		$('#e_caseModel').combobox({
-			url : path + '/options/list?otype=' +encodeURIComponent('柜型'),
-			valueField : 'id',
-			textField : 'oname',
-			method : 'GET'
+		
+		$('#e_ddate').datetimebox('setValue', new Date().Format('yyyy-MM-dd hh:mm:ss'));
+		
+		getOptionList('柜型', [ '#e_caseModel' ]);
+		//ports.push($('#e_caseModel'));
+		getOptionList('码头', [ '#e_dport', '#e_rport' ]);
+		getOptionList('港口', [ '#e_start_port', '#e_end_port' ]);
+		
+		$('#e_orderCode').combogrid({
+			panelWidth : 300,
+			queryParams : {
+				code : $('#e_orderCode').val()
+			},
+			mode : 'remote',
+			idField : 'id',
+			textField : 'code',
+			method : 'get',
+			url : path + '/orders',
+			fitColumns : true,
+			columns : [ [ {
+				field : 'id',
+				title : 'id',
+				hidden : true
+			}, {
+				field : 'code',
+				title : '单号',
+				width : 200
+			} ] ],
+			keyHandler : {
+				up : function() {
+				},
+				down : function() {
+				},
+				enter : function() {
+				},
+				query : function(q) {
+					//动态搜索
+					$('#e_orderCode').combogrid("grid").datagrid("reload", {
+						'code' : q
+					});
+					$('#e_orderCode').combogrid("setValue", q);
+				}
+			},
+			/* onChange:function(newValue,oldValue){
+				alert(newValue);
+			} */
+			onSelect : function(index, row) {
+				//$('#e_orderCode').val(row.code);
+				//getOrder(row.id);
+			}
 		});
 	});
 
-	function getOrder(id) {
+	function getOptionList(flag, els) {
 		$.ajax({
 			type : 'GET',
-			url : path + '/orders/' + id,
+			url : path + '/options/list?otype=' + encodeURIComponent(flag),
 			async : false,
 			contentType : 'application/json',
 			dataType : 'json',
@@ -114,19 +158,10 @@
 				//var result = eval('(' + result + ')');
 				if (result.success) {
 					//$('#dg').datagrid('loadData', result.obj.order_details);
-					for (var i = 0; i < result.obj.order_details.length; i++) {
-						var obj = result.obj.order_details[i];
-						$('#dg').datagrid('appendRow', {
-							cname : obj.cname,
-							num : obj.num,
-							vol : obj.vol,
-							weight : obj.weight,
-							yard : ''
-						});
-
-					}
+					for (i = 0; i < els.length; i++)
+						$(els[i]).combobox('loadData', result.obj);
 				} else {
-					alert('获取订单失败！');
+					alert('获取' + flag + '数据失败！');
 				}
 
 			}
@@ -142,8 +177,13 @@
 				<table cellpadding="5">
 					<tr>
 						<td>订舱号:</td>
-						<td><input class="easyui-textbox" type="text" id="e_code"
-							name="code" /></td>
+						<td><input class="easyui-textbox" type="text"
+							data-options="required:true" id="e_code" name="code" /></td>
+					</tr>
+					<tr>
+						<td>订单号:</td>
+						<td><input class="easyui-textbox" type="text" name="orderCode"
+							id="e_orderCode" /></td>
 					</tr>
 					<tr>
 						<td>车牌号:</td>
@@ -168,7 +208,8 @@
 					<tr>
 						<td>柜型:</td>
 						<td><input class="easyui-combobox" id="e_caseModel"
-							name="caseModel"></td>
+							name="caseModel"
+							data-options="valueField: 'id',textField: 'oname',method : 'GET'"></td>
 					</tr>
 					<tr>
 						<td>箱号:</td>
@@ -182,23 +223,25 @@
 					</tr>
 					<tr>
 						<td>提柜点:</td>
-						<td><input class="easyui-textbox" type="text" id="e_dport"
-							name="dport" /></td>
+						<td><input class="easyui-combobox" id="e_dport" name="dport"
+							data-options="valueField: 'id',textField: 'oname',method : 'GET'" /></td>
 					</tr>
 					<tr>
 						<td>还柜点:</td>
-						<td><input class="easyui-textbox" type="text" id="e_rport"
-							name="rport" /></td>
+						<td><input class="easyui-combobox" id="e_rport" name="rport"
+							data-options="valueField: 'id',textField: 'oname',method : 'GET'" /></td>
 					</tr>
 					<tr>
 						<td>起运港:</td>
-						<td><input class="easyui-textbox" type="text"
-							id="e_start_port" name="startPort" /></td>
+						<td><input class="easyui-combobox" id="e_start_port"
+							name="startPort"
+							data-options="valueField: 'id',textField: 'oname',method : 'GET'" /></td>
 					</tr>
 					<tr>
 						<td>目的港:</td>
-						<td><input class="easyui-textbox" type="text" id="e_end_port"
-							name="endPort" /></td>
+						<td><input class="easyui-combobox" id="e_end_port"
+							name="endPort"
+							data-options="valueField: 'id',textField: 'oname',method : 'GET'" /></td>
 					</tr>
 					<tr>
 						<td>是否过磅:</td>
@@ -211,48 +254,38 @@
 							id="e_consignee" name="consignee" /></td>
 					</tr>
 					<tr>
-						<td>装货日期:</td>
+						<td>装货日期(到厂时间):</td>
 						<td><input name="ddate" id="e_ddate" type="text"
-							class="easyui-datebox" required="required" /></td>
+							class="easyui-datetimebox" data-options="required:true,showSeconds:false" /></td>
 					</tr>
 					<tr>
 						<td>装货地址:</td>
 						<td><input class="easyui-textbox" type="text" id="e_address"
-							name="address" /></td>
+							name="address" data-options="width:500" /></td>
 					</tr>
 					<tr>
 						<td>联系方式:</td>
 						<td><input class="easyui-textbox" type="text" id="e_contact"
-							name="e_contact" /></td>
+							name="e_contact" data-options="width:500" /></td>
 					</tr>
+					<!-- 
 					<tr>
 						<td>到厂时间:</td>
 						<td><input name="arrivalTime" id="e_arrivalTime" type="text"
-							class="easyui-datebox" required="required" /></td>
+							class="easyui-datebox" /></td>
 					</tr>
+					 -->
 					<tr>
 						<td>备注:</td>
 						<td><input class="easyui-textbox" type="text" id="e_memo"
-							name="memo" /></td>
+							name="memo" data-options="width:500" /></td>
 					</tr>
 					<tr>
 						<td>注意事项:</td>
 						<td><input class="easyui-textbox" type="text"
-							id="e_attention" name="attention" /></td>
+							id="e_attention" name="attention" data-options="width:500" /></td>
 					</tr>
 				</table>
-
-				<div id="tb" style="height: auto">
-					<a href="javascript:void(0)" class="easyui-linkbutton"
-						data-options="iconCls:'icon-add',plain:true" onclick="append()">增加</a>
-					<a href="javascript:void(0)" class="easyui-linkbutton"
-						data-options="iconCls:'icon-remove',plain:true"
-						onclick="removeit()">删除</a> <a href="javascript:void(0)"
-						class="easyui-linkbutton"
-						data-options="iconCls:'icon-save',plain:true" onclick="accept()">完成</a>
-					<a href="javascript:void(0)" class="easyui-linkbutton"
-						data-options="iconCls:'icon-undo',plain:true" onclick="reject()">撤销</a>
-				</div>
 
 			</form>
 

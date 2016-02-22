@@ -27,7 +27,7 @@ import com.xs.wms.service.StockInService;
 @Controller
 @RequestMapping("/stock_ins")
 public class StockInController {
-	private static Logger logger = Logger.getLogger(OrderController.class);
+	private static Logger logger = Logger.getLogger(StockInController.class);
 	@Resource
 	private StockInService stockInService;
 
@@ -87,14 +87,14 @@ public class StockInController {
 	}
 
 	/**
-	 * 删除某个用户
+	 * 删除
 	 * 
 	 * @param userId
 	 * @param out
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
-	public Json deleteUser(@PathVariable Integer id) {
+	public Json delete(@PathVariable Integer id) {
 		Json j = new Json();
 		try {
 			stockInService.updateBill(id, "del", 0);
