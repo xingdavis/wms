@@ -3,6 +3,7 @@ package com.xs.wms.controller;
 import java.util.List;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -30,11 +31,14 @@ public class OptionController {
 	}
 	
 	@ResponseBody
-	@RequestMapping(value = "/list", method = RequestMethod.GET, consumes = "application/json")
-	public Json list(@RequestBody Option obj) {
+	@RequestMapping(value = "/list", method = RequestMethod.GET)
+	public Json list(HttpServletRequest request) {
 		Json j = new Json();
 		try {
-			List<Option> list = optionService.getList(obj);
+			String otype = request.getParameter("otype").toString();
+			Option o = new Option();
+			o.setOtype(otype);
+			List<Option> list = optionService.getList(o);
 			j.setObj(list);
 			j.setSuccess(true);			
 		} catch (Exception e) {
