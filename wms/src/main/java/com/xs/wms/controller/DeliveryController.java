@@ -16,12 +16,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.xs.wms.pojo.Delivery;
-import com.xs.wms.pojo.Stock_in;
-import com.xs.wms.pojo.Stock_in_detail;
 import com.xs.wms.pojo.User;
+import com.xs.wms.pojo.easyui.DataGrid;
 import com.xs.wms.pojo.easyui.Json;
+import com.xs.wms.pojo.easyui.PageHelper;
 import com.xs.wms.service.DeliveryService;
-import com.xs.wms.service.OptionService;
 
 @Controller
 @RequestMapping("/deliverys")
@@ -37,8 +36,8 @@ public class DeliveryController {
 	}
 
 	@ResponseBody
-	@RequestMapping(value = "", method = RequestMethod.POST, consumes = "application/json")
-	public Json add(HttpServletRequest request, @RequestBody Delivery obj) {
+	@RequestMapping(value = "/bill", method = RequestMethod.POST, consumes = "application/json")
+	public Json addDelivery(HttpServletRequest request, @RequestBody Delivery obj) {
 		Json j = new Json();
 		boolean ok = false;
 		try {
@@ -104,5 +103,15 @@ public class DeliveryController {
 			j.setMsg(e.getMessage());
 		}
 		return j;
+	}
+	
+	@ResponseBody
+	@RequestMapping(value = "/lists", method = RequestMethod.GET)
+	public DataGrid datagrid(PageHelper page, Delivery obj) {
+		DataGrid dg = new DataGrid();
+		dg.setTotal(deliveryService.getDatagridTotal(obj));
+		List<Delivery> list = deliveryService.datagrid(page, obj);
+		dg.setRows(list);
+		return dg;
 	}
 }

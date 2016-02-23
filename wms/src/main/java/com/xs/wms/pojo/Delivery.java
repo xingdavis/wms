@@ -2,10 +2,16 @@ package com.xs.wms.pojo;
 
 import java.util.Date;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 public class Delivery {
 	private Integer id;
 
 	private String code;
+	
+	private Integer orderId;
 	
 	private String orderCode;
 
@@ -20,8 +26,8 @@ public class Delivery {
 	private String rport;
 
 	private String consignee;
-
-	private Date ddate;
+	
+	private String ddate;
 
 	private Date crDate;
 
@@ -59,12 +65,13 @@ public class Delivery {
 		id = 0;
 	}
 
-	public Delivery(Integer id, String code, String orderCode,String caseModel, String carNo, String driver, String driverPhone, String dport,
-			String rport, String consignee, Date ddate, Date crDate, Integer op, String goodsName, String weigh,
+	public Delivery(Integer id, String code,Integer orderId, String orderCode,String caseModel, String carNo, String driver, String driverPhone, String dport,
+			String rport, String consignee, String ddate, Date crDate, Integer op, String goodsName, String weigh,
 			String caseNo, String sealNo, String address, String contact, Date arrivalTime, String attention,
 			Date signTime, String startPort, String endPort, String memo, Integer flag) {
 		this.id = id;
 		this.code = code;
+		this.orderId = orderId;
 		this.orderCode = orderCode;
 		this.caseModel = caseModel;
 		this.carNo = carNo;
@@ -106,6 +113,14 @@ public class Delivery {
 
 	public void setCode(String code) {
 		this.code = code == null ? null : code.trim();
+	}
+	
+	public Integer getOrderId() {
+		return orderId;
+	}
+
+	public void setOrderId(Integer orderId) {
+		this.orderId = orderId;
 	}
 	
 	public String getOrderCode() {
@@ -164,11 +179,13 @@ public class Delivery {
 		this.consignee = consignee == null ? null : consignee.trim();
 	}
 
-	public Date getDdate() {
+	  
+	
+	public String getDdate() {
 		return ddate;
 	}
 
-	public void setDdate(Date ddate) {
+	public void setDdate(String ddate) {
 		this.ddate = ddate;
 	}
 

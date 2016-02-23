@@ -4,6 +4,7 @@
 	<resultMap id="BaseResultMap" type="com.xs.wms.pojo.Delivery">
 		<id column="id" property="id" jdbcType="INTEGER" />
 		<result column="code" property="code" jdbcType="VARCHAR" />
+		<result column="order_id" property="orderId" jdbcType="INTEGER" />
 		<result column="order_code" property="orderCode" jdbcType="VARCHAR" />
 		<result column="car_no" property="carNo" jdbcType="VARCHAR" />
 		<result column="driver" property="driver" jdbcType="VARCHAR" />
@@ -30,7 +31,7 @@
 		<result column="flag" property="flag" jdbcType="TINYINT" />
 	</resultMap>
 	<sql id="Base_Column_List">
-		id, code, orderCode, car_no, driver, driver_phone, dport, rport, consignee, ddate,
+		id, code, orderId, orderCode, car_no, driver, driver_phone, dport, rport, consignee, ddate,
 		cr_date,
 		op, goods_name, weigh, case_model, case_no, seal_no, address, contact,
 		arrival_time, attention,
@@ -67,19 +68,19 @@
 	</select>
 	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
 		delete from t_delivery
-		where id = #{id,jdbcType=INTEGER}
+		where id = #{id,jdbcType=INTEGER} and flag=0
 	</delete>
 	<insert id="insert" parameterType="com.xs.wms.pojo.Delivery">
-		insert into t_delivery (id, code, orderCode, car_no,
+		insert into t_delivery (id, code, orderId, order_code, car_no,
 		driver, driver_phone, dport,
 		rport, consignee, ddate,
 		cr_date, op, goods_name,
-		weigh, case_no, case_no, seal_no,
+		weigh, case_model, case_no, seal_no,
 		address, contact, arrival_time,
 		attention, sign_time, start_port,
 		end_port, memo, flag
 		)
-		values (#{id,jdbcType=INTEGER}, #{code,jdbcType=VARCHAR},#{orderCode,jdbcType=VARCHAR},
+		values (#{id,jdbcType=INTEGER}, #{code,jdbcType=VARCHAR},#{orderId,jdbcType=INTEGER},#{orderCode,jdbcType=VARCHAR},
 		#{carNo,jdbcType=VARCHAR},
 		#{driver,jdbcType=VARCHAR}, #{driverPhone,jdbcType=VARCHAR}, #{dport,jdbcType=VARCHAR},
 		#{rport,jdbcType=VARCHAR}, #{consignee,jdbcType=VARCHAR},
@@ -102,6 +103,9 @@
 			</if>
 			<if test="code != null">
 				code,
+			</if>
+			<if test="orderId != null">
+				order_id,
 			</if>
 			<if test="orderCode != null">
 				order_code,
@@ -183,6 +187,9 @@
 			<if test="code != null">
 				#{code,jdbcType=VARCHAR},
 			</if>
+			<if test="orderId != null">
+				#{orderId,jdbcType=INTEGER},
+			</if>
 			<if test="orderCode != null">
 				#{orderCode,jdbcType=VARCHAR},
 			</if>
@@ -263,6 +270,9 @@
 			<if test="code != null">
 				code = #{code,jdbcType=VARCHAR},
 			</if>
+			<if test="orderId != null">
+				order_id = #{orderId,jdbcType=INTEGER},
+			</if>
 			<if test="orderCode != null">
 				order_code = #{orderCode,jdbcType=VARCHAR},
 			</if>
@@ -341,6 +351,7 @@
 	<update id="updateByPrimaryKey" parameterType="com.xs.wms.pojo.Delivery">
 		update t_delivery
 		set code = #{code,jdbcType=VARCHAR},
+		order_id = #{orderId,jdbcType=INTEGER},
 		order_code = #{orderCode,jdbcType=VARCHAR},
 		car_no = #{carNo,jdbcType=VARCHAR},
 		driver = #{driver,jdbcType=VARCHAR},
@@ -363,6 +374,6 @@
 		start_port = #{startPort,jdbcType=VARCHAR},
 		end_port = #{endPort,jdbcType=VARCHAR},
 		memo = #{memo,jdbcType=VARCHAR}
-		where id = #{id,jdbcType=INTEGER}
+		where id = #{id,jdbcType=INTEGER} and flag=0
 	</update>
 </mapper>

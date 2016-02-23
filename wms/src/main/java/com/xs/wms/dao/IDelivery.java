@@ -23,5 +23,5 @@ public interface IDelivery {
     
     Long getDatagridTotal(@Param("delivery") Delivery delivery);
 
-	List<Option> datagrid(@Param("page") PageHelper page, @Param("delivery") Delivery delivery);
+	List<Delivery> datagrid(@Param("page") PageHelper page, @Param("delivery") Delivery delivery);
 }

@@ -43,7 +43,7 @@ public class DeliveryService {
 	 * @param page
 	 * @return
 	 */
-	public List<Option> datagrid(PageHelper page, Delivery obj) {
+	public List<Delivery> datagrid(PageHelper page, Delivery obj) {
 		page.setStart((page.getPage() - 1) * page.getRows());
 		page.setEnd(page.getPage() * page.getRows());
 		return this.deliveryMapper.datagrid(page, obj);
