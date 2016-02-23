@@ -12,7 +12,7 @@
 			return;
 		var mesTitle = '';
 		var method = 'POST';
-		var url = path + '/deliverys/bill';
+		var url = path + '/deliverys';
 		if ($('#e_id').val() != '') {
 			method = 'PUT';
 			url += '/' + $('#e_id').val();
@@ -37,10 +37,10 @@
 				//var result = eval('(' + result + ')');
 				if (result.success) {
 					alert('已保存!');
+					location.href = '${path}/deliverys/list';
 				} else {
 					alert(result.msg);
 				}
-				location.href = '${path}/deliverys/listpage'
 			}
 		});
 	}
@@ -54,14 +54,11 @@
 	$(document).ready(
 			function() {
 				if ($('#e_id').val() != '') {
-					//getStockIn($('#e_id').val());
-					//$('#btn_save_and_verify').linkbutton('disable');
+					getModel($('#e_id').val());
 				} else {
-					//$('#e_inDate').datebox('setValue', FormatterDate(new Date()));
+					$('#e_ddate').datetimebox('setValue',
+							new Date().Format('yyyy-MM-dd hh:mm:ss'));
 				}
-
-				$('#e_ddate').datetimebox('setValue',
-						new Date().Format('yyyy-MM-dd hh:mm:ss'));
 
 				getOptionList('柜型', [ '#e_caseModel' ]);
 				//ports.push($('#e_caseModel'));
@@ -98,8 +95,8 @@
 								},
 								query : function(q) {
 									//动态搜索
-									$('#e_orderId').combogrid("grid")
-											.datagrid("reload", {
+									$('#e_orderId').combogrid("grid").datagrid(
+											"reload", {
 												'code' : q
 											});
 									$('#e_orderId').combogrid("setValue", q);
@@ -138,6 +135,29 @@
 			}
 		});
 	}
+
+	function getModel(id) {
+		$.ajax({
+			url : path + '/deliverys/' + id,
+			method : 'GET',
+			contentType : 'application/json',
+			dataType : 'json',
+			error : function(data) {
+				alert("error:" + data.responseText);
+			},
+			success : function(result) {
+				//var result = eval('(' + result + ')');
+				if (result.success) {
+					//$('#e_orderId').combogrid("setValue", result.obj.orderId);
+					//$('#e_inDate').datebox('setValue',FormatterDate(new Date(result.obj.inDate)));
+
+					$('#fm').form('load', result.obj);
+				} else {
+					alert(result.msg);
+				}
+			}
+		});
+	}
 </script>
 </head>
 <body>
@@ -154,8 +174,8 @@
 					</tr>
 					<tr>
 						<td>订单号:</td>
-						<td><input class="easyui-textbox" type="text"
-							name="orderId" id="e_orderId" /></td>
+						<td><input class="easyui-textbox" type="text" name="orderId"
+							id="e_orderId" /></td>
 					</tr>
 					<tr>
 						<td>车牌号:</td>

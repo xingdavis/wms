@@ -119,7 +119,7 @@
 				} else {
 					alert(result.msg);
 				}
-				location.href = '${path}/stock_ins/billpage'
+				location.href = '${path}/stock_ins/billpage';
 			}
 		});
 	}

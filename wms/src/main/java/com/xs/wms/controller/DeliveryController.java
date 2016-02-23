@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.xs.wms.pojo.Delivery;
+import com.xs.wms.pojo.Stock_in;
 import com.xs.wms.pojo.User;
 import com.xs.wms.pojo.easyui.DataGrid;
 import com.xs.wms.pojo.easyui.Json;
@@ -30,13 +31,44 @@ public class DeliveryController {
 	@Resource
 	private DeliveryService deliveryService;
 
-	@RequestMapping(value = "/page", method = RequestMethod.GET)
+	@RequestMapping(value = "/list", method = RequestMethod.GET)
 	public String ListPage(Model model) {
+		return "delivery/list";
+	}
+	
+	/**
+	 * 新增页面
+	 * 
+	 * @return
+	 */
+	@RequestMapping(value = "/page", method = RequestMethod.GET)
+	public String addPage(Model model) {
 		return "delivery/delivery";
 	}
 
+	@RequestMapping(value = "/page/{id}", method = RequestMethod.GET)
+	public String editPage(@PathVariable Integer id, Model model) {
+		model.addAttribute("delivery_id", id);
+		return "delivery/delivery";
+	}
+	
 	@ResponseBody
-	@RequestMapping(value = "/bill", method = RequestMethod.POST, consumes = "application/json")
+	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
+	public Json get(@PathVariable Integer id) {
+		Json j = new Json();
+		try {
+			Delivery obj = this.deliveryService.get(id);
+			j.setSuccess(true);
+			j.setObj(obj);
+		} catch (Exception e) {
+			logger.error(e);
+			j.setMsg(e.getMessage());
+		}
+		return j;
+	}
+
+	@ResponseBody
+	@RequestMapping(value = "", method = RequestMethod.POST, consumes = "application/json")
 	public Json addDelivery(HttpServletRequest request, @RequestBody Delivery obj) {
 		Json j = new Json();
 		boolean ok = false;
@@ -66,14 +98,15 @@ public class DeliveryController {
 		Json j = new Json();
 		boolean ok = false;
 		try {
-			//Delivery oObj = deliveryService.get(id);
-			int flag = obj.getFlag();
+			Delivery oObj = deliveryService.get(id);
+			int flag = oObj.getFlag();
 			String code = obj.getCode();
 			if (code != null & code != "") {
 				if (flag == 0) {
 					obj.setOp(((User) request.getSession().getAttribute("USER")).getId());
 					deliveryService.update(obj);
 					ok = true;
+					j.setObj(obj);
 				} else
 					j.setMsg("已出账单单据不允许修改！");
 			} else
@@ -106,7 +139,7 @@ public class DeliveryController {
 	}
 	
 	@ResponseBody
-	@RequestMapping(value = "/lists", method = RequestMethod.GET)
+	@RequestMapping(value = "/datagrid", method = RequestMethod.GET)
 	public DataGrid datagrid(PageHelper page, Delivery obj) {
 		DataGrid dg = new DataGrid();
 		dg.setTotal(deliveryService.getDatagridTotal(obj));

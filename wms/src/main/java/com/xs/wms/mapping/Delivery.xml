@@ -31,11 +31,11 @@
 		<result column="flag" property="flag" jdbcType="TINYINT" />
 	</resultMap>
 	<sql id="Base_Column_List">
-		id, code, orderId, orderCode, car_no, driver, driver_phone, dport, rport, consignee, ddate,
-		cr_date,
-		op, goods_name, weigh, case_model, case_no, seal_no, address, contact,
-		arrival_time, attention,
-		sign_time, start_port, end_port, memo, flag
+		id, code, order_id orderId, order_code orderCode, car_no carNo, driver, driver_phone driverPhone, dport, rport, consignee, ddate,
+		cr_date crDate,
+		op, goods_name goodsName, weigh, case_model caseModel, case_no caseNo, seal_no sealNo, address, contact,
+		arrival_time arrivalTime, attention,
+		sign_time signTime, start_port startPort, end_port endPort, memo, flag
 	</sql>
 	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
 		parameterType="java.lang.Integer">
@@ -71,7 +71,7 @@
 		where id = #{id,jdbcType=INTEGER} and flag=0
 	</delete>
 	<insert id="insert" parameterType="com.xs.wms.pojo.Delivery">
-		insert into t_delivery (id, code, orderId, order_code, car_no,
+		insert into t_delivery (id, code, order_id, order_code, car_no,
 		driver, driver_phone, dport,
 		rport, consignee, ddate,
 		cr_date, op, goods_name,
