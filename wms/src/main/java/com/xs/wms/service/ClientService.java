@@ -37,6 +37,14 @@ public class ClientService {
 	public int insert(Client client) {
 		return clientMapper.insert(client);
 	}
+	
+	public int update(Client client){
+		return clientMapper.updateByPrimaryKey(client);
+	}
+	
+	public int delete(Integer id){
+		return clientMapper.deleteByPrimaryKey(id);
+	}
 
 	/**
 	 * 查找客户
@@ -66,5 +74,14 @@ public class ClientService {
 	 */
 	public Boolean repeatClientName(String cname) {
 		return clientMapper.repeatClientNum(cname) > 0;
+	}
+	
+	/**
+	 * 更新客户名称前检查名称是否重复
+	 * @param cname
+	 * @return
+	 */
+	public Boolean repeatClientName(String cname,Integer id) {
+		return clientMapper.checkForUpdate(cname, id) > 0;
 	}
 }

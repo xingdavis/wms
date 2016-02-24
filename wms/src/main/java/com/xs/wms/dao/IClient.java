@@ -23,6 +23,8 @@ public interface IClient {
 	int updateByPrimaryKey(Client record);
 	
 	int repeatClientNum(String cname);
+	
+	int checkForUpdate(@Param("cname") String cname,@Param("id") Integer id);
 
 	Long getDatagridTotal(@Param("client") Client client);
 

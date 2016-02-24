@@ -26,8 +26,15 @@
 		CONCAT('%',#{cname,jdbcType=VARCHAR},'%')
 	</select>
 	<select id="repeatClientNum" resultType="java.lang.Integer">
-		select count(1) from t_client
+		select count(1) from
+		t_client
 		where cname = #{cname,jdbcType=VARCHAR}
+	</select>
+	<select id="checkForUpdate" resultType="java.lang.Integer">
+		select count(1) from
+		t_client
+		where cname = #{cname,jdbcType=VARCHAR} and
+		id!=#{id,jdbcType=INTEGER}
 	</select>
 	<select id="getDatagridTotal" resultType="long">
 		select
@@ -58,7 +65,9 @@
 	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
 		delete from
 		t_client
-		where id = #{id,jdbcType=INTEGER}
+		where id = #{id,jdbcType=INTEGER} and id not in (select
+		client_id from t_order) and id not in (select client_id from
+		t_stock_in)
 	</delete>
 	<insert id="insert" parameterType="com.xs.wms.pojo.Client"
 		useGeneratedKeys="true" keyProperty="id">
