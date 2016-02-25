@@ -59,3 +59,8 @@ Date.prototype.Format = function(fmt) { // author: meizz
 					: (("00" + o[k]).substr(("" + o[k]).length)));
 	return fmt;
 }
+
+// 返回两个日期天数差
+Date.prototype.DiffDays = function(date) {
+	return (this.getTime() - date.getTime()) / (24 * 60 * 60 * 1000);
+}

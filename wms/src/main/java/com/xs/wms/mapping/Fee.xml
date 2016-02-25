@@ -38,16 +38,16 @@
 		</association>
 	</resultMap>
 	<sql id="Base_Column_List">
-		id, bill_id, bill_code, client_id, ftype,
+		id, bill_id billId, bill_code billCode, client_id clientId, ftype,
 		fname, price,
 		amount, sdate, edate, memo,
-		flag,op,cr_date
+		flag,op,cr_date crDate
 	</sql>
 	<sql id="Base_Column_List1">
-		f.id, f.bill_id, f.bill_code, f.client_id, f.ftype,
+		f.id, f.bill_id billId, f.bill_code billCode, f.client_id clientId, f.ftype,
 		f.fname, f.price,
 		f.amount, f.sdate, f.edate, f.memo,
-		f.flag,f.op,f.cr_date,c.cname
+		f.flag,f.op,f.cr_date crDate,c.cname
 	</sql>
 	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
 		parameterType="java.lang.Integer">

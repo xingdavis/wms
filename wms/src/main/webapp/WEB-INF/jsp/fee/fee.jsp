@@ -71,6 +71,46 @@
 
 	//DOM加载完毕执行
 	$(document).ready(function() {
+		getOptionList('费目', [ '#e_fname' ]);
+
+		var billUrl = path + '/stock_ins/bills/';
+		var txtField = 'orderCode';
+		var qParms = {
+			code : $('#e_billId').val()
+		};
+		var cols = [ [ {
+			field : 'id',
+			title : 'id',
+			hidden : true
+		}, {
+			field : 'orderCode',
+			title : '订单号',
+			width : 200
+		}, {
+			field : 'code',
+			title : '单号',
+			width : 200
+		} ] ];
+
+		var ftype = $('#q_ftype').val();
+		$('#e_ftype').val(ftype)
+		if (ftype == "2") {
+			billUrl = path + '/deliverys/datagrid/';
+			txtField = 'code';
+			qParms = {
+				code : $('#e_billId').val()
+			};
+			cols = [ [ {
+				field : 'id',
+				title : 'id',
+				hidden : true
+			}, {
+				field : 'code',
+				title : '订舱号',
+				width : 200
+			} ] ];
+		}
+
 		if ($('#e_id').val() != '') {
 			getModel($('#e_id').val());
 		} else {
@@ -78,6 +118,8 @@
 			$('#e_sdate').datebox('setValue', d);
 			$('#e_edate').datebox('setValue', d);
 		}
+
+		initBill(billUrl, txtField, qParms, cols)
 
 		$('#e_client').combogrid({
 			panelWidth : 300,
@@ -118,32 +160,40 @@
 				alert(newValue);
 			} */
 			onSelect : function(index, row) {
-				$('#e_orderId').combogrid("grid").datagrid("reload", {
-					'clientId' : row.id
-				});
+				if ($('#q_ftype').val() == "1")
+					$('#e_billId').combogrid("grid").datagrid("reload", {
+						'key' : row.cname
+					});
 			}
 		});
+		calAmount();
+	});
 
-		$('#e_orderId').combogrid({
+	function calAmount() {
+		//仓租=(出仓日-入仓日-5)*单价
+		if ($('#q_ftype').val() == "1") {
+			var sdate = new Date($('#e_sdate').datebox("getValue"));
+			var edate = new Date($('#e_edate').datebox("getValue"));
+			var diffDays = edate.DiffDays(sdate) - 5;
+			if (diffDays > 0)
+				$('#e_amount').numberbox('setValue',
+						diffDays * $('#e_price').numberbox('getValue'));
+			else
+				$('#e_amount').numberbox('setValue', 0);
+		}
+	}
+
+	function initBill(url, txtField, qParms, cols) {
+		$('#e_billId').combogrid({
 			panelWidth : 300,
-			queryParams : {
-				code : $('#e_orderId').val()
-			},
+			queryParams : qParms,
 			mode : 'remote',
 			idField : 'id',
-			textField : 'code',
+			textField : txtField,
 			method : 'get',
-			url : path + '/orders',
+			url : url,
 			fitColumns : true,
-			columns : [ [ {
-				field : 'id',
-				title : 'id',
-				hidden : true
-			}, {
-				field : 'code',
-				title : '单号',
-				width : 200
-			} ] ],
+			columns : cols,
 			keyHandler : {
 				up : function() {
 				},
@@ -153,26 +203,26 @@
 				},
 				query : function(q) {
 					//动态搜索
-					$('#e_orderId').combogrid("grid").datagrid("reload", {
+					$('#e_billId').combogrid("grid").datagrid("reload", {
 						'code' : q
 					});
-					$('#e_orderId').combogrid("setValue", q);
+					$('#e_billId').combogrid("setValue", q);
 				}
 			},
 			/* onChange:function(newValue,oldValue){
 				alert(newValue);
 			} */
 			onSelect : function(index, row) {
-				$('#e_orderCode').val(row.code);
-				getOrder(row.id);
+				$('#e_billCode').val(row.code);
+				//getOrder(row.id);
 			}
 		});
-	});
+	}
 
-	function getOrder(id) {
+	function getOptionList(flag, els) {
 		$.ajax({
 			type : 'GET',
-			url : path + '/orders/' + id,
+			url : path + '/options/list?otype=' + encodeURIComponent(flag),
 			async : false,
 			contentType : 'application/json',
 			dataType : 'json',
@@ -183,19 +233,10 @@
 				//var result = eval('(' + result + ')');
 				if (result.success) {
 					//$('#dg').datagrid('loadData', result.obj.order_details);
-					for (var i = 0; i < result.obj.order_details.length; i++) {
-						var obj = result.obj.order_details[i];
-						$('#dg').datagrid('appendRow', {
-							cname : obj.cname,
-							num : obj.num,
-							vol : obj.vol,
-							weight : obj.weight,
-							yard : ''
-						});
-
-					}
+					for (i = 0; i < els.length; i++)
+						$(els[i]).combobox('loadData', result.obj);
 				} else {
-					alert('获取订单失败！');
+					alert('获取' + flag + '数据失败！');
 				}
 
 			}
@@ -207,8 +248,9 @@
 	<div class="easyui-panel" title="New Topic" style="width: auto">
 		<div style="padding: 10px 60px 20px 60px">
 			<form id="fm" method="post">
-				<input type="hidden" name="id" id="e_id" value="${fee_id}" />
-				<input type="hidden" name="billCode" id="e_billCode" />
+				<input type="hidden" name="id" id="e_id" value="${fee_id}" /> <input
+					type="hidden" id="q_ftype" value="${ftype}" /> <input
+					type="hidden" name="billCode" id="e_billCode" />
 				<table cellpadding="5">
 					<tr>
 						<td>客户:</td>
@@ -223,7 +265,7 @@
 					</tr>
 					<tr>
 						<td>类型:</td>
-						<td><select id="e_ftype" name="ftype"><option
+						<td><select id="e_ftype" name="ftype" onfocus="this.blur();"><option
 									value="1">仓租</option>
 								<option value="2">运输费用</option></select></td>
 					</tr>
@@ -236,7 +278,7 @@
 						<td>单价:</td>
 						<td><input id="e_price" name="price" type="text"
 							class="easyui-numberbox" value="100"
-							data-options="required:true,min:0,precision:1"></td>
+							data-options="required:true,min:0,precision:1,onChange:function(newValue,oldValue){calAmount();}"></td>
 					</tr>
 					<tr>
 						<td>总额:</td>
@@ -247,12 +289,14 @@
 					<tr>
 						<td>开始日期:</td>
 						<td><input name="sdate" id="e_sdate" type="text"
-							class="easyui-datebox" required="required" /></td>
+							class="easyui-datebox"
+							data-options="required:true,onChange:function(newDate, oldDate){calAmount();}" /></td>
 					</tr>
 					<tr>
 						<td>结束日期:</td>
 						<td><input name="edate" id="e_edate" type="text"
-							class="easyui-datebox" required="required" /></td>
+							class="easyui-datebox"
+							data-options="required:true,onChange:function(newDate, oldDate){calAmount();}" /></td>
 					</tr>
 					<tr>
 						<td>备注:</td>

@@ -153,6 +153,7 @@
 				<option value="柜型">柜型</option>
 				<option value="码头">码头</option>
 				<option value="港口">港口</option>
+				<option value="费目">费目</option>
 			</select> <a href="javascript:search()" class="easyui-linkbutton"
 				data-options="iconCls:'icon-search'">查询</a>
 		</div>
@@ -173,6 +174,7 @@
 						<option value="柜型" selected="selected">柜型</option>
 						<option value="码头">码头</option>
 						<option value="港口">港口</option>
+						<option value="费目">费目</option>
 					</select>
 				</div>
 			</form>

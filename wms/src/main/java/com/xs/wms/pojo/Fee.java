@@ -28,6 +28,11 @@ public class Fee {
     private String memo;
 
     private Short flag;
+    
+    private Integer op;
+    
+    private Date crDate;
+    
 
     public Integer getId() {
         return id;
@@ -132,4 +137,20 @@ public class Fee {
 	public void setClient(Client client) {
 		this.client = client;
 	}
+	
+    public Integer getOp() {
+        return op;
+    }
+
+    public void setOp(Integer op) {
+        this.op = op;
+    }
+    
+    public Date getCrDate() {
+        return crDate;
+    }
+
+    public void setCrDate(Date crDate) {
+        this.crDate = crDate;
+    }
 }

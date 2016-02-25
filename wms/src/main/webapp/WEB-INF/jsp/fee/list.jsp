@@ -71,7 +71,7 @@
 <body class="easyui-layout" fit="true">
 	<div region="center" border="false" style="overflow: hidden;">
 		<!-- 用户信息列表 title="用户管理" -->
-		<table id="dg" class="easyui-datagrid" fit="true" url="${path}/fees"
+		<table id="dg" class="easyui-datagrid" fit="true" url="${path}/fees/datagrid"
 			method="GET" toolbar="#toolbar" pagination="true" fitColumns="true"
 			singleSelect="true" rownumbers="true" striped="true" border="false"
 			nowrap="false">
