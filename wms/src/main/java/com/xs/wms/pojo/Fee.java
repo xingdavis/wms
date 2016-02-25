@@ -6,8 +6,12 @@ public class Fee {
     private Integer id;
 
     private Integer billId;
+    
+    private String billCode;
 
     private Integer clientId;
+    
+    private Client client;
 
     private Short ftype;
 
@@ -39,6 +43,14 @@ public class Fee {
 
     public void setBillId(Integer billId) {
         this.billId = billId;
+    }
+    
+    public String getBillCode() {
+        return billCode;
+    }
+
+    public void setBillCode(String billCode) {
+        this.billCode = billCode == null ? null : billCode.trim();
     }
 
     public Integer getClientId() {
@@ -112,4 +124,12 @@ public class Fee {
     public void setFlag(Short flag) {
         this.flag = flag;
     }
+    
+    public Client getClient() {
+		return client;
+	}
+
+	public void setClient(Client client) {
+		this.client = client;
+	}
 }

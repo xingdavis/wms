@@ -53,7 +53,7 @@
 						if (result.success) {
 							reload();
 						} else {
-							alert('删除失败!');
+							alert(result.msg);
 						}
 					}
 				});

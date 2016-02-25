@@ -305,7 +305,7 @@
 						<td>订单号:</td>
 						<td><input class="easyui-textbox"
 							data-options="required:true" type="text" name="orderId"
-							id="e_orderId" data-options="required:true" /></td>
+							id="e_orderId" /></td>
 					</tr>
 					<tr>
 						<td>车牌号:</td>
