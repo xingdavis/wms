@@ -61,6 +61,10 @@
 			success : function(result) {
 				//var result = eval('(' + result + ')');
 				if (result.success) {
+					result.obj.sdate = new Date(result.obj.sdate)
+							.Format("yyyy-MM-dd");
+					result.obj.edate = new Date(result.obj.edate)
+							.Format("yyyy-MM-dd");
 					$('#fm').form('load', result.obj);
 				} else {
 					alert(result.msg);
@@ -74,7 +78,7 @@
 		getOptionList('费目', [ '#e_fname' ]);
 
 		var billUrl = path + '/stock_ins/bills/';
-		var txtField = 'orderCode';
+		var txtField = 'code';
 		var qParms = {
 			code : $('#e_billId').val()
 		};
@@ -184,39 +188,53 @@
 	}
 
 	function initBill(url, txtField, qParms, cols) {
-		$('#e_billId').combogrid({
-			panelWidth : 300,
-			queryParams : qParms,
-			mode : 'remote',
-			idField : 'id',
-			textField : txtField,
-			method : 'get',
-			url : url,
-			fitColumns : true,
-			columns : cols,
-			keyHandler : {
-				up : function() {
-				},
-				down : function() {
-				},
-				enter : function() {
-				},
-				query : function(q) {
-					//动态搜索
-					$('#e_billId').combogrid("grid").datagrid("reload", {
-						'code' : q
-					});
-					$('#e_billId').combogrid("setValue", q);
-				}
-			},
-			/* onChange:function(newValue,oldValue){
-				alert(newValue);
-			} */
-			onSelect : function(index, row) {
-				$('#e_billCode').val(row.code);
-				//getOrder(row.id);
-			}
-		});
+		$('#e_billId').combogrid(
+				{
+					panelWidth : 300,
+					queryParams : qParms,
+					mode : 'remote',
+					idField : 'id',
+					textField : txtField,
+					method : 'get',
+					url : url,
+					fitColumns : true,
+					columns : cols,
+					keyHandler : {
+						up : function() {
+						},
+						down : function() {
+						},
+						enter : function() {
+						},
+						query : function(q) {
+							//动态搜索
+							$('#e_billId').combogrid("grid").datagrid("reload",
+									{
+										'code' : q
+									});
+							$('#e_billId').combogrid("setValue", q);
+						}
+					},
+					/* onChange:function(newValue,oldValue){
+						alert(newValue);
+					} */
+					onSelect : function(index, row) {
+						$('#e_billCode').val(row.code);
+						//getOrder(row.id);
+						if ($('#q_ftype').val() == "1") {
+							$('#e_sdate').datebox('setValue',
+									new Date(row.inDate).Format('yyyy-MM-dd'));
+							if (row.outDate)
+								$('#e_edate').datebox(
+										'setValue',
+										new Date(row.outDate)
+												.Format('yyyy-MM-dd'));
+							else
+								$('#e_edate').datebox('setValue',
+										new Date().Format('yyyy-MM-dd'));
+						}
+					}
+				});
 	}
 
 	function getOptionList(flag, els) {

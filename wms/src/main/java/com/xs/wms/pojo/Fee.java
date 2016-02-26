@@ -3,154 +3,173 @@ package com.xs.wms.pojo;
 import java.util.Date;
 
 public class Fee {
-    private Integer id;
+	private Integer id;
 
-    private Integer billId;
-    
-    private String billCode;
+	private Integer billId;
 
-    private Integer clientId;
-    
-    private Client client;
+	private String billCode;
 
-    private Short ftype;
+	private Integer clientId;
 
-    private String fname;
+	private Client client;
 
-    private Double price;
+	private Short ftype;
 
-    private Double amount;
+	private String fname;
 
-    private Date sdate;
+	private Double price;
 
-    private Date edate;
+	private Double amount;
 
-    private String memo;
+	private Date sdate;
 
-    private Short flag;
-    
-    private Integer op;
-    
-    private Date crDate;
-    
+	private Date edate;
 
-    public Integer getId() {
-        return id;
-    }
+	private String memo;
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
+	private Short flag;
 
-    public Integer getBillId() {
-        return billId;
-    }
+	private Integer op;
 
-    public void setBillId(Integer billId) {
-        this.billId = billId;
-    }
-    
-    public String getBillCode() {
-        return billCode;
-    }
+	private Date crDate;
+	
+	private Delivery delivery;
+	
+	private Stock_in stock_in;
 
-    public void setBillCode(String billCode) {
-        this.billCode = billCode == null ? null : billCode.trim();
-    }
+	public Integer getId() {
+		return id;
+	}
 
-    public Integer getClientId() {
-        return clientId;
-    }
+	public void setId(Integer id) {
+		this.id = id;
+	}
 
-    public void setClientId(Integer clientId) {
-        this.clientId = clientId;
-    }
+	public Integer getBillId() {
+		return billId;
+	}
 
-    public Short getFtype() {
-        return ftype;
-    }
+	public void setBillId(Integer billId) {
+		this.billId = billId;
+	}
 
-    public void setFtype(Short ftype) {
-        this.ftype = ftype;
-    }
+	public String getBillCode() {
+		return billCode;
+	}
 
-    public String getFname() {
-        return fname;
-    }
+	public void setBillCode(String billCode) {
+		this.billCode = billCode == null ? null : billCode.trim();
+	}
 
-    public void setFname(String fname) {
-        this.fname = fname == null ? null : fname.trim();
-    }
+	public Integer getClientId() {
+		return clientId;
+	}
 
-    public Double getPrice() {
-        return price;
-    }
+	public void setClientId(Integer clientId) {
+		this.clientId = clientId;
+	}
 
-    public void setPrice(Double price) {
-        this.price = price;
-    }
+	public Short getFtype() {
+		return ftype;
+	}
 
-    public Double getAmount() {
-        return amount;
-    }
+	public void setFtype(Short ftype) {
+		this.ftype = ftype;
+	}
 
-    public void setAmount(Double amount) {
-        this.amount = amount;
-    }
+	public String getFname() {
+		return fname;
+	}
 
-    public Date getSdate() {
-        return sdate;
-    }
+	public void setFname(String fname) {
+		this.fname = fname == null ? null : fname.trim();
+	}
 
-    public void setSdate(Date sdate) {
-        this.sdate = sdate;
-    }
+	public Double getPrice() {
+		return price;
+	}
 
-    public Date getEdate() {
-        return edate;
-    }
+	public void setPrice(Double price) {
+		this.price = price;
+	}
 
-    public void setEdate(Date edate) {
-        this.edate = edate;
-    }
+	public Double getAmount() {
+		return amount;
+	}
 
-    public String getMemo() {
-        return memo;
-    }
+	public void setAmount(Double amount) {
+		this.amount = amount;
+	}
 
-    public void setMemo(String memo) {
-        this.memo = memo == null ? null : memo.trim();
-    }
+	public Date getSdate() {
+		return sdate;
+	}
 
-    public Short getFlag() {
-        return flag;
-    }
+	public void setSdate(Date sdate) {
+		this.sdate = sdate;
+	}
 
-    public void setFlag(Short flag) {
-        this.flag = flag;
-    }
-    
-    public Client getClient() {
+	public Date getEdate() {
+		return edate;
+	}
+
+	public void setEdate(Date edate) {
+		this.edate = edate;
+	}
+
+	public String getMemo() {
+		return memo;
+	}
+
+	public void setMemo(String memo) {
+		this.memo = memo == null ? null : memo.trim();
+	}
+
+	public Short getFlag() {
+		return flag;
+	}
+
+	public void setFlag(Short flag) {
+		this.flag = flag;
+	}
+
+	public Client getClient() {
 		return client;
 	}
 
 	public void setClient(Client client) {
 		this.client = client;
 	}
+
+	public Integer getOp() {
+		return op;
+	}
+
+	public void setOp(Integer op) {
+		this.op = op;
+	}
+
+	public Date getCrDate() {
+		return crDate;
+	}
+
+	public void setCrDate(Date crDate) {
+		this.crDate = crDate;
+	}
 	
-    public Integer getOp() {
-        return op;
-    }
+	public Delivery getDelivery() {
+		return delivery;
+	}
 
-    public void setOp(Integer op) {
-        this.op = op;
-    }
-    
-    public Date getCrDate() {
-        return crDate;
-    }
+	public void setDelivery(Delivery delivery) {
+		this.delivery = delivery;
+	}
+	
+	public Stock_in getStockIn() {
+		return stock_in;
+	}
 
-    public void setCrDate(Date crDate) {
-        this.crDate = crDate;
-    }
+	public void setStockIn(Stock_in stock_in) {
+		this.stock_in = stock_in;
+	}
 }

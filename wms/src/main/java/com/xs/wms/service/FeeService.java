@@ -7,6 +7,7 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 
 import com.xs.wms.dao.IFee;
+import com.xs.wms.pojo.Bill;
 import com.xs.wms.pojo.Fee;
 import com.xs.wms.pojo.easyui.PageHelper;
 
@@ -15,10 +16,10 @@ public class FeeService {
 	@Resource
 	private IFee feeMapper;
 
-	public Fee get(Integer id){
+	public Fee get(Integer id) {
 		return feeMapper.selectByPrimaryKey(id);
 	}
-	
+
 	/**
 	 * 新增
 	 * 
@@ -49,5 +50,38 @@ public class FeeService {
 
 	public Boolean repeat(Fee obj) {
 		return feeMapper.repeatNum(obj) > 0;
+	}
+
+	public Long getDeliveryBillTotal(String fflag, String bflag, String client, String key, String sdate,
+			String edate) {
+		return feeMapper.getDeliveryBillTotal(fflag, bflag, client, key, sdate, edate);
+	}
+
+	public List<Fee> datagridDeliveryBill(PageHelper page, String fflag, String bflag, String client, String key,
+			String sdate, String edate) {
+		page.setStart((page.getPage() - 1) * page.getRows());
+		page.setEnd(page.getPage() * page.getRows());
+		return feeMapper.datagridDeliveryBill(page, fflag, bflag, client, key, sdate, edate);
+	}
+
+	public Long getStockInBillTotal(String fflag, String bflag, String client, String key, String sdate, String edate) {
+		return feeMapper.getStockInBillTotal(fflag, bflag, client, key, sdate, edate);
+	}
+
+	public List<Fee> datagridStockInBill(PageHelper page, String fflag, String bflag, String client, String key,
+			String sdate, String edate) {
+		page.setStart((page.getPage() - 1) * page.getRows());
+		page.setEnd(page.getPage() * page.getRows());
+		return feeMapper.datagridStockInBill(page, fflag, bflag, client, key, sdate, edate);
+	}
+
+	public Long getBillTotal(String client, String sdate, String edate) {
+		return feeMapper.getBillTotal(client, sdate, edate);
+	}
+
+	public List<Bill> datagridBill(PageHelper page, String client, String sdate, String edate) {
+		page.setStart((page.getPage() - 1) * page.getRows());
+		page.setEnd(page.getPage() * page.getRows());
+		return feeMapper.datagridBill(page, client, sdate, edate);
 	}
 }

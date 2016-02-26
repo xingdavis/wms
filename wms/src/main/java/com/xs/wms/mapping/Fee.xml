@@ -37,17 +37,78 @@
 			<result column="cname" property="cname" jdbcType="VARCHAR" />
 		</association>
 	</resultMap>
+	<resultMap id="DeliveryBillResultMap" type="com.xs.wms.pojo.Fee">
+		<id column="id" property="id" jdbcType="INTEGER" />
+		<result column="fname" property="fname" jdbcType="VARCHAR" />
+		<result column="amount" property="amount" jdbcType="DOUBLE" />
+		<result column="sdate" property="sdate" jdbcType="TIMESTAMP" />
+		<result column="edate" property="edate" jdbcType="TIMESTAMP" />
+		<result column="memo" property="memo" jdbcType="VARCHAR" />
+		<result column="op" property="op" jdbcType="INTEGER" />
+		<result column="cr_date" property="crDate" jdbcType="TIMESTAMP" />
+		<association property="client" column="client_id"
+			javaType="com.xs.wms.pojo.Client">
+			<id property="id" column="id" />
+			<result column="cname" property="cname" jdbcType="VARCHAR" />
+		</association>
+		<association property="delivery" column="bill_id"
+			javaType="com.xs.wms.pojo.Delivery">
+			<id property="id" column="id" />
+			<result column="code" property="code" jdbcType="VARCHAR" />
+			<result column="order_code" property="orderCode" jdbcType="VARCHAR" />
+			<result column="case_model" property="caseModel" jdbcType="VARCHAR" />
+			<result column="address" property="address" jdbcType="VARCHAR" />
+			<result column="start_port" property="startPort" jdbcType="VARCHAR" />
+			<result column="end_port" property="endPort" jdbcType="VARCHAR" />
+			<result column="dport" property="dport" jdbcType="VARCHAR" />
+			<result column="rport" property="rport" jdbcType="VARCHAR" />
+			<result column="case_no" property="caseNo" jdbcType="VARCHAR" />
+			<result column="seal_no" property="sealNo" jdbcType="VARCHAR" />
+		</association>
+	</resultMap>
+	<resultMap id="StockInBillResultMap" type="com.xs.wms.pojo.Fee">
+		<id column="id" property="id" jdbcType="INTEGER" />
+		<result column="fname" property="fname" jdbcType="VARCHAR" />
+		<result column="amount" property="amount" jdbcType="DOUBLE" />
+		<result column="sdate" property="sdate" jdbcType="TIMESTAMP" />
+		<result column="edate" property="edate" jdbcType="TIMESTAMP" />
+		<result column="memo" property="memo" jdbcType="VARCHAR" />
+		<result column="op" property="op" jdbcType="INTEGER" />
+		<result column="cr_date" property="crDate" jdbcType="TIMESTAMP" />
+		<association property="client" column="client_id"
+			javaType="com.xs.wms.pojo.Client">
+			<id property="id" column="id" />
+			<result column="cname" property="cname" jdbcType="VARCHAR" />
+		</association>
+		<association property="stock_in" column="bill_id"
+			javaType="com.xs.wms.pojo.Stock_in">
+			<id property="id" column="id" />
+			<result column="code" property="code" jdbcType="VARCHAR" />
+			<result column="order_code" property="orderCode" jdbcType="VARCHAR" />
+			<result column="car_no" property="carNo" jdbcType="VARCHAR" />
+			<result column="in_date" property="inDate" jdbcType="VARCHAR" />
+			<result column="out_date" property="outDate" jdbcType="VARCHAR" />
+		</association>
+	</resultMap>
+	<resultMap id="BillResultMap" type="com.xs.wms.pojo.Bill">
+		<id column="id" property="id" jdbcType="INTEGER" />
+		<result column="code" property="code" jdbcType="VARCHAR" />
+		<result column="total" property="total" jdbcType="DOUBLE" />
+		<result column="sdate" property="sdate" jdbcType="TIMESTAMP" />
+		<result column="edate" property="edate" jdbcType="TIMESTAMP" />
+		<result column="memo" property="memo" jdbcType="VARCHAR" />
+		<association property="client" column="client_id"
+			javaType="com.xs.wms.pojo.Client">
+			<id property="id" column="id" />
+			<result column="cname" property="cname" jdbcType="VARCHAR" />
+		</association>
+	</resultMap>
 	<sql id="Base_Column_List">
-		id, bill_id billId, bill_code billCode, client_id clientId, ftype,
+		id, bill_id billId, bill_code billCode, client_id clientId,
+		ftype,
 		fname, price,
 		amount, sdate, edate, memo,
 		flag,op,cr_date crDate
-	</sql>
-	<sql id="Base_Column_List1">
-		f.id, f.bill_id billId, f.bill_code billCode, f.client_id clientId, f.ftype,
-		f.fname, f.price,
-		f.amount, f.sdate, f.edate, f.memo,
-		f.flag,f.op,f.cr_date crDate,c.cname
 	</sql>
 	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
 		parameterType="java.lang.Integer">
@@ -61,7 +122,7 @@
 		count(1)
 		from t_fee f,t_client c where f.client_id=c.id
 		<if test="client!=null and client != ''">
-			f.client_id=#{client}
+			and f.client_id=#{client}
 		</if>
 		<if test="key!=null and key!=''">
 			and (f.bill_code like concat('%',#{key},'%') or c.cname
@@ -73,13 +134,17 @@
 			and f.edate BETWEEN #{sdate} and #{edate}
 		</if>
 	</select>
-	<select id="datagrid" resultType="com.xs.wms.pojo.Fee">
-		select
-		<include refid="Base_Column_List1" />
-		from t_fee f,t_client c where f.client_id=c.id
-
+	<!-- 费用列表 -->
+	<select id="datagrid" resultMap="BaseResultMap1">
+		select f.id, f.bill_id, f.bill_code,
+		f.ftype,f.fname,f.price,f.amount,
+		f.sdate, f.edate,
+		f.memo,f.flag,f.op,f.cr_date,f.cr_date,c.cname
+		from
+		t_fee f,t_client c
+		where f.client_id=c.id
 		<if test="client!=null and client != ''">
-			f.client_id=#{client}
+			and f.client_id=#{client}
 		</if>
 		<if test="key!=null and key!=''">
 			and (f.bill_code like concat('%',#{key},'%') or c.cname
@@ -97,6 +162,159 @@
 			limit #{page.start},#{page.end}
 		</if>
 	</select>
+	<!-- 账单的提货单费用列表 -->
+	<select id="getDeliveryBillTotal" resultType="long">
+		select
+		count(1) from t_fee f,t_client c,t_delivery d
+		where
+		f.client_id=c.id
+		and f.bill_id=d.id
+		<if test="fflag!=null and fflag != ''">
+			and f.flag=#{fflag}
+		</if>
+		<if test="bflag!=null and bflag != ''">
+			and d.flag=#{bflag}
+		</if>
+		<if test="client!=null and client != ''">
+			and f.client_id=#{client}
+		</if>
+		<if test="key!=null and key!=''">
+			and (f.bill_code like concat('%',#{key},'%') or c.cname
+			like concat('%',#{key},'%') or
+			f.fname like
+			concat('%',#{key},'%'))
+		</if>
+		<if test="sdate!=null and sdate != '' and edate!=null and edate != ''">
+			and f.edate BETWEEN #{sdate} and #{edate}
+		</if>
+	</select>
+	<select id="datagridDeliveryBill" resultMap="DeliveryBillResultMap">
+		select f.id, f.bill_id,f.fname,f.amount,f.sdate, f.edate,
+		f.memo,f.op,f.cr_date,c.cname,d.code,d.order_code,d.case_model,
+		d.address,d.start_port,d.end_port,d.dport,d.rport,d.case_no,d.seal_no
+		from
+		t_fee f,t_client c,t_delivery d
+		where
+		f.client_id=c.id and
+		f.bill_id=d.id
+		<if test="fflag!=null and fflag != ''">
+			and f.flag=#{fflag}
+		</if>
+		<if test="bflag!=null and bflag != ''">
+			and d.flag=#{bflag}
+		</if>
+		<if test="client!=null and client != ''">
+			and f.client_id=#{client}
+		</if>
+		<if test="key!=null and key!=''">
+			and (f.bill_code like concat('%',#{key},'%') or c.cname
+			like concat('%',#{key},'%') or
+			f.fname like
+			concat('%',#{key},'%'))
+		</if>
+		<if test="sdate!=null and sdate != '' and edate!=null and edate != ''">
+			and f.edate BETWEEN #{sdate} and #{edate}
+		</if>
+		<if test="page.sort != null and page.sort != ''">
+			order by #{page.sort} #{page.order}
+		</if>
+		<if test="page.page > 0">
+			limit #{page.start},#{page.end}
+		</if>
+	</select>
+
+	<!-- 账单的入仓单费用列表 -->
+	<select id="getStockInBillTotal" resultType="long">
+		select
+		count(1)from t_fee f,t_client c,t_stock_in s
+		where
+		f.client_id=c.id
+		and f.bill_id=s.id
+		<if test="fflag!=null and fflag != ''">
+			and f.flag=#{fflag}
+		</if>
+		<if test="bflag!=null and bflag != ''">
+			and s.flag=#{bflag}
+		</if>
+		<if test="client!=null and client != ''">
+			and f.client_id=#{client}
+		</if>
+		<if test="key!=null and key!=''">
+			and (f.bill_code like concat('%',#{key},'%') or c.cname
+			like concat('%',#{key},'%') or
+			f.fname like
+			concat('%',#{key},'%'))
+		</if>
+		<if test="sdate!=null and sdate != '' and edate!=null and edate != ''">
+			and f.edate BETWEEN #{sdate} and #{edate}
+		</if>
+	</select>
+	<select id="datagridStockInBill" resultMap="StockInBillResultMap">
+		select f.id, f.bill_id,f.fname,f.amount,f.sdate, f.edate,
+		f.memo,f.op,f.cr_date,c.cname,s.code,s.order_code,s.car_no,s.indate,s.out_date
+		from
+		t_fee f,t_client c,t_stock_in s
+		where
+		f.client_id=c.id and
+		f.bill_id=s.id
+		<if test="fflag!=null and fflag != ''">
+			and f.flag=#{fflag}
+		</if>
+		<if test="bflag!=null and bflag != ''">
+			and s.flag=#{bflag}
+		</if>
+		<if test="client!=null and client != ''">
+			and f.client_id=#{client}
+		</if>
+		<if test="key!=null and key!=''">
+			and (f.bill_code like concat('%',#{key},'%') or c.cname
+			like concat('%',#{key},'%') or
+			f.fname like
+			concat('%',#{key},'%'))
+		</if>
+		<if test="sdate!=null and sdate != '' and edate!=null and edate != ''">
+			and f.edate BETWEEN #{sdate} and #{edate}
+		</if>
+		<if test="page.sort != null and page.sort != ''">
+			order by #{page.sort} #{page.order}
+		</if>
+		<if test="page.page > 0">
+			limit #{page.start},#{page.end}
+		</if>
+	</select>
+
+	<!-- 已出账单的列表 -->
+	<select id="getBillTotal" resultType="long">
+		select
+		count(1)
+		from t_bill b,t_client c where
+		b.client_id=c.id
+		<if test="client!=null and client != ''">
+			and b.client_id=#{client}
+		</if>
+		<if test="sdate!=null and sdate != '' and edate!=null and edate != ''">
+			and b.edate BETWEEN #{sdate} and #{edate}
+		</if>
+	</select>
+	<select id="datagridBill" resultMap="BillResultMap">
+		select b.id,b.code,b.sdate,b.edate,b.total,b.memo
+		from t_bill
+		b,t_client c where
+		b.client_id=c.id
+		<if test="client!=null and client != ''">
+			and b.client_id=#{client}
+		</if>
+		<if test="sdate!=null and sdate != '' and edate!=null and edate != ''">
+			and b.edate BETWEEN #{sdate} and #{edate}
+		</if>
+		<if test="page.sort != null and page.sort != ''">
+			order by #{page.sort} #{page.order}
+		</if>
+		<if test="page.page > 0">
+			limit #{page.start},#{page.end}
+		</if>
+	</select>
+
 	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
 		delete from t_fee
 		where id = #{id,jdbcType=INTEGER} and flag=0

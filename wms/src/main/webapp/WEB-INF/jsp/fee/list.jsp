@@ -19,7 +19,7 @@
 	function reload() {
 		$('#dg').datagrid('reload');
 	}
-	
+
 	function del() {
 		if (window.confirm("确认删除吗？")) {
 			var r = $('#dg').datagrid('getSelected');
@@ -33,7 +33,7 @@
 					error : function(data) {
 						alert("error:" + data.responseText);
 					},
-					success : function(result) {					
+					success : function(result) {
 						if (result.success) {
 							reload();
 						} else {
@@ -65,27 +65,43 @@
 			return value;
 		}
 	}
+
+	function formatDate(value, row) {
+		if (value) {
+			return new Date(value).Format("yyyy-MM-dd");
+		} else {
+			return value;
+		}
+	}
+
+	function formatType(value, row) {
+		if (value) {
+			return value == "1" ? "仓租" : "运输费用";
+		} else {
+			return value;
+		}
+	}
 </script>
 
 </head>
 <body class="easyui-layout" fit="true">
 	<div region="center" border="false" style="overflow: hidden;">
 		<!-- 用户信息列表 title="用户管理" -->
-		<table id="dg" class="easyui-datagrid" fit="true" url="${path}/fees/datagrid"
-			method="GET" toolbar="#toolbar" pagination="true" fitColumns="true"
-			singleSelect="true" rownumbers="true" striped="true" border="false"
-			nowrap="false">
+		<table id="dg" class="easyui-datagrid" fit="true"
+			url="${path}/fees/datagrid" method="GET" toolbar="#toolbar"
+			pagination="true" fitColumns="true" singleSelect="true"
+			rownumbers="true" striped="true" border="false" nowrap="false">
 			<thead>
 				<tr>
 					<th field="billCode" width="100">单号</th>
 					<th data-options="field:'client',width:100,formatter:formatClient">客户</th>
-					<th field="ftype" width="100">类型</th>
-					<th field="fname" width="100">费用名称</th>
-					<th field="price" width="100">单价</th>
-					<th field="amount" width="100">金额</th>
-					<th field="sdate" width="100">开始</th>
-					<th field="edate" width="100">结束</th>
-					<th field="flag" width="100">状态</th>
+					<th data-options="field:'ftype',width:50,formatter:formatType">类型</th>
+					<th field="fname" width="50">费用名称</th>
+					<th field="price" width="50">单价</th>
+					<th field="amount" width="50">金额</th>
+					<th data-options="field:'sdate',width:50,formatter:formatDate">开始</th>
+					<th data-options="field:'edate',width:50,formatter:formatDate">结束</th>
+					<th field="flag" width="50">状态</th>
 				</tr>
 			</thead>
 		</table>
