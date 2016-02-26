@@ -283,9 +283,7 @@
 
 			<div style="text-align: center; padding: 5px">
 				<a href="javascript:void(0)" class="easyui-linkbutton"
-					onclick="submitForm(0)">保存</a> <a href="javascript:void(0)"
-					class="easyui-linkbutton" onclick="submitForm(1)"
-					id="btn_save_and_verify">保存并审批</a>
+					onclick="submitForm(0)">保存</a> 
 			</div>
 		</div>
 	</div>

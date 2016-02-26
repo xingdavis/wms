@@ -51,6 +51,10 @@ public class FeeService {
 	public Boolean repeat(Fee obj) {
 		return feeMapper.repeatNum(obj) > 0;
 	}
+	
+	public int burnBill(String ids) {
+		return feeMapper.burnBill(ids);
+	}
 
 	public Long getDeliveryBillTotal(String fflag, String bflag, String client, String key, String sdate,
 			String edate) {

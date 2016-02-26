@@ -20,14 +20,14 @@
     where id = #{id,jdbcType=INTEGER}
   </select>
   <select id="getDatagridTotal" resultType="long">
-		select count(1) from t_menu where pid=0
+		select count(1) from t_menu where pid=0 and disable=0
 		<if test="mname != null and mname != ''">
             and name like concat('%',#{mname},'%')
         </if>
 	</select>
 
 	<select id="datagridMenu" resultType="com.xs.wms.pojo.Menu">
-		select id,mname,url from t_menu where pid=0
+		select id,mname,url from t_menu where pid=0 and disable=0
 		<if test="orderid>0">
             order by #{sort} #{order}
         </if>
@@ -37,7 +37,7 @@
 	</select>
 	
 	<select id="getAll" resultType="com.xs.wms.pojo.Menu">
-		select id,pid,orderid,icon,mname,url,disable from sysmenu where 1=1
+		select id,pid,orderid,icon,mname,url,disable from sysmenu where disable=0
 		<if test="orderid>0">
             order by #{sort} #{order}
         </if>
@@ -50,13 +50,13 @@
 		select * from t_menu where pid = 0 and disable=0
 	</select>
 	<select id="listSubMenuByparentid" parameterType="int" resultMap="BaseResultMap">
-		select * from t_menu where pid=#{pid}
+		select * from t_menu where pid=#{pid} and disable=0
 	</select>
 	<select id="getMenuById" parameterType="int" resultMap="BaseResultMap">
 		select * from t_menu where id=#{id}
 	</select>
 	<select id="listAllSubMenu" resultMap="BaseResultMap">
-		select * from t_menu where pid >0
+		select * from t_menu where pid >0 and disable=0
 	</select>
   
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >

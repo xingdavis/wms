@@ -26,7 +26,7 @@
 		var d = new Date();
 		$('#q_sdate').datebox('setValue', FormatterDate(d));
 		$('#q_edate').datebox('setValue', FormatterDate(d));
-		
+
 		$('#q_client').combogrid({
 			panelWidth : 300,
 			queryParams : {
@@ -69,6 +69,10 @@
 
 			}
 		});
+
+		var tag = $('#bill_tag').val();
+		if (tag == 'check')
+			$('#btn_burn').linkbutton('disable');
 	});
 
 	function formatClient(value, row) {
@@ -96,18 +100,57 @@
 			return value;
 		}
 	}
+
+	function burn() {
+		var rows = $('#dg').datagrid('getChecked'); // Return all rows where the checkbox has been checked
+		if (rows) {
+			var ids = new Array();
+			if (rows.length > 0) {
+				for (var i = 0; i < rows.length; i++) {
+					ids.push(rows[i].id);
+				}
+				bPost(ids);
+			} else
+				$.messager.alert('提示', '请选择要导出的账单！', 'error');
+		}
+	}
+
+	function bPost(ids) {
+		$.ajax({
+			url : path + '/fees/bill',
+			data : ids.join(','),
+			async : false,
+			type : 'POST',
+			contentType : 'application/json',
+			dataType : 'json',
+			error : function(data) {
+				alert("error:" + data.responseText);
+			},
+			success : function(result) {
+				if (result.success) {
+					alert('生成完毕！');
+					reload();
+				} else {
+					alert(result.msg);
+				}
+				
+			}
+		});
+	}
 </script>
 
 </head>
 <body class="easyui-layout" fit="true">
 	<div region="center" border="false" style="overflow: hidden;">
 		<table id="dg" class="easyui-datagrid" fit="true"
-			url="${path}/fees/bills/delivery?fflag=${f_flag}&bflag=${delivery_flag}" method="GET"
-			toolbar="#toolbar" pagination="true" fitColumns="true"
-			singleSelect="true" rownumbers="true" striped="true" border="false"
-			nowrap="false">
+			url="${path}/fees/bills/delivery?fflag=${f_flag}&bflag=${delivery_flag}"
+			method="GET" toolbar="#toolbar" pagination="false" fitColumns="true"
+			singleSelect="true" checkOnSelect="false" selectOnCheck="false"
+			rownumbers="true" striped="true" border="false" nowrap="false">
 			<thead>
 				<tr>
+					<th data-options="field:'ck',checkbox:true"></th>
+					<th data-options="field:'id',hidden:true"></th>
 					<th data-options="field:'client',width:100,formatter:formatClient">客户</th>
 					<th data-options="field:'delivery',width:100,formatter:formatBill">单号</th>
 					<!-- 
@@ -128,15 +171,17 @@
 
 		<!-- 按钮 -->
 		<div id="toolbar">
-			<input type="hidden" id="delivery_flag" value="${delivery_flag}" /><input
-				type="hidden" id="stock_in_flag" value="${stock_in_flag}" /> 
-				<input class="easyui-textbox" type="text" id="q_client" />
-				<input
+			<input type="hidden" id="bill_tag" value="${tag}" /> <input
+				type="hidden" id="delivery_flag" value="${delivery_flag}" /><input
+				type="hidden" id="stock_in_flag" value="${stock_in_flag}" /> <input
+				class="easyui-textbox" type="text" id="q_client" /> <input
 				class="easyui-textbox" type="text" id="q_key"
 				data-options="prompt:'输入客户名称或订单号查询'" /> 从：<input id="q_sdate"
 				type="text" class="easyui-datebox" /> 到：<input id="q_edate"
 				type="text" class="easyui-datebox" /> <a href="javascript:search()"
 				class="easyui-linkbutton" data-options="iconCls:'icon-search'">查询</a>
+			<a href="javascript:burn()" class="easyui-linkbutton"
+				data-options="iconCls:'icon-search'" id="btn_burn">出账单</a>
 		</div>
 
 	</div>
