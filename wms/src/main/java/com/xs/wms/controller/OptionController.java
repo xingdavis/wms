@@ -6,6 +6,7 @@ import java.util.List;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,6 +24,8 @@ import com.xs.wms.service.OptionService;
 @Controller
 @RequestMapping("/options")
 public class OptionController {
+	private static Logger logger = Logger.getLogger(OptionController.class);
+
 	@Resource
 	private OptionService optionService;
 
@@ -30,19 +33,20 @@ public class OptionController {
 	public String ListPage(Model model) {
 		return "option/list";
 	}
-	
+
 	@ResponseBody
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
 	public Json list(HttpServletRequest request) {
 		Json j = new Json();
 		try {
-			//String otype = request.getParameter("otype");
-			String otype = new String(request.getParameter("otype").getBytes("iso-8859-1"), "utf-8");
+			String otype = request.getParameter("otype");
+			//String otype = new String(request.getParameter("otype").getBytes("iso-8859-1"), "utf-8");
+			logger.info("获得请求option类型：" + otype);
 			Option o = new Option();
 			o.setOtype(otype);
 			List<Option> list = optionService.getList(o);
 			j.setObj(list);
-			j.setSuccess(true);			
+			j.setSuccess(true);
 		} catch (Exception e) {
 			j.setMsg(e.getMessage());
 		}
@@ -105,7 +109,7 @@ public class OptionController {
 	/**
 	 * 删除
 	 * 
-	 * @param 
+	 * @param
 	 * @param out
 	 */
 	@ResponseBody

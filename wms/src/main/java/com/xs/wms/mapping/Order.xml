@@ -42,23 +42,42 @@
 		count(1)
 		from t_order where flag>=0
 		<if test="order.clientId!=null and order.clientId>0">
-		    and client_id=#{order.clientId}
+			and client_id=#{order.clientId}
 		</if>
 		<if test="order.code!=null and order.code != ''">
 			and code like concat('%',#{order.code},'%')
 		</if>
 	</select>
-
 	<select id="datagridOrder" resultType="com.xs.wms.pojo.Order">
 		select
 		<include refid="Base_Column_List" />
 		from t_order o where o.flag>=0
 		<if test="order.clientId!=null and order.clientId>0">
-		    and client_id=#{order.clientId}
+			and client_id=#{order.clientId}
 		</if>
 		<if test="order.code!=null and order.code != ''">
 			and code like concat('%',#{order.code},'%')
 		</if>
+		<if test="page.sort != null and page.sort != ''">
+			order by #{page.sort} #{page.order}
+		</if>
+		<if test="page.page > 0">
+			limit #{page.start},#{page.end}
+		</if>
+	</select>
+	<!-- 外部客户只能选择输入自己的单号查 -->
+	<select id="getSelfDatagridTotal" resultType="long">
+		select
+		count(1)
+		from
+		t_order where flag>=0 and client_id=#{clientId} and code
+		=#{code}
+	</select>
+	<select id="selfDatagridOrder" resultType="com.xs.wms.pojo.Order">
+		select
+		<include refid="Base_Column_List" />
+		from t_order where flag>=0 and client_id=#{clientId} and code
+		=#{code}
 		<if test="page.sort != null and page.sort != ''">
 			order by #{page.sort} #{page.order}
 		</if>

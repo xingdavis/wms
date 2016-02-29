@@ -91,16 +91,15 @@
 <body class="easyui-layout" fit="true">
 	<div region="center" border="false" style="overflow: hidden;">
 		<div id="toolbar">
-			<input class="easyui-textbox" type="text" name="clientId"
-				id="q_client" data-options="prompt:'输入客户名称查询'" /> <input
-				class="easyui-textbox" type="text" name="code" id="q_code"
-				data-options="prompt:'输入单号查询'" /> <a href="javascript:search()"
+		<input class="easyui-textbox" type="text" id="q_client" />
+			<input class="easyui-textbox" type="text" name="code" id="q_code"
+				data-options="prompt:'输入客户名称或单号查询'" /> <a href="javascript:search()"
 				class="easyui-linkbutton" data-options="iconCls:'icon-search'">查询</a>
 			<a href="${path}/orders/new" class="easyui-linkbutton"
 				data-options="iconCls:'icon-add'">新增</a>
 		</div>
 		<table id="dg" class="easyui-datagrid" fit="true"
-			url="${path}/orders/my" method="GET" toolbar="#toolbar"
+			url="${path}/orders" method="GET" toolbar="#toolbar"
 			pagination="true" fitColumns="true" singleSelect="true"
 			rownumbers="true" striped="true" border="false" nowrap="false">
 			<thead>

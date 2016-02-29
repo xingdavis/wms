@@ -28,4 +28,8 @@ public interface IOrder {
 	Long getDatagridTotal(@Param("order") Order order);
 
 	List<Order> datagridOrder(@Param("page") PageHelper page, @Param("order") Order order);
+	
+	Long getSelfDatagridTotal(@Param("clientId") String clientId,@Param("code") String code);
+
+	List<Order> selfDatagridOrder(@Param("page") PageHelper page, @Param("clientId") String clientId,@Param("code") String code);
 }

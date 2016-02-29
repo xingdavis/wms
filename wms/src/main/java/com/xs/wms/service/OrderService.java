@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Service;
 
 import com.xs.wms.dao.IOrder;
@@ -32,12 +33,13 @@ public class OrderService {
 		return orderMapper.insert(order);
 	}
 
-	public Order get(int id){
+	public Order get(int id) {
 		return orderMapper.selectByPrimaryKey(id);
 	}
-	
+
 	/**
 	 * 同一客户相同订单号是否存在
+	 * 
 	 * @param code
 	 * @param client
 	 * @return
@@ -45,24 +47,55 @@ public class OrderService {
 	public Boolean existClientCode(String code, Integer client) {
 		return orderMapper.repeatCodeNum(code, client) > 0;
 	}
-	
+
 	/**
 	 * 获取总数
+	 * 
 	 * @param order
 	 * @return
 	 */
 	public Long getDatagridTotal(Order order) {
-		return orderMapper.getDatagridTotal(order);  
+		return orderMapper.getDatagridTotal(order);
 	}
 
 	/**
 	 * 获取列表
+	 * 
 	 * @param page
 	 * @return
 	 */
-	public List<Order> datagridOrder(PageHelper page,Order order) {
-		page.setStart((page.getPage()-1)*page.getRows());
-		page.setEnd(page.getPage()*page.getRows());
-		return orderMapper.datagridOrder(page,order);  
+	public List<Order> datagridOrder(PageHelper page, Order order) {
+		page.setStart((page.getPage() - 1) * page.getRows());
+		page.setEnd(page.getPage() * page.getRows());
+		return orderMapper.datagridOrder(page, order);
+	}
+
+	/**
+	 * 获取总数
+	 * 
+	 * @param order
+	 * @return
+	 */
+	public Long getDatagridTotal(String clientId, String code) {
+		String client = "0";
+		if (clientId != "")
+			client = clientId;
+		return orderMapper.getSelfDatagridTotal(client, code);
+	}
+
+	/**
+	 * 获取列表
+	 * 
+	 * @param page
+	 * @return
+	 */
+	public List<Order> datagridOrder(PageHelper page, String clientId, String code) {
+		String client = "0";
+		if (clientId != "")
+			client = clientId;
+
+		page.setStart((page.getPage() - 1) * page.getRows());
+		page.setEnd(page.getPage() * page.getRows());
+		return orderMapper.selfDatagridOrder(page, client, code);
 	}
 }

@@ -240,7 +240,10 @@
 	function getOptionList(flag, els) {
 		$.ajax({
 			type : 'GET',
-			url : path + '/options/list?otype=' + encodeURIComponent(flag),
+			url : path + '/options/list',
+			data : {
+				otype : flag
+			},
 			async : false,
 			contentType : 'application/json',
 			dataType : 'json',

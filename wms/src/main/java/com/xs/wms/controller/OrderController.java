@@ -71,13 +71,38 @@ public class OrderController {
 	}
 	
 	/**
+	 * 查询我的订单datagrid
+	 * 
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/my", method = RequestMethod.GET)
+	public DataGrid myDatagrid(PageHelper page, String clientId,String code) {
+		DataGrid dg = new DataGrid();
+		dg.setTotal(orderService.getDatagridTotal(clientId, code));
+		List<Order> list = orderService.datagridOrder(page, clientId, code);
+		dg.setRows(list);
+		return dg;
+	}
+	
+	/**
 	 * 客户查订单页面
 	 * 
 	 * @return
 	 */
-	@RequestMapping(value = "/myorder", method = RequestMethod.GET)
-	public String indexPage(Model model) {
+	@RequestMapping(value = "/mypage", method = RequestMethod.GET)
+	public String myPage(Model model) {
 		return "order/myorders";
+	}
+	
+	/**
+	 * 客户查订单页面
+	 * 
+	 * @return
+	 */
+	@RequestMapping(value = "/list", method = RequestMethod.GET)
+	public String list(Model model) {
+		return "order/list";
 	}
 	
 	/**
