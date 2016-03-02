@@ -57,7 +57,7 @@ public class DeliveryController {
 	public Json get(@PathVariable Integer id) {
 		Json j = new Json();
 		try {
-			Delivery obj = this.deliveryService.get(id);
+			Delivery obj = this.deliveryService.getById(id);
 			j.setSuccess(true);
 			j.setObj(obj);
 		} catch (Exception e) {
@@ -98,7 +98,7 @@ public class DeliveryController {
 		Json j = new Json();
 		boolean ok = false;
 		try {
-			Delivery oObj = deliveryService.get(id);
+			Delivery oObj = deliveryService.getById(id);
 			int flag = oObj.getFlag();
 			String code = obj.getCode();
 			if (code != null & code != "") {

@@ -17,7 +17,7 @@ public class DeliveryService {
 	@Resource
 	private IDelivery deliveryMapper;
 
-	public Delivery get(Integer id) {
+	public Delivery getById(Integer id) {
 		return this.deliveryMapper.selectByPrimaryKey(id);
 	}
 

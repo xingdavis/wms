@@ -1,10 +1,22 @@
 package com.xs.wms.controller;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.xs.wms.common.ExcelUtils;
 import com.xs.wms.pojo.Bill;
 import com.xs.wms.pojo.Delivery;
 import com.xs.wms.pojo.Fee;
@@ -21,6 +34,7 @@ import com.xs.wms.pojo.User;
 import com.xs.wms.pojo.easyui.DataGrid;
 import com.xs.wms.pojo.easyui.Json;
 import com.xs.wms.pojo.easyui.PageHelper;
+import com.xs.wms.service.DeliveryService;
 import com.xs.wms.service.FeeService;
 
 @Controller
@@ -28,11 +42,12 @@ import com.xs.wms.service.FeeService;
 public class FeeController {
 	@Resource
 	private FeeService feeService;
+	@Resource
+	private DeliveryService deliveryService;
 
 	@ResponseBody
 	@RequestMapping(value = "/datagrid", method = RequestMethod.GET)
-	public DataGrid datagrid(PageHelper page, String client, String key,
-			String sdate, String edate) {
+	public DataGrid datagrid(PageHelper page, String client, String key, String sdate, String edate) {
 		DataGrid dg = new DataGrid();
 		dg.setTotal(feeService.getDatagridTotal(client, key, sdate, edate));
 		List<Fee> list = feeService.datagrid(page, client, key, sdate, edate);
@@ -84,13 +99,11 @@ public class FeeController {
 		Json j = new Json();
 		boolean ok = false;
 		try {
-			if (obj.getBillId() > 0 & obj.getClientId() > 0
-					& obj.getFname() != "" & obj.getSdate() != null
+			if (obj.getBillId() > 0 & obj.getClientId() > 0 & obj.getFname() != "" & obj.getSdate() != null
 					& obj.getEdate() != null) {
 				if (!feeService.repeat(obj)) {
 					obj.setCrDate(new Date());
-					obj.setOp(((User) request.getSession().getAttribute("USER"))
-							.getId());
+					obj.setOp(((User) request.getSession().getAttribute("USER")).getId());
 					if (feeService.insert(obj) > 0) {
 						ok = true;
 						j.setMsg("新增成功！");
@@ -117,18 +130,15 @@ public class FeeController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/{id}", method = RequestMethod.PUT, consumes = "application/json")
-	public Json editUser(HttpServletRequest request, @PathVariable Integer id,
-			@RequestBody Fee obj) {
+	public Json editUser(HttpServletRequest request, @PathVariable Integer id, @RequestBody Fee obj) {
 		Json j = new Json();
 		boolean ok = false;
 		try {
 			Fee oObj = feeService.get(id);
-			if (obj.getBillId() > 0 & obj.getClientId() > 0
-					& obj.getFname() != "" & obj.getSdate() != null
+			if (obj.getBillId() > 0 & obj.getClientId() > 0 & obj.getFname() != "" & obj.getSdate() != null
 					& obj.getEdate() != null) {
 				if (oObj.getFlag() == 0) {
-					obj.setOp(((User) request.getSession().getAttribute("USER"))
-							.getId());
+					obj.setOp(((User) request.getSession().getAttribute("USER")).getId());
 					if (feeService.update(obj) > 0) {
 						ok = true;
 						j.setMsg("修改成功！");
@@ -197,8 +207,7 @@ public class FeeController {
 	}
 
 	@RequestMapping(value = "/page/{ftype}/{id}", method = RequestMethod.GET)
-	public String editPage(@PathVariable Integer ftype,
-			@PathVariable Integer id, Model model) {
+	public String editPage(@PathVariable Integer ftype, @PathVariable Integer id, Model model) {
 		model.addAttribute("ftype", ftype);
 		model.addAttribute("fee_id", id);
 		return "fee/fee";
@@ -244,8 +253,7 @@ public class FeeController {
 
 	@ResponseBody
 	@RequestMapping(value = "/bills", method = RequestMethod.GET)
-	public DataGrid bill_datagrid(PageHelper page, String client, String sdate,
-			String edate) {
+	public DataGrid bill_datagrid(PageHelper page, String client, String sdate, String edate) {
 		DataGrid dg = new DataGrid();
 		dg.setTotal(feeService.getBillTotal(client, sdate, edate));
 		List<Bill> list = feeService.datagridBill(page, client, sdate, edate);
@@ -255,27 +263,65 @@ public class FeeController {
 
 	@ResponseBody
 	@RequestMapping(value = "/bills/delivery", method = RequestMethod.GET)
-	public DataGrid delivery_datagrid(PageHelper page, String fflag,
-			String bflag, String client, String key, String sdate, String edate) {
+	public DataGrid delivery_datagrid(PageHelper page, String fflag, String bflag, String client, String key,
+			String sdate, String edate) {
 		DataGrid dg = new DataGrid();
-		dg.setTotal(feeService.getDeliveryBillTotal(fflag, bflag, client, key,
-				sdate, edate));
-		List<Fee> list = feeService.datagridDeliveryBill(page, fflag, bflag,
-				client, key, sdate, edate);
+		dg.setTotal(feeService.getDeliveryBillTotal(fflag, bflag, client, key, sdate, edate));
+		List<Fee> list = feeService.datagridDeliveryBill(page, fflag, bflag, client, key, sdate, edate);
 		dg.setRows(list);
 		return dg;
 	}
 
 	@ResponseBody
 	@RequestMapping(value = "/bills/stock_in", method = RequestMethod.GET)
-	public DataGrid stockin_datagrid(PageHelper page, String fflag,
-			String bflag, String client, String key, String sdate, String edate) {
+	public DataGrid stockin_datagrid(PageHelper page, String fflag, String bflag, String client, String key,
+			String sdate, String edate) {
 		DataGrid dg = new DataGrid();
-		dg.setTotal(feeService.getStockInBillTotal(fflag, bflag, client, key,
-				sdate, edate));
-		List<Fee> list = feeService.datagridStockInBill(page, fflag, bflag,
-				client, key, sdate, edate);
+		dg.setTotal(feeService.getStockInBillTotal(fflag, bflag, client, key, sdate, edate));
+		List<Fee> list = feeService.datagridStockInBill(page, fflag, bflag, client, key, sdate, edate);
 		dg.setRows(list);
 		return dg;
+	}
+
+	@RequestMapping(value = "/bills/report")
+	public void ExportDeliveryBill(HttpServletRequest request, HttpServletResponse response) {
+		try {
+			PageHelper page = new PageHelper();
+			List<Fee> fees = feeService.datagridDeliveryBill(page, "1", "1", "1", "", "2011-01-01", "2016-03-01");
+			List<Fee> list = new ArrayList<Fee>();
+			Map<Integer, Fee> map = new HashMap<Integer, Fee>();
+			double total = 0;
+			for (int i = 0; i < fees.size(); i++) {
+				Fee obj = fees.get(i);
+				Integer billId = obj.getBillId();
+				total += obj.getAmount();
+				if (map.containsKey(billId)) {
+					Fee nObj = map.get(billId);
+					String fname = nObj.getFname() + "\n" + obj.getFname() + ":" + obj.getAmount().toString();
+					double amount = nObj.getAmount() + obj.getAmount();
+					nObj.setFname(fname);
+					nObj.setAmount(amount);
+				} else {
+					map.put(billId, obj);
+					String fname = obj.getFname() + ":" + obj.getAmount().toString();
+					double amount = obj.getAmount();
+					list.add(obj);
+					Fee nObj = list.get(list.size() - 1);
+					nObj.setFname(fname);
+					nObj.setAmount(amount);
+				}
+			}
+			Fee bt = new Fee();
+			bt.setFname("总费用：");
+			bt.setAmount(total);
+			list.add(bt);
+			String[] header = { "单号", "箱型", "提柜点", "还柜点", "箱号", "费目", "金额" };
+			String[] fileNames = { "delivery.code", "delivery.caseModel", "delivery.dport", "delivery.rport",
+					"delivery.caseNo", "fname", "amount" };
+			ExcelUtils.exportBill(response, header, fileNames, list, "exportBill", "exportBill",
+					fees.get(0).getClient().getCname());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 }

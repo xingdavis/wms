@@ -71,8 +71,10 @@
 		});
 
 		var tag = $('#bill_tag').val();
-		if (tag == 'check')
+		if (tag == 'check') {
 			$('#btn_burn').linkbutton('disable');
+			//$('#btn_export').linkbutton('disable');
+		}
 	});
 
 	function formatClient(value, row) {
@@ -115,6 +117,10 @@
 		}
 	}
 
+	function exportBill() {
+		window.open(path + '/fees/bills/report');
+	}
+
 	function bPost(ids) {
 		$.ajax({
 			url : path + '/fees/bill',
@@ -133,7 +139,7 @@
 				} else {
 					alert(result.msg);
 				}
-				
+
 			}
 		});
 	}
@@ -181,7 +187,9 @@
 				type="text" class="easyui-datebox" /> <a href="javascript:search()"
 				class="easyui-linkbutton" data-options="iconCls:'icon-search'">查询</a>
 			<a href="javascript:burn()" class="easyui-linkbutton"
-				data-options="iconCls:'icon-search'" id="btn_burn">出账单</a>
+				data-options="iconCls:'icon-search'" id="btn_burn">出账单</a> <a
+				href="javascript:exportBill()" class="easyui-linkbutton"
+				data-options="iconCls:'icon-search'" id="btn_export">导出账单</a>
 		</div>
 
 	</div>
