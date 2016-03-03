@@ -104,6 +104,8 @@
 	}
 
 	function burn() {
+		if (!$('#fm').form('validate'))
+			return;
 		var rows = $('#dg').datagrid('getChecked'); // Return all rows where the checkbox has been checked
 		if (rows) {
 			var ids = new Array();
@@ -124,9 +126,14 @@
 	function bPost(ids) {
 		$.ajax({
 			url : path + '/fees/bill',
-			data : ids.join(','),
+			data : {
+				ids : ids.join(','),
+				client : $('#q_client').combogrid('getValue'),
+				sdate : $('#q_sdate').datebox('getValue'),
+				edate : $('#q_edate').datebox('getValue')
+			},
 			async : false,
-			type : 'POST',
+			type : 'GET',
 			contentType : 'application/json',
 			dataType : 'json',
 			error : function(data) {
@@ -177,19 +184,26 @@
 
 		<!-- 按钮 -->
 		<div id="toolbar">
-			<input type="hidden" id="bill_tag" value="${tag}" /> <input
-				type="hidden" id="delivery_flag" value="${delivery_flag}" /><input
-				type="hidden" id="stock_in_flag" value="${stock_in_flag}" /> <input
-				class="easyui-textbox" type="text" id="q_client" /> <input
+			<form id="fm">
+				<input type="hidden" id="bill_tag" value="${tag}" /> <input
+					type="hidden" id="delivery_flag" value="${delivery_flag}" /><input
+					type="hidden" id="stock_in_flag" value="${stock_in_flag}" /> <input
+					class="easyui-textbox" type="text" id="q_client"
+					data-options="required:true" />
+				<!-- 
+				<input
 				class="easyui-textbox" type="text" id="q_key"
-				data-options="prompt:'输入客户名称或订单号查询'" /> 从：<input id="q_sdate"
-				type="text" class="easyui-datebox" /> 到：<input id="q_edate"
-				type="text" class="easyui-datebox" /> <a href="javascript:search()"
-				class="easyui-linkbutton" data-options="iconCls:'icon-search'">查询</a>
-			<a href="javascript:burn()" class="easyui-linkbutton"
-				data-options="iconCls:'icon-search'" id="btn_burn">出账单</a> <a
-				href="javascript:exportBill()" class="easyui-linkbutton"
-				data-options="iconCls:'icon-search'" id="btn_export">导出账单</a>
+				data-options="prompt:'输入客户名称或订单号查询'" />
+				 -->
+				从：<input id="q_sdate" type="text" class="easyui-datebox" /> 到：<input
+					id="q_edate" type="text" class="easyui-datebox" /> <a
+					href="javascript:search()" class="easyui-linkbutton"
+					data-options="iconCls:'icon-search'">查询</a> <a
+					href="javascript:burn()" class="easyui-linkbutton"
+					data-options="iconCls:'icon-search'" id="btn_burn">出账单</a> <a
+					href="javascript:exportBill()" class="easyui-linkbutton"
+					data-options="iconCls:'icon-search'" id="btn_export">导出账单</a>
+			</form>
 		</div>
 
 	</div>

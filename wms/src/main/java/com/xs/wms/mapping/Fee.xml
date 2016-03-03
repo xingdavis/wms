@@ -327,9 +327,10 @@
 		client_id=#{clientId,jdbcType=INTEGER}
 	</select>
 	<select id="burnBill" resultType="java.lang.Integer">
-		call burn_bill(#{ids,jdbcType=VARCHAR,mode=IN})
+		call
+		burn_bill(#{ids,jdbcType=VARCHAR,mode=IN},#{clientId,jdbcType=INTEGER,mode=IN},#{sDate,jdbcType=VARCHAR,mode=IN},#{eDate,jdbcType=VARCHAR,mode=IN},#{operatorId,jdbcType=INTEGER,mode=IN})
 	</select>
-	
+
 	<insert id="insert" parameterType="com.xs.wms.pojo.Fee">
 		insert into t_fee (id,
 		bill_id, bill_code, client_id,

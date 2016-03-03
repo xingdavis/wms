@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.xs.wms.common.ExcelUtils;
@@ -70,22 +71,22 @@ public class FeeController {
 		return j;
 	}
 
-	@ResponseBody
-	@RequestMapping(value = "/bill", method = RequestMethod.POST)
-	public Json burnBill(HttpServletRequest request, @RequestBody String ids) {
+	@RequestMapping(value = "/bill", method = RequestMethod.GET)
+	public Json burnBill(HttpServletRequest request, @RequestParam("ids") String ids, @RequestParam("client") String clientId,
+			@RequestParam("sdate") String sDate, @RequestParam("edate") String eDate) {
 		Json j = new Json();
 		boolean ok = false;
 		try {
-			if (ids != "") {
-				int rtn = feeService.burnBill(ids);
+			if (ids != "" & clientId != "" & sDate != "" & eDate != "") {
+				Integer op = ((User) request.getSession().getAttribute("USER")).getId();
+				int rtn = feeService.burnBill(ids, Integer.parseInt(clientId), sDate, eDate, op);
 				if (rtn == 0) {
 					ok = true;
 					j.setMsg("生成成功！");
-					// j.setObj(obj);
 				} else
 					j.setMsg("生成失败！");
 			} else
-				j.setMsg("请选择费用明细！");
+				j.setMsg("请确保参数已输入包括费用明细、客户、起止日期！");
 		} catch (Exception e) {
 			j.setMsg(e.getMessage());
 		}

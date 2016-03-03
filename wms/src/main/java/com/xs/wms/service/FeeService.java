@@ -52,8 +52,8 @@ public class FeeService {
 		return feeMapper.repeatNum(obj) > 0;
 	}
 	
-	public int burnBill(String ids) {
-		return feeMapper.burnBill(ids);
+	public int burnBill(String ids,Integer clientId,String sDate,String eDate,Integer operatorId) {
+		return feeMapper.burnBill(ids,clientId,sDate,eDate,operatorId);
 	}
 
 	public Long getDeliveryBillTotal(String fflag, String bflag, String client, String key, String sdate,

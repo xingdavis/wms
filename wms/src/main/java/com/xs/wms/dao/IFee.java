@@ -29,8 +29,9 @@ public interface IFee {
 
 	int repeatNum(Fee fee);
 
-	int burnBill(String ids);
-	
+	int burnBill(@Param("ids") String ids, @Param("clientId") Integer client, @Param("sDate") String sDate,
+			@Param("eDate") String eDate, @Param("operatorId") Integer operatorId);
+
 	Long getDeliveryBillTotal(@Param("fflag") String fflag, @Param("bflag") String bflag,
 			@Param("client") String client, @Param("key") String key, @Param("sdate") String sdate,
 			@Param("edate") String edate);
