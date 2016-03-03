@@ -8,6 +8,10 @@
 
 <script type="text/javascript">
 	function submitForm(flag) {
+		var g = $('#e_billId').combogrid('grid');
+		var r = g.datagrid('getSelected');
+		if (r)
+			$('#e_billCode').val(r.code);
 		if (!$('#fm').form('validate'))
 			return;
 		var mesTitle = '';
@@ -123,8 +127,6 @@
 			$('#e_edate').datebox('setValue', d);
 		}
 
-		initBill(billUrl, txtField, qParms, cols)
-
 		$('#e_client').combogrid({
 			panelWidth : 300,
 			queryParams : {
@@ -173,16 +175,19 @@
 
 		var client_id = $('#q_client_id').val();
 		var bill_id = $('#q_bill_id').val();
-		if (client_id != '')
+		if ($('#e_id').val() == '' & client_id != '' & client_id != '0')
 			$('#e_client').combogrid("setValue", client_id);
-		if (bill_id != '') {
-			$('#e_billId').combogrid("setValue", bill_id);
-			var r = $('#e_billId').combogrid("getValue");
-// 			var g = $('#e_billId').combogrid('grid');
-// 			g.datagrid('selectRecord', bill_id);
-// 			var r = g.datagrid('getSelected');
-// 			$('#e_billCode').val(r.code);
+		if (bill_id == '0') {
+			bill_id = '';
+			//$('#e_billId').combogrid("setValue", bill_id);
+			//var r = $('#e_billId').combogrid("getValue");
+			// 			var g = $('#e_billId').combogrid('grid');
+			// 			g.datagrid('selectRecord', bill_id);
+			// 			var r = g.datagrid('getSelected');
+			// 			$('#e_billCode').val(r.code);
 		}
+
+		initBill(billUrl, txtField, qParms, cols, bill_id);
 
 		calAmount();
 	});
@@ -201,12 +206,13 @@
 		}
 	}
 
-	function initBill(url, txtField, qParms, cols) {
+	function initBill(url, txtField, qParms, cols, defaultValue) {
 		$('#e_billId').combogrid(
 				{
 					panelWidth : 300,
 					queryParams : qParms,
 					mode : 'remote',
+					value : defaultValue,
 					idField : 'id',
 					textField : txtField,
 					method : 'get',
@@ -311,7 +317,7 @@
 					<tr>
 						<td>费目:</td>
 						<td><input class="easyui-combobox" id="e_fname" name="fname"
-							data-options="valueField: 'oname',textField: 'oname',method : 'GET'"></td>
+							data-options="required:true,valueField: 'oname',textField: 'oname',method : 'GET'"></td>
 					</tr>
 					<tr>
 						<td>单价:</td>
