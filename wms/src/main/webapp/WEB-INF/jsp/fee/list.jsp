@@ -49,6 +49,21 @@
 		var r = $('#dg').datagrid('getSelected');
 		if (r)
 			location.href = '${path}/fees/page/' + r.ftype + '/' + r.id;
+		_AddTab('费用管理-编辑[' + r.id + ']', '${path}/fees/page/' + r.ftype + '/'
+				+ r.id);
+	}
+
+	function add(type) {
+		var r = $('#dg').datagrid('getSelected');
+		var client_id = 0;
+		var bill_id = 0;
+		if (r) {
+			client_id = r.clientId;
+			bill_id = r.billId;
+		}
+		_AddTab('费用管理-新增[' + type + '-' + client_id + '-' + bill_id + ']',
+				'${path}/fees/page/' + type + '/' + client_id + '/' + bill_id
+						+ '/');
 	}
 
 	//DOM加载完毕执行
@@ -113,9 +128,9 @@
 				type="text" class="easyui-datebox" /> 到：<input id="q_edate"
 				type="text" class="easyui-datebox" /> <a href="javascript:search()"
 				class="easyui-linkbutton" data-options="iconCls:'icon-search'">查询</a>
-			<a href="${path}/fees/page/1" class="easyui-linkbutton"
+			<a href="javascript:add(1)" class="easyui-linkbutton"
 				data-options="iconCls:'icon-add'">新增仓租</a> <a
-				href="${path}/fees/page/2" class="easyui-linkbutton"
+				href="javascript:add(2)" class="easyui-linkbutton"
 				data-options="iconCls:'icon-add'">新增运输费用</a> <a
 				href="javascript:del()" class="easyui-linkbutton"
 				data-options="iconCls:'icon-remove'">删除</a> <a

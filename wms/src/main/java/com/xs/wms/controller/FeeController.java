@@ -201,9 +201,11 @@ public class FeeController {
 	 * 
 	 * @return
 	 */
-	@RequestMapping(value = "/page/{ftype}", method = RequestMethod.GET)
-	public String addPage(@PathVariable Integer ftype, Model model) {
+	@RequestMapping(value = "/page/{ftype}/{client_id}/{bill_id}", method = RequestMethod.GET)
+	public String addPage(@PathVariable Integer ftype,@PathVariable Integer client_id,@PathVariable Integer bill_id, Model model) {
 		model.addAttribute("ftype", ftype);
+		model.addAttribute("client_id", client_id);
+		model.addAttribute("bill_id", bill_id);
 		return "fee/fee";
 	}
 

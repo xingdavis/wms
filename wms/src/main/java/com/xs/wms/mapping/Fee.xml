@@ -21,6 +21,7 @@
 		<id column="id" property="id" jdbcType="INTEGER" />
 		<result column="bill_id" property="billId" jdbcType="INTEGER" />
 		<result column="bill_code" property="billCode" jdbcType="VARCHAR" />
+		<result column="client_id" property="clientId" jdbcType="INTEGER" />
 		<result column="ftype" property="ftype" jdbcType="SMALLINT" />
 		<result column="fname" property="fname" jdbcType="VARCHAR" />
 		<result column="price" property="price" jdbcType="DOUBLE" />
@@ -136,7 +137,7 @@
 	</select>
 	<!-- 费用列表 -->
 	<select id="datagrid" resultMap="BaseResultMap1">
-		select f.id, f.bill_id, f.bill_code,
+		select f.id, f.bill_id, f.bill_code,f.client_id,
 		f.ftype,f.fname,f.price,f.amount,
 		f.sdate, f.edate,
 		f.memo,f.flag,f.op,f.cr_date,f.cr_date,c.cname

@@ -39,7 +39,7 @@
 				} else {
 					alert(result.msg);
 				}
-				location.href = '${path}/fees/list';
+				//location.href = '${path}/fees/list';
 			}
 		});
 	}
@@ -170,6 +170,20 @@
 					});
 			}
 		});
+
+		var client_id = $('#q_client_id').val();
+		var bill_id = $('#q_bill_id').val();
+		if (client_id != '')
+			$('#e_client').combogrid("setValue", client_id);
+		if (bill_id != '') {
+			$('#e_billId').combogrid("setValue", bill_id);
+			var r = $('#e_billId').combogrid("getValue");
+// 			var g = $('#e_billId').combogrid('grid');
+// 			g.datagrid('selectRecord', bill_id);
+// 			var r = g.datagrid('getSelected');
+// 			$('#e_billCode').val(r.code);
+		}
+
 		calAmount();
 	});
 
@@ -215,9 +229,11 @@
 							$('#e_billId').combogrid("setValue", q);
 						}
 					},
-					/* onChange:function(newValue,oldValue){
-						alert(newValue);
-					} */
+					onChange : function(newValue, oldValue) {
+						//$('#e_billCode').val(r.code);
+						//var g = $('#e_billId').combogrid('grid');
+						//g.datagrid('selectRecord', bill_id);
+					},
 					onSelect : function(index, row) {
 						$('#e_billCode').val(row.code);
 						//getOrder(row.id);
@@ -271,6 +287,8 @@
 			<form id="fm" method="post">
 				<input type="hidden" name="id" id="e_id" value="${fee_id}" /> <input
 					type="hidden" id="q_ftype" value="${ftype}" /> <input
+					type="hidden" id="q_client_id" value="${client_id}" /><input
+					type="hidden" id="q_bill_id" value="${bill_id}" /> <input
 					type="hidden" name="billCode" id="e_billCode" />
 				<table cellpadding="5">
 					<tr>

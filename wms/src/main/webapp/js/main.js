@@ -64,3 +64,25 @@ Date.prototype.Format = function(fmt) { // author: meizz
 Date.prototype.DiffDays = function(date) {
 	return (this.getTime() - date.getTime()) / (24 * 60 * 60 * 1000);
 }
+
+//添加tab窗口
+function _AddTab(title, url) {
+	var tabs = parent.$('#mainTabs');
+	var src = url;
+	var opts = {
+		title : title,
+		closable : true,
+		//iconCls : node.iconCls,
+		content : $
+				.formatString(
+						'<iframe src="{0}" allowTransparency="true" style="border:0;width:99%;height:99%;padding-left:2px;" frameBorder="0"></iframe>',
+						src),
+		border : false,
+		fit : true
+	};
+	if (tabs.tabs('exists', opts.title)) {
+		tabs.tabs('select', opts.title);
+	} else {
+		tabs.tabs('add', opts);
+	}
+}
