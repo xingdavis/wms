@@ -65,6 +65,13 @@
 		$('#dg').datagrid('reload');
 	}
 
+	//刷新
+	function exportOrder() {
+		var row = $('#dg').datagrid('getSelected');
+		if (row)
+			window.open(path + '/orders/report/' + row.id);
+	}
+
 	function formatDate(value, row) {
 		if (value) {
 			return new Date(value).Format("yyyy-MM-dd");
@@ -97,7 +104,9 @@
 				data-options="prompt:'输入单号查询'" /> <a href="javascript:search()"
 				class="easyui-linkbutton" data-options="iconCls:'icon-search'">查询</a>
 			<a href="${path}/orders/new" class="easyui-linkbutton"
-				data-options="iconCls:'icon-add'">新增</a>
+				data-options="iconCls:'icon-add'">新增</a> <a
+				href="javascript:exportOrder()" class="easyui-linkbutton"
+				data-options="iconCls:'icon-add'">打印路线图</a>
 		</div>
 		<table id="dg" class="easyui-datagrid" fit="true"
 			url="${path}/orders/my" method="GET" toolbar="#toolbar"

@@ -16,6 +16,8 @@ public class Order {
 	private String code;
 
 	private Integer clientId;
+	
+	private Client client;
 
 	private String contactMan;
 
@@ -104,5 +106,13 @@ public class Order {
 
 	public void setOrder_details(List<Order_detail> details) {
 		this.order_details = details;
+	}
+	
+	public Client getClient() {
+		return client;
+	}
+
+	public void setClient(Client client) {
+		this.client = client;
 	}
 }

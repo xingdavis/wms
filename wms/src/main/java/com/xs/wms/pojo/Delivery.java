@@ -14,6 +14,8 @@ public class Delivery {
 	private Integer orderId;
 	
 	private String orderCode;
+	
+	private Order order;
 
 	private String carNo;
 
@@ -315,5 +317,13 @@ public class Delivery {
 
 	public void setFlag(Integer flag) {
 		this.flag = flag;
+	}
+	
+	public Order getOrder() {
+		return order;
+	}
+
+	public void setOrder(Order order) {
+		this.order = order;
 	}
 }

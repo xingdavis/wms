@@ -114,16 +114,13 @@
 			success : function(result) {
 				//var result = eval('(' + result + ')');
 				if (result.success) {
-					//alert(result.obj);
-					mesTitle='订单已提交!';
-					location.href = '${path}/orders/myorder'
+					if (window.confirm("入仓订单已生成，订单号：" + result.obj.code + "。查看导出入仓路线图吗？"))
+						location.href = '${path}/orders/report/' + result.obj.id;
+					else
+						location.href = '${path}/orders/mypage';
 				} else {
-					mesTitle = '保存失败!';
+					alert(result.msg);
 				}
-				$.messager.show({
-					title : mesTitle,
-					msg : result.msg
-				});
 			}
 		});
 	}
@@ -132,7 +129,7 @@
         if (!$('#fm_client').form('validate'))
         	return;
         
-		var order = JSON.stringify($('#fm_client').serializeObject());
+		var d = JSON.stringify($('#fm_client').serializeObject());
 		
 		
 		$.ajax({

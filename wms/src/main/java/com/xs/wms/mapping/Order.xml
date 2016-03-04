@@ -9,27 +9,35 @@
 		<result column="contact_tel" jdbcType="VARCHAR" property="contactTel" />
 		<result column="order_date" jdbcType="TIMESTAMP" property="orderDate" />
 		<result column="flag" property="flag" jdbcType="TINYINT" />
+		<association property="client" column="client_id"
+			javaType="com.xs.wms.pojo.Client">
+			<id property="id" column="id" />
+			<result column="cname" property="cname" jdbcType="VARCHAR" />
+		</association>
 		<collection property="order_details" column="id" javaType="ArrayList"
 			select="com.xs.wms.dao.IOrder_detail.getDetailsByOrderId" />
 	</resultMap>
 	<sql id="Base_Column_List">
-		id, code, client_id clientId, contact_man contactMan,
-		contact_tel contactTel, order_date orderDate,
-		flag
+		o.id, o.code, o.client_id, o.contact_man,
+		o.contact_tel,
+		o.order_date,
+		o.flag,c.cname
 	</sql>
 	<select id="selectByPrimaryKey" parameterType="java.lang.Integer"
 		resultMap="BaseResultMap">
 		select
 		<include refid="Base_Column_List" />
-		from t_order
-		where id = #{id,jdbcType=INTEGER}
+		from t_order o ,t_client c where o.client_id=c.id
+		and o.id =
+		#{id,jdbcType=INTEGER}
 	</select>
 	<select id="selectByCode" parameterType="java.lang.String"
 		resultMap="BaseResultMap">
 		select
 		<include refid="Base_Column_List" />
-		from t_order
-		where code = #{code,jdbcType=VARCHAR}
+		from t_order o ,t_client c where o.client_id=c.id
+		and o.code =
+		#{code,jdbcType=VARCHAR}
 	</select>
 	<select id="repeatCodeNum" resultType="java.lang.Integer">
 		select count(1) from
@@ -48,15 +56,15 @@
 			and code like concat('%',#{order.code},'%')
 		</if>
 	</select>
-	<select id="datagridOrder" resultType="com.xs.wms.pojo.Order">
+	<select id="datagridOrder" resultMap="BaseResultMap">
 		select
 		<include refid="Base_Column_List" />
-		from t_order o where o.flag>=0
+		from t_order o ,t_client c where o.client_id=c.id and o.flag>=0
 		<if test="order.clientId!=null and order.clientId>0">
-			and client_id=#{order.clientId}
+			and o.client_id=#{order.clientId}
 		</if>
 		<if test="order.code!=null and order.code != ''">
-			and code like concat('%',#{order.code},'%')
+			and o.code like concat('%',#{order.code},'%')
 		</if>
 		<if test="page.sort != null and page.sort != ''">
 			order by #{page.sort} #{page.order}
@@ -73,10 +81,10 @@
 		t_order where flag>=0 and client_id=#{clientId} and code
 		=#{code}
 	</select>
-	<select id="selfDatagridOrder" resultType="com.xs.wms.pojo.Order">
+	<select id="selfDatagridOrder" resultMap="BaseResultMap">
 		select
 		<include refid="Base_Column_List" />
-		from t_order where flag>=0 and client_id=#{clientId} and code
+		from t_order  o,t_client c where o.client_id=c.id and o.flag>=0 and o.client_id=#{clientId} and o.code
 		=#{code}
 		<if test="page.sort != null and page.sort != ''">
 			order by #{page.sort} #{page.order}

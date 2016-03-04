@@ -3,6 +3,8 @@ package com.xs.wms.controller;
 import java.util.List;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
@@ -13,17 +15,19 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.xs.wms.common.ExcelUtils;
+
 import com.xs.wms.pojo.Order;
 import com.xs.wms.pojo.Order_detail;
-import com.xs.wms.pojo.Stock_in;
-import com.xs.wms.pojo.User;
+
+
 import com.xs.wms.pojo.easyui.DataGrid;
 import com.xs.wms.pojo.easyui.Json;
 import com.xs.wms.pojo.easyui.PageHelper;
-import com.xs.wms.service.ClientService;
+
 import com.xs.wms.service.OrderService;
 import com.xs.wms.service.Order_detailService;
-import com.xs.wms.testprj.MainTest;
+
 
 @Controller
 @RequestMapping("/orders")
@@ -31,12 +35,12 @@ public class OrderController {
 	private static Logger logger = Logger.getLogger(OrderController.class);
 	@Resource
 	private OrderService orderService;
-
+	
 	@Resource
 	private Order_detailService order_detailService;
 
 	/**
-	 *获取入仓单
+	 * 获取入仓单
 	 * 
 	 * @return
 	 */
@@ -54,7 +58,7 @@ public class OrderController {
 		}
 		return j;
 	}
-	
+
 	/**
 	 * 查询我的订单datagrid
 	 * 
@@ -69,7 +73,7 @@ public class OrderController {
 		dg.setRows(list);
 		return dg;
 	}
-	
+
 	/**
 	 * 查询我的订单datagrid
 	 * 
@@ -77,14 +81,14 @@ public class OrderController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/my", method = RequestMethod.GET)
-	public DataGrid myDatagrid(PageHelper page, String clientId,String code) {
+	public DataGrid myDatagrid(PageHelper page, String clientId, String code) {
 		DataGrid dg = new DataGrid();
 		dg.setTotal(orderService.getDatagridTotal(clientId, code));
 		List<Order> list = orderService.datagridOrder(page, clientId, code);
 		dg.setRows(list);
 		return dg;
 	}
-	
+
 	/**
 	 * 客户查订单页面
 	 * 
@@ -94,7 +98,7 @@ public class OrderController {
 	public String myPage(Model model) {
 		return "order/myorders";
 	}
-	
+
 	/**
 	 * 客户查订单页面
 	 * 
@@ -104,7 +108,7 @@ public class OrderController {
 	public String list(Model model) {
 		return "order/list";
 	}
-	
+
 	/**
 	 * 客户新增订单页面
 	 * 
@@ -136,7 +140,7 @@ public class OrderController {
 						}
 						j.setSuccess(true);
 						j.setMsg("用户新增成功！");
-						j.setObj(order);
+						j.setObj(orderService.get(order_id));
 					} else {
 						j.setMsg("订单号重复，请改用其它！");
 					}
@@ -152,4 +156,14 @@ public class OrderController {
 		return j;
 	}
 
+	@RequestMapping(value = "/report/{id}")
+	public void ExportOrder(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer id) {
+		try {
+			Order order = orderService.get(id);
+			ExcelUtils.exportOrder(request, response, order, "sheetName", "fileName");
+		} catch (Exception e) {
+			logger.error(e);
+			e.printStackTrace();
+		}
+	}
 }

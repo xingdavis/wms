@@ -21,7 +21,7 @@
 	function reload() {
 		$('#dg').datagrid('reload');
 	}
-	
+
 	function del() {
 		if (window.confirm("确认删除吗？")) {
 			var r = $('#dg').datagrid('getSelected');
@@ -35,7 +35,7 @@
 					error : function(data) {
 						alert("error:" + data.responseText);
 					},
-					success : function(result) {						
+					success : function(result) {
 						if (result.success) {
 							location.href = '${path}/deliverys/list';
 						} else {
@@ -52,6 +52,18 @@
 		if (r)
 			location.href = '${path}/deliverys/page/' + r.id;
 	}
+
+	function addFee(type) {
+		var r = $('#dg').datagrid('getSelected');
+		var client_id = 0;
+		var bill_id = 0;
+		if (r) {
+			bill_id = r.id;
+		}
+		_AddTab('费用管理-新增[' + type + '-' + client_id + '-' + bill_id + ']',
+				'${path}/fees/page/' + type + '/' + client_id + '/' + bill_id
+						+ '/');
+	}
 </script>
 
 </head>
@@ -65,7 +77,9 @@
 				data-options="iconCls:'icon-add'">新增</a><a href="javascript:del()"
 				class="easyui-linkbutton" data-options="iconCls:'icon-remove'">删除</a>
 			<a href="javascript:edit()" class="easyui-linkbutton"
-				data-options="iconCls:'icon-edit'">编辑</a>
+				data-options="iconCls:'icon-edit'">编辑</a> <a
+				href="javascript:addFee(2)" class="easyui-linkbutton"
+				data-options="iconCls:'icon-add'">新增费用</a>
 		</div>
 		<table id="dg" class="easyui-datagrid" fit="true"
 			url="${path}/deliverys/datagrid" method="GET" toolbar="#toolbar"
