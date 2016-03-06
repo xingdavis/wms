@@ -59,10 +59,21 @@
 		var bill_id = 0;
 		if (r) {
 			bill_id = r.id;
+			if (r.order)
+				client_id=r.order.clientId;
 		}
 		_AddTab('费用管理-新增[' + type + '-' + client_id + '-' + bill_id + ']',
 				'${path}/fees/page/' + type + '/' + client_id + '/' + bill_id
 						+ '/');
+	}
+	
+	function formatStatus(value, row) {
+		if (value == '0')
+			return '登记';
+		else if (value == '1')
+			return '出账';
+		else
+			return value;
 	}
 </script>
 
@@ -89,7 +100,7 @@
 				<tr>
 					<th field="code" width="100">订舱号</th>
 					<th field="ddate" width="100">装货时间</th>
-					<th field="orderCode" width="100">入仓订单号</th>
+					<th field="orderCode" width="120">入仓订单号</th>
 					<th field="carNo" width="100">车牌号</th>
 					<th field="driver" width="100">司机</th>
 					<th field="dport" width="100">提柜点</th>
@@ -99,9 +110,11 @@
 					<th field="caseModel" width="100">柜型</th>
 					<th field="caseNo" width="100">柜号</th>
 					<th field="sealNo" width="100">封号</th>
+					<!-- 
 					<th field="startPort" width="100">起运港</th>
 					<th field="endPort" width="100">目的港</th>
-					<th field="flag" width="100">当前状态</th>
+					 -->
+					<th data-options="field:'flag',width:100,formatter:formatStatus">当前状态</th>
 				</tr>
 			</thead>
 		</table>

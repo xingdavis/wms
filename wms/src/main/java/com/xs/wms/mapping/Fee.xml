@@ -298,7 +298,7 @@
 		</if>
 	</select>
 	<select id="datagridBill" resultMap="BillResultMap">
-		select b.id,b.code,b.sdate,b.edate,b.total,b.memo
+		select b.id,b.code,b.sdate,b.edate,b.total,b.memo,c.cname
 		from t_bill
 		b,t_client c where
 		b.client_id=c.id

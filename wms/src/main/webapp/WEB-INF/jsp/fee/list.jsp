@@ -96,6 +96,15 @@
 			return value;
 		}
 	}
+	
+	function formatStatus(value, row) {
+		if (value == '0')
+			return '登记';
+		else if (value == '1')
+			return '出账';
+		else
+			return value;
+	}
 </script>
 
 </head>
@@ -116,7 +125,7 @@
 					<th field="amount" width="50">金额</th>
 					<th data-options="field:'sdate',width:50,formatter:formatDate">开始</th>
 					<th data-options="field:'edate',width:50,formatter:formatDate">结束</th>
-					<th field="flag" width="50">状态</th>
+					<th data-options="field:'flag',width:50,formatter:formatStatus">状态</th>
 				</tr>
 			</thead>
 		</table>

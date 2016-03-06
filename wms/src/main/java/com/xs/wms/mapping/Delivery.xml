@@ -61,7 +61,7 @@
 		<association property="order" column="order_id"
 			javaType="com.xs.wms.pojo.Order">
 			<id property="id" column="id" />
-			<result column="client_id" property="ClientId" jdbcType="INTEGER" />
+			<result column="client_id" property="clientId" jdbcType="INTEGER" />
 			<association property="client" column="client_id"
 				javaType="com.xs.wms.pojo.Client">
 				<id property="id" column="id" />

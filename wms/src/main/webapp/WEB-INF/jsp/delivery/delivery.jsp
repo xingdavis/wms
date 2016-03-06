@@ -63,7 +63,7 @@
 				getOptionList('柜型', [ '#e_caseModel' ]);
 				//ports.push($('#e_caseModel'));
 				getOptionList('码头', [ '#e_dport', '#e_rport' ]);
-				getOptionList('港口', [ '#e_start_port', '#e_end_port' ]);
+				//getOptionList('港口', [ '#e_start_port', '#e_end_port' ]);
 
 				$('#e_orderId').combogrid(
 						{
@@ -223,6 +223,7 @@
 						<td><input class="easyui-combobox" id="e_rport" name="rport"
 							data-options="valueField: 'oname',textField: 'oname',method : 'GET'" /></td>
 					</tr>
+					<!-- 
 					<tr>
 						<td>起运港:</td>
 						<td><input class="easyui-combobox" id="e_start_port"
@@ -235,6 +236,7 @@
 							name="endPort"
 							data-options="valueField: 'oname',textField: 'oname',method : 'GET'" /></td>
 					</tr>
+					 -->
 					<tr>
 						<td>是否过磅:</td>
 						<td><input class="easyui-textbox" type="text" id="e_weigh"

@@ -17,7 +17,9 @@
 		var mesTitle = '';
 		var method = 'POST';
 		var url = path + '/fees';
+		var opstr = '新增';
 		if ($('#e_id').val() != '') {
+			opstr = '更新';
 			method = 'PUT';
 			url += '/' + $('#e_id').val();
 		}
@@ -39,7 +41,7 @@
 			success : function(result) {
 				//var result = eval('(' + result + ')');
 				if (result.success) {
-					alert('已保存!');
+					alert('已' + opstr + '!');
 				} else {
 					alert(result.msg);
 				}

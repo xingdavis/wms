@@ -90,6 +90,19 @@
 			});
 		}
 	}
+	
+	function formatStatus(value, row) {
+		if (value == '0')
+			return '登记';
+		else if (value == '1')
+			return '审批';
+		else if (value == '2')
+			return '出仓';
+		else if (value == '3')
+			return '出账';
+		else
+			return value;
+	}
 </script>
 
 </head>
@@ -125,7 +138,7 @@
 					<th field="carNo" width="100">车牌号</th>
 					<th field="inDate" width="100">进仓日期</th>
 					<th field="outDate" width="100">出仓日期</th>
-					<th field="flag" width="100">当前状态</th>
+					<th data-options="field:'flag',width:100,formatter:formatStatus">当前状态</th>
 				</tr>
 			</thead>
 		</table>
