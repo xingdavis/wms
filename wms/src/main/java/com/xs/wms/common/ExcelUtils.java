@@ -48,7 +48,8 @@ public class ExcelUtils {
 	 *            void
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public static <E> void exportExcel(HttpServletResponse response, String[] header, String[] fileNames, List<E> list,
+	public static <E> void exportExcel(HttpServletResponse response,
+			String[] header, String[] fileNames, List<E> list,
 			String sheetName, String fileName) throws NoSuchFieldException {
 		// 创建工作簿
 		HSSFWorkbook wb = new HSSFWorkbook();
@@ -73,16 +74,22 @@ public class ExcelUtils {
 					Object value = null;
 					if (fileNames[j].contains("."))// 包含其它类
 					{
-						String subClsNm = fileNames[j].substring(0, fileNames[j].indexOf("."));
-						String subField = fileNames[j].substring(fileNames[j].indexOf(".") + 1);
-						String fieldName = subClsNm.substring(0, 1).toUpperCase() + subClsNm.substring(1);
-						String subFieldNm = subField.substring(0, 1).toUpperCase() + subField.substring(1);
+						String subClsNm = fileNames[j].substring(0,
+								fileNames[j].indexOf("."));
+						String subField = fileNames[j].substring(fileNames[j]
+								.indexOf(".") + 1);
+						String fieldName = subClsNm.substring(0, 1)
+								.toUpperCase() + subClsNm.substring(1);
+						String subFieldNm = subField.substring(0, 1)
+								.toUpperCase() + subField.substring(1);
 						Method getMethod = cls.getMethod("get" + fieldName);
 						Object subObj = getMethod.invoke(o);
-						Method subMethod = subObj.getClass().getMethod("get" + subFieldNm);
+						Method subMethod = subObj.getClass().getMethod(
+								"get" + subFieldNm);
 						value = subMethod.invoke(subObj);
 					} else {
-						String fieldName = fileNames[j].substring(0, 1).toUpperCase() + fileNames[j].substring(1);
+						String fieldName = fileNames[j].substring(0, 1)
+								.toUpperCase() + fileNames[j].substring(1);
 						Method getMethod = cls.getMethod("get" + fieldName);
 						value = getMethod.invoke(o);
 					}
@@ -106,7 +113,8 @@ public class ExcelUtils {
 		OutputStream os = null;
 		try {
 			response.reset();
-			response.addHeader("Content-Disposition", "attachment;filename=" + fileName + ".xls");
+			response.addHeader("Content-Disposition", "attachment;filename="
+					+ fileName + ".xls");
 			response.setContentType("application/vnd.ms-excel;charset=utf-8");
 			os = response.getOutputStream();
 			wb.write(os);
@@ -124,8 +132,9 @@ public class ExcelUtils {
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes", "deprecation" })
-	public static <E> void exportOrder(HttpServletRequest request, HttpServletResponse response, Order order,
-			String sheetName, String fileName) throws NoSuchFieldException, IOException {
+	public static <E> void exportOrder(HttpServletRequest request,
+			HttpServletResponse response, Order order, String sheetName,
+			String fileName) throws NoSuchFieldException, IOException {
 
 		String[] fieldHeaders = { "中文品名", "件数", "体积", "重量" };
 		String[] fieldNames = { "cname", "num", "vol", "weight" };
@@ -151,6 +160,12 @@ public class ExcelUtils {
 		font.setFontHeightInPoints((short) 13);
 		cellStyle.setFont(font);
 
+		HSSFCellStyle codeCellStyle = wb.createCellStyle();
+		codeCellStyle.setWrapText(true);
+		codeCellStyle.setAlignment(HSSFCellStyle.ALIGN_LEFT);
+		codeCellStyle.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);
+		codeCellStyle.setFont(font);
+
 		HSSFCellStyle gridCellStyle = wb.createCellStyle();
 		gridCellStyle.setBorderLeft(HSSFCellStyle.BORDER_THIN);
 		gridCellStyle.setBorderRight(HSSFCellStyle.BORDER_THIN);
@@ -160,7 +175,8 @@ public class ExcelUtils {
 		gridCellStyle.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);
 		gridCellStyle.setFont(font);
 
-		CellRangeAddress region = new CellRangeAddress(0, 0, 1, fieldHeaders.length);
+		CellRangeAddress region = new CellRangeAddress(0, 0, 1,
+				fieldHeaders.length);
 		sheet.addMergedRegion(region);
 		HSSFCellStyle titleCellStyle = wb.createCellStyle();
 		titleCellStyle.setAlignment(HSSFCellStyle.ALIGN_CENTER);
@@ -177,13 +193,15 @@ public class ExcelUtils {
 		region = new CellRangeAddress(1, 1, 1, fieldHeaders.length);
 		sheet.addMergedRegion(region);
 		HSSFCell codeCell = codeRow.createCell(1);
-		codeCell.setCellStyle(cellStyle);
-		codeCell.setCellValue("入仓单号" + order.getCode());
+		codeCell.setCellStyle(codeCellStyle);
+		codeCell.setCellValue("入仓单号：" + order.getCode());
 
-		// region = new CellRangeAddress(2, fieldHeaders.length, 2 +
-		// items.size(), fieldHeaders.length);
-		// sheet.addMergedRegion(region);
-		// headerRow.createCell(fieldHeaders.length).setCellValue("★务必请司机送货前将此栏认真填写");
+		region = new CellRangeAddress(2, 2 + items.size(),
+				fieldHeaders.length + 1, fieldHeaders.length + 1);
+		sheet.addMergedRegion(region);
+		HSSFCell rCell = headerRow.createCell(fieldHeaders.length + 1);
+		rCell.setCellStyle(cellStyle);
+		rCell.setCellValue("★务必请司机送货前将此栏认真填写");
 
 		// 列表数据
 		for (int i = 0; i < fieldHeaders.length; i++) {
@@ -192,6 +210,7 @@ public class ExcelUtils {
 			headerCell.setCellValue(fieldHeaders[i]);
 			sheet.setColumnWidth(i + 1, 12 * 256);
 		}
+		sheet.setColumnWidth(fieldHeaders.length + 1, 5 * 12 * 256);
 		for (int i = 0; i < items.size(); i++) {
 			contentRow = sheet.createRow(++currentRow);
 			// 获取每一个对象
@@ -211,40 +230,67 @@ public class ExcelUtils {
 		}
 
 		contentRow = sheet.createRow(++currentRow);
+		region = new CellRangeAddress(currentRow, currentRow, 1,
+				fieldHeaders.length + 1);
+		sheet.addMergedRegion(region);
 		HSSFCell cell = contentRow.createCell(1);
-		cell.setCellStyle(cellStyle);
-		cell.setCellValue("●  地址：广州市黄埔区中山大道乌冲路段新溪北加油站西侧信树物流仓储部");
+		cell.setCellStyle(codeCellStyle);
+		cell.setCellValue("●地址：广州市黄埔区中山大道乌冲路段新溪北加油站西侧信树物流仓储部");
 		contentRow = sheet.createRow(++currentRow);
+		region = new CellRangeAddress(currentRow, currentRow, 1,
+				fieldHeaders.length + 1);
+		sheet.addMergedRegion(region);
 		cell = contentRow.createCell(1);
-		cell.setCellStyle(cellStyle);
-		cell.setCellValue("●  咨询路线： 黄先生 020-82396784   13929565484  查货情况：QQ1954859510");
+		cell.setCellStyle(codeCellStyle);
+		cell.setCellValue("●咨询路线： 黄先生 020-82396784   13929565484  查货情况：QQ1954859510");
 		contentRow = sheet.createRow(++currentRow);
+		region = new CellRangeAddress(currentRow, currentRow, 1,
+				fieldHeaders.length + 1);
+		sheet.addMergedRegion(region);
 		cell = contentRow.createCell(1);
-		cell.setCellStyle(cellStyle);
+		cell.setCellStyle(codeCellStyle);
 		cell.setCellValue("              如仓库联系不上，请联系我司操作：");
 		contentRow = sheet.createRow(++currentRow);
+		region = new CellRangeAddress(currentRow, currentRow, 1,
+				fieldHeaders.length + 1);
+		sheet.addMergedRegion(region);
 		cell = contentRow.createCell(1);
-		cell.setCellStyle(cellStyle);
-		cell.setCellValue("●  上班时间：早上8：30—下午18:00");
+		cell.setCellStyle(codeCellStyle);
+		cell.setCellValue("●上班时间：早上8：30—下午18:00");
 		contentRow = sheet.createRow(++currentRow);
+		region = new CellRangeAddress(currentRow, currentRow, 1,
+				fieldHeaders.length + 1);
+		sheet.addMergedRegion(region);
+		contentRow.setHeight((short)(16*25*2));
 		cell = contentRow.createCell(1);
-		cell.setCellStyle(cellStyle);
-		cell.setCellValue("●   司机需遵从本仓人员工作安排，到办公室开入场单，我司将收取10元/车次入场费，并以 收据编号先后顺序排队。");
+		cell.setCellStyle(codeCellStyle);
+		cell.setCellValue("●司机需遵从本仓人员工作安排，到办公室开入场单，我司将收取10元/车次入场费，并以 收据编号先后顺序排队。");
 		contentRow = sheet.createRow(++currentRow);
+		region = new CellRangeAddress(currentRow, currentRow, 1,
+				fieldHeaders.length + 1);
+		sheet.addMergedRegion(region);
+		contentRow.setHeight((short)(16*25*2));
 		cell = contentRow.createCell(1);
-		cell.setCellStyle(cellStyle);
+		cell.setCellStyle(codeCellStyle);
 		cell.setCellValue("●请核对清楚实际数量与入仓单数量是否一致，签收后所产生的一切损失我司不负责，并收取翻堆装卸费35元/CBM");
 		contentRow = sheet.createRow(++currentRow);
+		region = new CellRangeAddress(currentRow, currentRow, 1,
+				fieldHeaders.length + 1);
+		sheet.addMergedRegion(region);
 		cell = contentRow.createCell(1);
-		cell.setCellStyle(cellStyle);
+		cell.setCellStyle(codeCellStyle);
 		cell.setCellValue("(温馨提示：为了不耽误你宝贵的卸货时间，送货前请提前一天预约)");
 		contentRow = sheet.createRow(++currentRow);
+		region = new CellRangeAddress(currentRow, currentRow, 1,
+				fieldHeaders.length + 1);
+		sheet.addMergedRegion(region);
 		cell = contentRow.createCell(1);
-		cell.setCellStyle(cellStyle);
+		cell.setCellStyle(codeCellStyle);
 		cell.setCellValue("仓库路线图：↘");
 		currentRow++;
 		ByteArrayOutputStream byteArrayOut = new ByteArrayOutputStream();
-		String picPath = request.getSession().getServletContext().getRealPath("img/path.png");
+		String picPath = request.getSession().getServletContext()
+				.getRealPath("img/path.png");
 		// BufferedImage bufferImg = ImageIO.read(new File(picPath));
 		// ImageIO.write(bufferImg, "png", byteArrayOut);
 		// // 画图的顶级管理器，一个sheet只能获取一个（一定要注意这点）
@@ -260,11 +306,17 @@ public class ExcelUtils {
 		// HSSFWorkbook.PICTURE_TYPE_JPEG));
 
 		contentRow = sheet.createRow(currentRow + 30);
+		region = new CellRangeAddress(currentRow + 30, currentRow + 30, 1,
+				fieldHeaders.length + 1);
+		sheet.addMergedRegion(region);
+		contentRow.setHeight((short)(16*25*7));
 		cell = contentRow.createCell(1);
-		cell.setCellStyle(cellStyle);
-		cell.setCellValue("***备注：1、请务必凭此进仓单进仓（请复印一份），否则仓库不收货。" + "\n2、此入仓单自放仓7天内有效，柜货5天免堆，散货无免堆期。"
-						+ "\n3、仓库只接受普通货物入仓！易燃、易爆、有强污染力的危险品；液" + "\n体、粉末状等疑危险品；易碎品，国家相关法律禁运的货物，仓库拒绝收货！超长、超"
-						+ "\n重、超大件货物入仓，请提前与我司相关操作人员联系！");
+		cell.setCellStyle(codeCellStyle);
+		cell.setCellValue("***备注：1、请务必凭此进仓单进仓（请复印一份），否则仓库不收货。"
+				+ "\n2、此入仓单自放仓7天内有效，柜货5天免堆，散货无免堆期。"
+				+ "\n3、仓库只接受普通货物入仓！易燃、易爆、有强污染力的危险品；液"
+				+ "\n体、粉末状等疑危险品；易碎品，国家相关法律禁运的货物，仓库拒绝收货！超长、超"
+				+ "\n重、超大件货物入仓，请提前与我司相关操作人员联系！");
 
 		InputStream is = new FileInputStream(picPath);
 		byte[] bytes = IOUtils.toByteArray(is);
@@ -282,7 +334,8 @@ public class ExcelUtils {
 		OutputStream os = null;
 		try {
 			response.reset();
-			response.addHeader("Content-Disposition", "attachment;filename=" + fileName + ".xls");
+			response.addHeader("Content-Disposition", "attachment;filename="
+					+ fileName + ".xls");
 			response.setContentType("application/vnd.ms-excel;charset=utf-8");
 			os = response.getOutputStream();
 			wb.write(os);
@@ -300,8 +353,10 @@ public class ExcelUtils {
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes", "deprecation" })
-	public static <E> void exportBill(HttpServletResponse response, String[] header, String[] fileNames, List<E> list,
-			String sheetName, String fileName, String title) throws NoSuchFieldException {
+	public static <E> void exportBill(HttpServletResponse response,
+			String[] header, String[] fileNames, List<E> list,
+			String sheetName, String fileName, String title)
+			throws NoSuchFieldException {
 		// 创建工作簿
 		HSSFWorkbook wb = new HSSFWorkbook();
 		// 创建一个sheet
@@ -321,7 +376,8 @@ public class ExcelUtils {
 		cellStyle.setAlignment(HSSFCellStyle.ALIGN_CENTER);
 		cellStyle.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);
 		// 设置title
-		CellRangeAddress region = new CellRangeAddress(0, 0, 0, fileNames.length - 1); // 参数都是从O开始
+		CellRangeAddress region = new CellRangeAddress(0, 0, 0,
+				fileNames.length - 1); // 参数都是从O开始
 		sheet.addMergedRegion(region);
 
 		HSSFCellStyle topCellStyle = wb.createCellStyle();
@@ -381,30 +437,37 @@ public class ExcelUtils {
 					Object value = null;
 					if (fileNames[j].contains("."))// 包含其它类
 					{
-						String subClsNm = fileNames[j].substring(0, fileNames[j].indexOf("."));
-						String subField = fileNames[j].substring(fileNames[j].indexOf(".") + 1);
-						String fieldName = subClsNm.substring(0, 1).toUpperCase() + subClsNm.substring(1);
-						String subFieldNm = subField.substring(0, 1).toUpperCase() + subField.substring(1);
+						String subClsNm = fileNames[j].substring(0,
+								fileNames[j].indexOf("."));
+						String subField = fileNames[j].substring(fileNames[j]
+								.indexOf(".") + 1);
+						String fieldName = subClsNm.substring(0, 1)
+								.toUpperCase() + subClsNm.substring(1);
+						String subFieldNm = subField.substring(0, 1)
+								.toUpperCase() + subField.substring(1);
 						Method getMethod = cls.getMethod("get" + fieldName);
 						Object subObj = getMethod.invoke(o);
 						if (subObj != null) {
-							Method subMethod = subObj.getClass().getMethod("get" + subFieldNm);
+							Method subMethod = subObj.getClass().getMethod(
+									"get" + subFieldNm);
 							value = subMethod.invoke(subObj);
 						}
 					} else {
-						String fieldName = fileNames[j].substring(0, 1).toUpperCase() + fileNames[j].substring(1);
+						String fieldName = fileNames[j].substring(0, 1)
+								.toUpperCase() + fileNames[j].substring(1);
 						Method getMethod = cls.getMethod("get" + fieldName);
 						value = getMethod.invoke(o);
 					}
 					if (value != null) {
 						HSSFCell cell = contentRow.createCell(j);
 						cell.setCellStyle(cellStyle);
-						cell.setCellValue(new HSSFRichTextString(value.toString()));
+						cell.setCellValue(new HSSFRichTextString(value
+								.toString()));
 					}
 				}
 				int bottomRowNum = list.size() + 2;
-				CellRangeAddress bottomRegion = new CellRangeAddress(bottomRowNum, bottomRowNum, 0,
-						fileNames.length - 1); // 参数都是从O开始
+				CellRangeAddress bottomRegion = new CellRangeAddress(
+						bottomRowNum, bottomRowNum, 0, fileNames.length - 1); // 参数都是从O开始
 				sheet.addMergedRegion(bottomRegion);
 				bottomRow = sheet.createRow(bottomRowNum);
 				HSSFCell bottomCell = bottomRow.createCell(0);
@@ -446,7 +509,8 @@ public class ExcelUtils {
 		OutputStream os = null;
 		try {
 			response.reset();
-			response.addHeader("Content-Disposition", "attachment;filename=" + fileName + ".xls");
+			response.addHeader("Content-Disposition", "attachment;filename="
+					+ fileName + ".xls");
 			response.setContentType("application/vnd.ms-excel;charset=utf-8");
 			os = response.getOutputStream();
 			wb.write(os);
