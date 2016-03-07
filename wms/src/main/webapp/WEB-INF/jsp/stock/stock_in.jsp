@@ -141,7 +141,7 @@
 			success : function(result) {
 				//var result = eval('(' + result + ')');
 				if (result.success) {
-					$('#e_client').combogrid("setValue", result.obj.id);
+					$('#e_client').combogrid("setValue", result.obj.clientId);
 					$('#e_orderId').combogrid("setValue", result.obj.orderId);
 					$('#e_carNo').textbox("setValue", result.obj.carNo);
 					$('#e_inDate').datebox('setValue',

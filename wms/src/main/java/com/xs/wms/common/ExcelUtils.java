@@ -519,7 +519,7 @@ public class ExcelUtils {
 		Font font = wb.createFont();
 		font.setFontName("宋体");
 		font.setBoldweight(Font.BOLDWEIGHT_BOLD);
-		font.setFontHeightInPoints((short) 20);
+		font.setFontHeightInPoints((short) 16);
 		cellStyle.setFont(font);
 
 		HSSFCellStyle cellStyle1 = wb.createCellStyle();
@@ -534,8 +534,8 @@ public class ExcelUtils {
 
 		HSSFCellStyle cellStyle2 = wb.createCellStyle();
 		cellStyle2.setWrapText(true);
-		cellStyle2.setAlignment(HSSFCellStyle.ALIGN_CENTER);
-		cellStyle2.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);
+		//cellStyle2.setAlignment(HSSFCellStyle.ALIGN_CENTER);
+		//cellStyle2.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);
 		Font font2 = wb.createFont();
 		font2.setFontName("宋体");
 		font2.setFontHeightInPoints((short) 11);
@@ -554,7 +554,7 @@ public class ExcelUtils {
 		Font font3 = wb.createFont();
 		font3.setFontName("宋体");
 		font3.setBoldweight(Font.BOLDWEIGHT_BOLD);
-		font3.setFontHeightInPoints((short) 14);
+		font3.setFontHeightInPoints((short) 12);
 		cellStyle3.setFont(font3);
 
 		HSSFCellStyle cellStyle4 = wb.createCellStyle();
@@ -563,7 +563,7 @@ public class ExcelUtils {
 		Font font4 = wb.createFont();
 		font4.setFontName("宋体");
 		font4.setBoldweight(Font.BOLDWEIGHT_BOLD);
-		font4.setFontHeightInPoints((short) 14);
+		font4.setFontHeightInPoints((short) 11);
 		cellStyle4.setFont(font4);
 
 		HSSFCellStyle cellStyle5 = wb.createCellStyle();
@@ -573,7 +573,7 @@ public class ExcelUtils {
 		Font font5 = wb.createFont();
 		font5.setFontName("宋体");
 		font5.setBoldweight(Font.BOLDWEIGHT_BOLD);
-		font5.setFontHeightInPoints((short) 14);
+		font5.setFontHeightInPoints((short) 11);
 		cellStyle5.setFont(font5);
 
 		HSSFCellStyle cellStyle6 = wb.createCellStyle();
@@ -593,19 +593,24 @@ public class ExcelUtils {
 		cell.setCellValue("收 款 收 据");
 
 		contentRow = sheet.createRow(++currentRow);
-		cell = contentRow.createCell(9);
+		cell = contentRow.createCell(8);
 		cell.setCellStyle(cellStyle1);
 		cell.setCellValue("编号：");
 
-		region = new CellRangeAddress(currentRow, currentRow, 10, 11);
+		region = new CellRangeAddress(currentRow, currentRow, 9, 11);
 		sheet.addMergedRegion(region);
-		cell = contentRow.createCell(10);
+		cell = contentRow.createCell(9);
 		cell.setCellStyle(cellStyle5);
 		cell.setCellValue(stock_in.getCode());
-
+		cell = contentRow.createCell(10);
+		cell.setCellStyle(cellStyle5);
+		cell = contentRow.createCell(11);
+		cell.setCellStyle(cellStyle5);
+		
 		contentRow = sheet.createRow(++currentRow);
 		cell = contentRow.createCell(1);
 		cell.setCellStyle(cellStyle2);
+		sheet.setColumnWidth(1, 3*3 * 256);
 		cell.setCellValue("日期：");
 		cell = contentRow.createCell(2);
 		cell.setCellStyle(cellStyle2);
@@ -613,15 +618,19 @@ public class ExcelUtils {
 		cell.setCellValue(stock_in.getInDate().getYear() + 1900 + " 年");
 		cell = contentRow.createCell(3);
 		cell.setCellStyle(cellStyle2);
+		sheet.setColumnWidth(3, 2*3 * 256);
 		cell.setCellValue(stock_in.getInDate().getMonth() + 1);
 		cell = contentRow.createCell(4);
 		cell.setCellStyle(cellStyle2);
+		sheet.setColumnWidth(4, 3 * 256);
 		cell.setCellValue("月");
 		cell = contentRow.createCell(5);
 		cell.setCellStyle(cellStyle2);
+		sheet.setColumnWidth(5, 2*3 * 256);
 		cell.setCellValue(stock_in.getInDate().getDate());
 		cell = contentRow.createCell(6);
 		cell.setCellStyle(cellStyle2);
+		sheet.setColumnWidth(6, 3 * 256);
 		cell.setCellValue("日");
 		cell = contentRow.createCell(7);
 		cell.setCellStyle(cellStyle2);
@@ -631,6 +640,7 @@ public class ExcelUtils {
 		cell.setCellValue(stock_in.getInDate().getHours());
 		cell = contentRow.createCell(9);
 		cell.setCellStyle(cellStyle2);
+		sheet.setColumnWidth(9, 3 * 256);
 		cell.setCellValue("时");
 		cell = contentRow.createCell(10);
 		cell.setCellStyle(cellStyle2);
@@ -646,23 +656,39 @@ public class ExcelUtils {
 		cell = contentRow.createCell(1);
 		cell.setCellStyle(cellStyle3);
 		cell.setCellValue("入仓单号：");
+		cell = contentRow.createCell(2);
+		cell.setCellStyle(cellStyle3);
 
 		region = new CellRangeAddress(currentRow, currentRow, 3, 7);
 		sheet.addMergedRegion(region);
 		cell = contentRow.createCell(3);
 		cell.setCellStyle(cellStyle3);
 		cell.setCellValue(stock_in.getOrderCode());
+		cell = contentRow.createCell(4);
+		cell.setCellStyle(cellStyle3);
+		cell = contentRow.createCell(5);
+		cell.setCellStyle(cellStyle3);
+		cell = contentRow.createCell(6);
+		cell.setCellStyle(cellStyle3);
+		cell = contentRow.createCell(7);
+		cell.setCellStyle(cellStyle3);
 
 		cell = contentRow.createCell(8);
 		cell.setCellStyle(cellStyle3);
+		sheet.setColumnWidth(8, 5*3 * 256);
 		cell.setCellValue("所属公司：");
 
 		region = new CellRangeAddress(currentRow, currentRow, 9, 11);
 		sheet.addMergedRegion(region);
 		cell = contentRow.createCell(9);
 		cell.setCellStyle(cellStyle3);
+		//sheet.setColumnWidth(9, 12*3 * 256);
 		cell.setCellValue(stock_in.getClient().getCname());
-
+		cell = contentRow.createCell(10);
+		cell.setCellStyle(cellStyle3);
+		cell = contentRow.createCell(11);
+		cell.setCellStyle(cellStyle3);
+		
 		contentRow = sheet.createRow(++currentRow);
 		region = new CellRangeAddress(currentRow, currentRow, 1, 2);
 		sheet.addMergedRegion(region);
@@ -677,11 +703,15 @@ public class ExcelUtils {
 		cell = contentRow.createCell(5);
 		cell.setCellStyle(cellStyle5);
 		cell.setCellValue(stock_in.getCarNo());
+		cell = contentRow.createCell(6);
+		cell.setCellStyle(cellStyle5);
+		cell = contentRow.createCell(7);
+		cell.setCellStyle(cellStyle5);
 		region = new CellRangeAddress(currentRow, currentRow, 8, 11);
 		sheet.addMergedRegion(region);
 		cell = contentRow.createCell(8);
 		cell.setCellStyle(cellStyle4);
-		cell.setCellValue("交来入仓费合计人民币      元整。");
+		cell.setCellValue("交来入仓费合计人民币   元整。");
 
 		currentRow++;
 		contentRow = sheet.createRow(++currentRow);
@@ -690,30 +720,35 @@ public class ExcelUtils {
 		cell = contentRow.createCell(1);
 		cell.setCellStyle(cellStyle4);
 		cell.setCellValue("金额（大写）：");
+		
 		cell = contentRow.createCell(9);
 		cell.setCellStyle(cellStyle4);
 		cell.setCellValue("¥");
 		region = new CellRangeAddress(currentRow, currentRow, 10, 11);
 		sheet.addMergedRegion(region);
-		cell = contentRow.createCell(1);
+		cell = contentRow.createCell(10);
 		cell.setCellStyle(cellStyle5);
-		cell.setCellValue("");
+		cell = contentRow.createCell(11);
+		cell.setCellStyle(cellStyle5);
 
 		currentRow++;
 		contentRow = sheet.createRow(++currentRow);
 		region = new CellRangeAddress(currentRow, currentRow, 1, 2);
 		sheet.addMergedRegion(region);
 		cell = contentRow.createCell(1);
-		cell.setCellStyle(cellStyle4);
+		cell.setCellStyle(cellStyle2);
 		cell.setCellValue("收款单位（盖章）");
 		cell = contentRow.createCell(8);
-		cell.setCellStyle(cellStyle4);
+		cell.setCellStyle(cellStyle2);
 		cell.setCellValue("经手人：");
 		region = new CellRangeAddress(currentRow, currentRow, 9, 11);
 		sheet.addMergedRegion(region);
 		cell = contentRow.createCell(9);
 		cell.setCellStyle(cellStyle5);
-		cell.setCellValue("");
+		cell = contentRow.createCell(10);
+		cell.setCellStyle(cellStyle5);
+		cell = contentRow.createCell(11);
+		cell.setCellStyle(cellStyle5);
 
 		currentRow++;
 		contentRow = sheet.createRow(++currentRow);
@@ -759,7 +794,7 @@ public class ExcelUtils {
 		cell.setCellValue("  并收取翻堆装卸费35元/CBM");
 
 		contentRow = sheet.createRow(++currentRow);
-		region = new CellRangeAddress(currentRow, currentRow, 1, 11);
+		region = new CellRangeAddress(currentRow, currentRow, 1, 12);
 		sheet.addMergedRegion(region);
 		cell = contentRow.createCell(1);
 		cell.setCellStyle(cellStyle2);
@@ -772,13 +807,13 @@ public class ExcelUtils {
 //		cell.setCellStyle(cellStyle);
 //		cell.setCellValue("①存根（白色） ②客户（红色） ③仓库留底（黄色）");
 
-//		HSSFPatriarch patriarch = sheet.createDrawingPatriarch();
-//		HSSFClientAnchor bigValueAnchorTextBox = new HSSFClientAnchor(0, 0, 0, 0, (short) 12, currentRow, (short) 12,
-//				currentRow);
-//		HSSFTextbox bigValueTextbox = patriarch.createTextbox(bigValueAnchorTextBox);
-//		bigValueTextbox.setString(new HSSFRichTextString("①存根（白色） ②客户（红色） ③仓库留底（黄色）"));
-//		bigValueTextbox.setLineStyle(HSSFSimpleShape.LINESTYLE_NONE);
-//		bigValueTextbox.setFillColor(0, 0, 0);
+		HSSFPatriarch patriarch = sheet.createDrawingPatriarch();
+		HSSFClientAnchor bigValueAnchorTextBox = new HSSFClientAnchor(0, 0, 0, 0, (short) 12, currentRow, (short) 12,
+				currentRow);
+		HSSFTextbox bigValueTextbox = patriarch.createTextbox(bigValueAnchorTextBox);
+		bigValueTextbox.setString(new HSSFRichTextString("①存根（白色） ②客户（红色） ③仓库留底（黄色）"));
+		bigValueTextbox.setLineStyle(HSSFSimpleShape.LINESTYLE_NONE);
+		bigValueTextbox.setFillColor(0, 0, 0);
 
 		OutputStream os = null;
 		try {
