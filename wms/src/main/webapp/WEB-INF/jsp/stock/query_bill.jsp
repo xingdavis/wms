@@ -90,7 +90,7 @@
 			});
 		}
 	}
-	
+
 	function formatStatus(value, row) {
 		if (value == '0')
 			return '登记';
@@ -102,6 +102,12 @@
 			return '出账';
 		else
 			return value;
+	}
+	
+	function exportBill() {
+		var row = $('#dg').datagrid('getSelected');
+		if (row)
+			window.open(path + '/stock_ins/report/' + row.id);
 	}
 </script>
 
@@ -124,7 +130,9 @@
 				href="javascript:verify(0)" class="easyui-linkbutton"
 				data-options="iconCls:'icon-edit'">反审批</a> <a
 				href="javascript:verify(2)" class="easyui-linkbutton"
-				data-options="iconCls:'icon-edit'">出仓</a>
+				data-options="iconCls:'icon-edit'">出仓</a> <a
+				href="javascript:exportBill()" class="easyui-linkbutton"
+				data-options="iconCls:'icon-edit'">导出</a>
 		</div>
 		<table id="dg" class="easyui-datagrid" fit="true"
 			url="${path}/stock_ins/bills" method="GET" toolbar="#toolbar"

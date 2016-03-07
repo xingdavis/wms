@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
@@ -15,7 +16,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.xs.wms.common.ExcelUtils;
 import com.xs.wms.pojo.Delivery;
+import com.xs.wms.pojo.Order;
 import com.xs.wms.pojo.Stock_in;
 import com.xs.wms.pojo.User;
 import com.xs.wms.pojo.easyui.DataGrid;
@@ -146,5 +149,16 @@ public class DeliveryController {
 		List<Delivery> list = deliveryService.datagrid(page, obj);
 		dg.setRows(list);
 		return dg;
+	}
+	
+	@RequestMapping(value = "/report/{id}")
+	public void ExportBill(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer id) {
+		try {
+			Delivery order = deliveryService.getById(id);
+			//ExcelUtils.exportOrder(request, response, order, "sheetName", "fileName");
+		} catch (Exception e) {
+			logger.error(e);
+			e.printStackTrace();
+		}
 	}
 }
