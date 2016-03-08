@@ -75,6 +75,12 @@
 		else
 			return value;
 	}
+	
+	function exportBill() {
+		var r = $('#dg').datagrid('getSelected');
+		if (r)
+			window.open(path + '/deliverys/report/' + r.id);
+	}
 </script>
 
 </head>
@@ -90,7 +96,9 @@
 			<a href="javascript:edit()" class="easyui-linkbutton"
 				data-options="iconCls:'icon-edit'">编辑</a> <a
 				href="javascript:addFee(2)" class="easyui-linkbutton"
-				data-options="iconCls:'icon-add'">新增费用</a>
+				data-options="iconCls:'icon-add'">新增费用</a><a
+				href="javascript:exportBill()" class="easyui-linkbutton"
+				data-options="iconCls:'icon-add'">打印派车单</a>
 		</div>
 		<table id="dg" class="easyui-datagrid" fit="true"
 			url="${path}/deliverys/datagrid" method="GET" toolbar="#toolbar"
