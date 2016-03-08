@@ -154,8 +154,8 @@ public class DeliveryController {
 	@RequestMapping(value = "/report/{id}")
 	public void ExportBill(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer id) {
 		try {
-			Delivery order = deliveryService.getById(id);
-			//ExcelUtils.exportOrder(request, response, order, "sheetName", "fileName");
+			Delivery delivery = deliveryService.getById(id);
+			ExcelUtils.exportDeliveryBill(request, response, delivery, "sheetName", "fileName");
 		} catch (Exception e) {
 			logger.error(e);
 			e.printStackTrace();
