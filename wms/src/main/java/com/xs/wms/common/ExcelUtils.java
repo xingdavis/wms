@@ -11,6 +11,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import javax.imageio.ImageIO;
@@ -35,6 +36,7 @@ import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.Picture;
 import org.apache.poi.util.IOUtils;
 
+import com.xs.wms.pojo.Delivery;
 import com.xs.wms.pojo.Order;
 import com.xs.wms.pojo.Order_detail;
 import com.xs.wms.pojo.Stock_in;
@@ -1041,9 +1043,9 @@ public class ExcelUtils {
 
 	@SuppressWarnings({ "unchecked", "rawtypes", "deprecation" })
 	public static <E> void exportDeliveryBill(HttpServletRequest request, HttpServletResponse response,
-			Stock_in stock_in, String sheetName, String fileName) throws NoSuchFieldException, IOException {
+			Delivery delivery, String sheetName, String fileName) throws NoSuchFieldException, IOException {
 
-		List<Stock_in_detail> items = stock_in.getItems();
+		//List<Stock_in_detail> items = delivery.getItems();
 
 		// 创建工作簿
 		HSSFWorkbook wb = new HSSFWorkbook();
@@ -1077,53 +1079,44 @@ public class ExcelUtils {
 		cellStyle2.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);
 		Font font2 = wb.createFont();
 		font2.setFontName("宋体");
-		font2.setFontHeightInPoints((short) 12);
+		font2.setFontHeightInPoints((short) 11);
 		cellStyle2.setFont(font2);
-
+		
 		HSSFCellStyle cellStyle3 = wb.createCellStyle();
-		// cellStyle3.setWrapText(true);
-		cellStyle3.setAlignment(HSSFCellStyle.ALIGN_CENTER);
-		cellStyle3.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);
-		cellStyle3.setBorderLeft(HSSFCellStyle.BORDER_THIN);
-		cellStyle3.setBorderRight(HSSFCellStyle.BORDER_THIN);
-		cellStyle3.setBorderTop(HSSFCellStyle.BORDER_THIN);
-		cellStyle3.setBorderBottom(HSSFCellStyle.BORDER_THIN);
+		cellStyle3.setWrapText(true);
 		cellStyle3.setAlignment(HSSFCellStyle.ALIGN_CENTER);
 		cellStyle3.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);
 		Font font3 = wb.createFont();
 		font3.setFontName("宋体");
 		font3.setBoldweight(Font.BOLDWEIGHT_BOLD);
-		font3.setFontHeightInPoints((short) 12);
+		font3.setFontHeightInPoints((short) 14);
 		cellStyle3.setFont(font3);
-
+		
 		HSSFCellStyle cellStyle4 = wb.createCellStyle();
+		cellStyle4.setWrapText(true);
 		cellStyle4.setAlignment(HSSFCellStyle.ALIGN_CENTER);
 		cellStyle4.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);
+		cellStyle4.setBorderBottom(HSSFCellStyle.BORDER_THIN);
 		Font font4 = wb.createFont();
 		font4.setFontName("宋体");
 		font4.setBoldweight(Font.BOLDWEIGHT_BOLD);
-		font4.setFontHeightInPoints((short) 11);
+		font4.setFontHeightInPoints((short) 14);
 		cellStyle4.setFont(font4);
 
 		HSSFCellStyle cellStyle5 = wb.createCellStyle();
+		cellStyle5.setWrapText(true);
 		cellStyle5.setAlignment(HSSFCellStyle.ALIGN_CENTER);
 		cellStyle5.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);
+		cellStyle5.setBorderTop(HSSFCellStyle.BORDER_THIN);
 		cellStyle5.setBorderBottom(HSSFCellStyle.BORDER_THIN);
+		cellStyle5.setBorderLeft(HSSFCellStyle.BORDER_THIN);
+		cellStyle5.setBorderRight(HSSFCellStyle.BORDER_THIN);
 		Font font5 = wb.createFont();
 		font5.setFontName("宋体");
 		font5.setBoldweight(Font.BOLDWEIGHT_BOLD);
-		font5.setFontHeightInPoints((short) 11);
+		font5.setFontHeightInPoints((short) 14);
 		cellStyle5.setFont(font5);
-
-		HSSFCellStyle cellStyle6 = wb.createCellStyle();
-		cellStyle6.setWrapText(true);
-		cellStyle6.setAlignment(HSSFCellStyle.ALIGN_CENTER);
-		cellStyle6.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);
-		Font font6 = wb.createFont();
-		font6.setFontName("宋体");
-		font6.setFontHeightInPoints((short) 11);
-		cellStyle6.setFont(font6);
-
+		
 		currentRow++;
 		contentRow = sheet.createRow(++currentRow);
 		CellRangeAddress region = new CellRangeAddress(currentRow, currentRow, 0, 8);
@@ -1137,7 +1130,72 @@ public class ExcelUtils {
 		sheet.addMergedRegion(region);
 		cell = contentRow.createCell(0);
 		cell.setCellStyle(cellStyle2);
-		cell.setCellValue("广 州 信 树 物 流 有 限 公 司");
+		cell.setCellValue("电话：82396784     传真：82390130");
+		
+		contentRow = sheet.createRow(++currentRow);
+		region = new CellRangeAddress(currentRow, currentRow, 0, 8);
+		sheet.addMergedRegion(region);
+		cell = contentRow.createCell(0);
+		cell.setCellStyle(cellStyle1);
+		cell.setCellValue("货 运 单");
+		
+		contentRow = sheet.createRow(++currentRow);
+		cell = contentRow.createCell(0);
+		cell.setCellStyle(cellStyle3);
+		cell.setCellValue("车 号：");
+		region = new CellRangeAddress(currentRow, currentRow, 1, 2);
+		sheet.addMergedRegion(region);
+		cell = contentRow.createCell(1);
+		cell.setCellStyle(cellStyle4);
+		cell = contentRow.createCell(2);
+		cell.setCellStyle(cellStyle4);
+		cell = contentRow.createCell(3);
+		cell.setCellStyle(cellStyle3);
+		cell.setCellValue("司 机：");
+		region = new CellRangeAddress(currentRow, currentRow, 4, 5);
+		sheet.addMergedRegion(region);
+		cell = contentRow.createCell(4);
+		cell.setCellStyle(cellStyle4);
+		cell = contentRow.createCell(5);
+		cell.setCellStyle(cellStyle4);
+		region = new CellRangeAddress(currentRow, currentRow, 6, 7);
+		sheet.addMergedRegion(region);
+		cell = contentRow.createCell(6);
+		cell.setCellStyle(cellStyle2);
+		cell.setCellValue(new SimpleDateFormat("yyyy年MM月dd日").format(new Date()));
+		cell = contentRow.createCell(7);
+		cell.setCellStyle(cellStyle2);
+		
+		currentRow++;
+		contentRow = sheet.createRow(++currentRow);
+		cell = contentRow.createCell(0);
+		cell.setCellStyle(cellStyle5);
+		cell.setCellValue("单 号");
+		region = new CellRangeAddress(currentRow, currentRow, 3, 4);
+		sheet.addMergedRegion(region);
+		cell = contentRow.createCell(3);
+		cell.setCellStyle(cellStyle5);
+		cell.setCellValue(delivery.getCode());
+		cell = contentRow.createCell(5);
+		cell.setCellStyle(cellStyle5);
+		cell.setCellValue("提柜点");
+		cell = contentRow.createCell(6);
+		cell.setCellStyle(cellStyle5);
+		cell.setCellValue(delivery.getDport());
+		cell = contentRow.createCell(7);
+		cell.setCellStyle(cellStyle5);
+		cell.setCellValue(delivery.getCaseModel());
+		cell = contentRow.createCell(8);
+		cell.setCellStyle(cellStyle5);
+		region = new CellRangeAddress(currentRow, currentRow+2, 8, 8);
+		sheet.addMergedRegion(region);
+		cell.setCellValue(delivery.getWeigh());
+		
+		currentRow++;
+		contentRow = sheet.createRow(++currentRow);
+		cell = contentRow.createCell(0);
+		cell.setCellStyle(cellStyle5);
+		cell.setCellValue("货 名");
 		
 		OutputStream os = null;
 		try {
