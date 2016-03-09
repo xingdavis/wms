@@ -38,7 +38,7 @@ public class DeliveryController {
 	public String ListPage(Model model) {
 		return "delivery/list";
 	}
-	
+
 	/**
 	 * 新增页面
 	 * 
@@ -54,7 +54,7 @@ public class DeliveryController {
 		model.addAttribute("delivery_id", id);
 		return "delivery/delivery";
 	}
-	
+
 	@ResponseBody
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
 	public Json get(@PathVariable Integer id) {
@@ -120,7 +120,7 @@ public class DeliveryController {
 		j.setSuccess(ok);
 		return j;
 	}
-	
+
 	/**
 	 * 删除
 	 * 
@@ -140,7 +140,7 @@ public class DeliveryController {
 		}
 		return j;
 	}
-	
+
 	@ResponseBody
 	@RequestMapping(value = "/datagrid", method = RequestMethod.GET)
 	public DataGrid datagrid(PageHelper page, Delivery obj) {
@@ -150,12 +150,16 @@ public class DeliveryController {
 		dg.setRows(list);
 		return dg;
 	}
-	
-	@RequestMapping(value = "/report/{id}")
-	public void ExportBill(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer id) {
+
+	@RequestMapping(value = "/report/{type}/{id}")
+	public void ExportBill(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer type,
+			@PathVariable Integer id) {
 		try {
 			Delivery delivery = deliveryService.getById(id);
-			ExcelUtils.exportDeliveryBill(request, response, delivery, "sheetName", "fileName");
+			if (type == 2)
+				ExcelUtils.exportDeliveryBill2(request, response, delivery, "sheetName", "fileName");
+			else
+				ExcelUtils.exportDeliveryBill(request, response, delivery, "sheetName", "fileName");
 		} catch (Exception e) {
 			logger.error(e);
 			e.printStackTrace();

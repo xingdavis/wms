@@ -60,13 +60,13 @@
 		if (r) {
 			bill_id = r.id;
 			if (r.order)
-				client_id=r.order.clientId;
+				client_id = r.order.clientId;
 		}
 		_AddTab('费用管理-新增[' + type + '-' + client_id + '-' + bill_id + ']',
 				'${path}/fees/page/' + type + '/' + client_id + '/' + bill_id
 						+ '/');
 	}
-	
+
 	function formatStatus(value, row) {
 		if (value == '0')
 			return '登记';
@@ -75,11 +75,11 @@
 		else
 			return value;
 	}
-	
-	function exportBill() {
+
+	function exportBill(type) {
 		var r = $('#dg').datagrid('getSelected');
 		if (r)
-			window.open(path + '/deliverys/report/' + r.id);
+			window.open(path + '/deliverys/report/' + type + "/" + r.id);
 	}
 </script>
 
@@ -97,8 +97,10 @@
 				data-options="iconCls:'icon-edit'">编辑</a> <a
 				href="javascript:addFee(2)" class="easyui-linkbutton"
 				data-options="iconCls:'icon-add'">新增费用</a><a
-				href="javascript:exportBill()" class="easyui-linkbutton"
-				data-options="iconCls:'icon-add'">打印派车单</a>
+				href="javascript:exportBill(1)" class="easyui-linkbutton"
+				data-options="iconCls:'icon-add'">打印派车单</a> <a
+				href="javascript:exportBill(2)" class="easyui-linkbutton"
+				data-options="iconCls:'icon-add'">打印派车单2</a>
 		</div>
 		<table id="dg" class="easyui-datagrid" fit="true"
 			url="${path}/deliverys/datagrid" method="GET" toolbar="#toolbar"

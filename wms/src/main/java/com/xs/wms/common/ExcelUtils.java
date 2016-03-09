@@ -9,6 +9,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -56,8 +57,7 @@ public class ExcelUtils {
 	 *            void
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public static <E> void exportExcel(HttpServletResponse response,
-			String[] header, String[] fileNames, List<E> list,
+	public static <E> void exportExcel(HttpServletResponse response, String[] header, String[] fileNames, List<E> list,
 			String sheetName, String fileName) throws NoSuchFieldException {
 		// 创建工作簿
 		HSSFWorkbook wb = new HSSFWorkbook();
@@ -82,22 +82,16 @@ public class ExcelUtils {
 					Object value = null;
 					if (fileNames[j].contains("."))// 包含其它类
 					{
-						String subClsNm = fileNames[j].substring(0,
-								fileNames[j].indexOf("."));
-						String subField = fileNames[j].substring(fileNames[j]
-								.indexOf(".") + 1);
-						String fieldName = subClsNm.substring(0, 1)
-								.toUpperCase() + subClsNm.substring(1);
-						String subFieldNm = subField.substring(0, 1)
-								.toUpperCase() + subField.substring(1);
+						String subClsNm = fileNames[j].substring(0, fileNames[j].indexOf("."));
+						String subField = fileNames[j].substring(fileNames[j].indexOf(".") + 1);
+						String fieldName = subClsNm.substring(0, 1).toUpperCase() + subClsNm.substring(1);
+						String subFieldNm = subField.substring(0, 1).toUpperCase() + subField.substring(1);
 						Method getMethod = cls.getMethod("get" + fieldName);
 						Object subObj = getMethod.invoke(o);
-						Method subMethod = subObj.getClass().getMethod(
-								"get" + subFieldNm);
+						Method subMethod = subObj.getClass().getMethod("get" + subFieldNm);
 						value = subMethod.invoke(subObj);
 					} else {
-						String fieldName = fileNames[j].substring(0, 1)
-								.toUpperCase() + fileNames[j].substring(1);
+						String fieldName = fileNames[j].substring(0, 1).toUpperCase() + fileNames[j].substring(1);
 						Method getMethod = cls.getMethod("get" + fieldName);
 						value = getMethod.invoke(o);
 					}
@@ -121,8 +115,7 @@ public class ExcelUtils {
 		OutputStream os = null;
 		try {
 			response.reset();
-			response.addHeader("Content-Disposition", "attachment;filename="
-					+ fileName + ".xls");
+			response.addHeader("Content-Disposition", "attachment;filename=" + fileName + ".xls");
 			response.setContentType("application/vnd.ms-excel;charset=utf-8");
 			os = response.getOutputStream();
 			wb.write(os);
@@ -140,9 +133,8 @@ public class ExcelUtils {
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes", "deprecation" })
-	public static <E> void exportOrder(HttpServletRequest request,
-			HttpServletResponse response, Order order, String sheetName,
-			String fileName) throws NoSuchFieldException, IOException {
+	public static <E> void exportOrder(HttpServletRequest request, HttpServletResponse response, Order order,
+			String sheetName, String fileName) throws NoSuchFieldException, IOException {
 
 		String[] fieldHeaders = { "中文品名", "件数", "体积", "重量" };
 		String[] fieldNames = { "cname", "num", "vol", "weight" };
@@ -183,8 +175,7 @@ public class ExcelUtils {
 		gridCellStyle.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);
 		gridCellStyle.setFont(font);
 
-		CellRangeAddress region = new CellRangeAddress(0, 0, 1,
-				fieldHeaders.length);
+		CellRangeAddress region = new CellRangeAddress(0, 0, 1, fieldHeaders.length);
 		sheet.addMergedRegion(region);
 		HSSFCellStyle titleCellStyle = wb.createCellStyle();
 		titleCellStyle.setAlignment(HSSFCellStyle.ALIGN_CENTER);
@@ -204,8 +195,7 @@ public class ExcelUtils {
 		codeCell.setCellStyle(codeCellStyle);
 		codeCell.setCellValue("入仓单号：" + order.getCode());
 
-		region = new CellRangeAddress(2, 2 + items.size(),
-				fieldHeaders.length + 1, fieldHeaders.length + 1);
+		region = new CellRangeAddress(2, 2 + items.size(), fieldHeaders.length + 1, fieldHeaders.length + 1);
 		sheet.addMergedRegion(region);
 		HSSFCell rCell = headerRow.createCell(fieldHeaders.length + 1);
 		rCell.setCellStyle(cellStyle);
@@ -238,67 +228,58 @@ public class ExcelUtils {
 		}
 
 		contentRow = sheet.createRow(++currentRow);
-		region = new CellRangeAddress(currentRow, currentRow, 1,
-				fieldHeaders.length + 1);
+		region = new CellRangeAddress(currentRow, currentRow, 1, fieldHeaders.length + 1);
 		sheet.addMergedRegion(region);
 		HSSFCell cell = contentRow.createCell(1);
 		cell.setCellStyle(codeCellStyle);
 		cell.setCellValue("●地址：广州市黄埔区中山大道乌冲路段新溪北加油站西侧信树物流仓储部");
 		contentRow = sheet.createRow(++currentRow);
-		region = new CellRangeAddress(currentRow, currentRow, 1,
-				fieldHeaders.length + 1);
+		region = new CellRangeAddress(currentRow, currentRow, 1, fieldHeaders.length + 1);
 		sheet.addMergedRegion(region);
 		cell = contentRow.createCell(1);
 		cell.setCellStyle(codeCellStyle);
 		cell.setCellValue("●咨询路线： 黄先生 020-82396784   13929565484  查货情况：QQ1954859510");
 		contentRow = sheet.createRow(++currentRow);
-		region = new CellRangeAddress(currentRow, currentRow, 1,
-				fieldHeaders.length + 1);
+		region = new CellRangeAddress(currentRow, currentRow, 1, fieldHeaders.length + 1);
 		sheet.addMergedRegion(region);
 		cell = contentRow.createCell(1);
 		cell.setCellStyle(codeCellStyle);
 		cell.setCellValue("              如仓库联系不上，请联系我司操作：");
 		contentRow = sheet.createRow(++currentRow);
-		region = new CellRangeAddress(currentRow, currentRow, 1,
-				fieldHeaders.length + 1);
+		region = new CellRangeAddress(currentRow, currentRow, 1, fieldHeaders.length + 1);
 		sheet.addMergedRegion(region);
 		cell = contentRow.createCell(1);
 		cell.setCellStyle(codeCellStyle);
 		cell.setCellValue("●上班时间：早上8：30—下午18:00");
 		contentRow = sheet.createRow(++currentRow);
-		region = new CellRangeAddress(currentRow, currentRow, 1,
-				fieldHeaders.length + 1);
+		region = new CellRangeAddress(currentRow, currentRow, 1, fieldHeaders.length + 1);
 		sheet.addMergedRegion(region);
 		contentRow.setHeight((short) (16 * 25 * 2));
 		cell = contentRow.createCell(1);
 		cell.setCellStyle(codeCellStyle);
 		cell.setCellValue("●司机需遵从本仓人员工作安排，到办公室开入场单，我司将收取10元/车次入场费，并以 收据编号先后顺序排队。");
 		contentRow = sheet.createRow(++currentRow);
-		region = new CellRangeAddress(currentRow, currentRow, 1,
-				fieldHeaders.length + 1);
+		region = new CellRangeAddress(currentRow, currentRow, 1, fieldHeaders.length + 1);
 		sheet.addMergedRegion(region);
 		contentRow.setHeight((short) (16 * 25 * 2));
 		cell = contentRow.createCell(1);
 		cell.setCellStyle(codeCellStyle);
 		cell.setCellValue("●请核对清楚实际数量与入仓单数量是否一致，签收后所产生的一切损失我司不负责，并收取翻堆装卸费35元/CBM");
 		contentRow = sheet.createRow(++currentRow);
-		region = new CellRangeAddress(currentRow, currentRow, 1,
-				fieldHeaders.length + 1);
+		region = new CellRangeAddress(currentRow, currentRow, 1, fieldHeaders.length + 1);
 		sheet.addMergedRegion(region);
 		cell = contentRow.createCell(1);
 		cell.setCellStyle(codeCellStyle);
 		cell.setCellValue("(温馨提示：为了不耽误你宝贵的卸货时间，送货前请提前一天预约)");
 		contentRow = sheet.createRow(++currentRow);
-		region = new CellRangeAddress(currentRow, currentRow, 1,
-				fieldHeaders.length + 1);
+		region = new CellRangeAddress(currentRow, currentRow, 1, fieldHeaders.length + 1);
 		sheet.addMergedRegion(region);
 		cell = contentRow.createCell(1);
 		cell.setCellStyle(codeCellStyle);
 		cell.setCellValue("仓库路线图：↘");
 		currentRow++;
 		ByteArrayOutputStream byteArrayOut = new ByteArrayOutputStream();
-		String picPath = request.getSession().getServletContext()
-				.getRealPath("img/path.png");
+		String picPath = request.getSession().getServletContext().getRealPath("img/path.png");
 		// BufferedImage bufferImg = ImageIO.read(new File(picPath));
 		// ImageIO.write(bufferImg, "png", byteArrayOut);
 		// // 画图的顶级管理器，一个sheet只能获取一个（一定要注意这点）
@@ -314,16 +295,13 @@ public class ExcelUtils {
 		// HSSFWorkbook.PICTURE_TYPE_JPEG));
 
 		contentRow = sheet.createRow(currentRow + 30);
-		region = new CellRangeAddress(currentRow + 30, currentRow + 30, 1,
-				fieldHeaders.length + 1);
+		region = new CellRangeAddress(currentRow + 30, currentRow + 30, 1, fieldHeaders.length + 1);
 		sheet.addMergedRegion(region);
 		contentRow.setHeight((short) (16 * 25 * 7));
 		cell = contentRow.createCell(1);
 		cell.setCellStyle(codeCellStyle);
-		cell.setCellValue("***备注：1、请务必凭此进仓单进仓（请复印一份），否则仓库不收货。"
-				+ "\n2、此入仓单自放仓7天内有效，柜货5天免堆，散货无免堆期。"
-				+ "\n3、仓库只接受普通货物入仓！易燃、易爆、有强污染力的危险品；液"
-				+ "\n体、粉末状等疑危险品；易碎品，国家相关法律禁运的货物，仓库拒绝收货！超长、超"
+		cell.setCellValue("***备注：1、请务必凭此进仓单进仓（请复印一份），否则仓库不收货。" + "\n2、此入仓单自放仓7天内有效，柜货5天免堆，散货无免堆期。"
+				+ "\n3、仓库只接受普通货物入仓！易燃、易爆、有强污染力的危险品；液" + "\n体、粉末状等疑危险品；易碎品，国家相关法律禁运的货物，仓库拒绝收货！超长、超"
 				+ "\n重、超大件货物入仓，请提前与我司相关操作人员联系！");
 
 		InputStream is = new FileInputStream(picPath);
@@ -342,8 +320,7 @@ public class ExcelUtils {
 		OutputStream os = null;
 		try {
 			response.reset();
-			response.addHeader("Content-Disposition", "attachment;filename="
-					+ fileName + ".xls");
+			response.addHeader("Content-Disposition", "attachment;filename=" + fileName + ".xls");
 			response.setContentType("application/vnd.ms-excel;charset=utf-8");
 			os = response.getOutputStream();
 			wb.write(os);
@@ -361,10 +338,8 @@ public class ExcelUtils {
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes", "deprecation" })
-	public static <E> void exportBill(HttpServletResponse response,
-			String[] header, String[] fileNames, List<E> list,
-			String sheetName, String fileName, String title)
-			throws NoSuchFieldException {
+	public static <E> void exportBill(HttpServletResponse response, String[] header, String[] fileNames, List<E> list,
+			String sheetName, String fileName, String title) throws NoSuchFieldException {
 		// 创建工作簿
 		HSSFWorkbook wb = new HSSFWorkbook();
 		// 创建一个sheet
@@ -384,8 +359,7 @@ public class ExcelUtils {
 		cellStyle.setAlignment(HSSFCellStyle.ALIGN_CENTER);
 		cellStyle.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);
 		// 设置title
-		CellRangeAddress region = new CellRangeAddress(0, 0, 0,
-				fileNames.length - 1); // 参数都是从O开始
+		CellRangeAddress region = new CellRangeAddress(0, 0, 0, fileNames.length - 1); // 参数都是从O开始
 		sheet.addMergedRegion(region);
 
 		HSSFCellStyle topCellStyle = wb.createCellStyle();
@@ -445,37 +419,30 @@ public class ExcelUtils {
 					Object value = null;
 					if (fileNames[j].contains("."))// 包含其它类
 					{
-						String subClsNm = fileNames[j].substring(0,
-								fileNames[j].indexOf("."));
-						String subField = fileNames[j].substring(fileNames[j]
-								.indexOf(".") + 1);
-						String fieldName = subClsNm.substring(0, 1)
-								.toUpperCase() + subClsNm.substring(1);
-						String subFieldNm = subField.substring(0, 1)
-								.toUpperCase() + subField.substring(1);
+						String subClsNm = fileNames[j].substring(0, fileNames[j].indexOf("."));
+						String subField = fileNames[j].substring(fileNames[j].indexOf(".") + 1);
+						String fieldName = subClsNm.substring(0, 1).toUpperCase() + subClsNm.substring(1);
+						String subFieldNm = subField.substring(0, 1).toUpperCase() + subField.substring(1);
 						Method getMethod = cls.getMethod("get" + fieldName);
 						Object subObj = getMethod.invoke(o);
 						if (subObj != null) {
-							Method subMethod = subObj.getClass().getMethod(
-									"get" + subFieldNm);
+							Method subMethod = subObj.getClass().getMethod("get" + subFieldNm);
 							value = subMethod.invoke(subObj);
 						}
 					} else {
-						String fieldName = fileNames[j].substring(0, 1)
-								.toUpperCase() + fileNames[j].substring(1);
+						String fieldName = fileNames[j].substring(0, 1).toUpperCase() + fileNames[j].substring(1);
 						Method getMethod = cls.getMethod("get" + fieldName);
 						value = getMethod.invoke(o);
 					}
 					if (value != null) {
 						HSSFCell cell = contentRow.createCell(j);
 						cell.setCellStyle(cellStyle);
-						cell.setCellValue(new HSSFRichTextString(value
-								.toString()));
+						cell.setCellValue(new HSSFRichTextString(value.toString()));
 					}
 				}
 				int bottomRowNum = list.size() + 2;
-				CellRangeAddress bottomRegion = new CellRangeAddress(
-						bottomRowNum, bottomRowNum, 0, fileNames.length - 1); // 参数都是从O开始
+				CellRangeAddress bottomRegion = new CellRangeAddress(bottomRowNum, bottomRowNum, 0,
+						fileNames.length - 1); // 参数都是从O开始
 				sheet.addMergedRegion(bottomRegion);
 				bottomRow = sheet.createRow(bottomRowNum);
 				HSSFCell bottomCell = bottomRow.createCell(0);
@@ -517,8 +484,7 @@ public class ExcelUtils {
 		OutputStream os = null;
 		try {
 			response.reset();
-			response.addHeader("Content-Disposition", "attachment;filename="
-					+ fileName + ".xls");
+			response.addHeader("Content-Disposition", "attachment;filename=" + fileName + ".xls");
 			response.setContentType("application/vnd.ms-excel;charset=utf-8");
 			os = response.getOutputStream();
 			wb.write(os);
@@ -536,9 +502,8 @@ public class ExcelUtils {
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes", "deprecation" })
-	public static <E> void exportStockInBill(HttpServletRequest request,
-			HttpServletResponse response, Stock_in stock_in, String sheetName,
-			String fileName) throws NoSuchFieldException, IOException {
+	public static <E> void exportStockInBill(HttpServletRequest request, HttpServletResponse response,
+			Stock_in stock_in, String sheetName, String fileName) throws NoSuchFieldException, IOException {
 
 		List<Stock_in_detail> items = stock_in.getItems();
 
@@ -622,8 +587,7 @@ public class ExcelUtils {
 		cellStyle6.setFont(font6);
 
 		contentRow = sheet.createRow(++currentRow);
-		CellRangeAddress region = new CellRangeAddress(currentRow, currentRow,
-				1, 11);
+		CellRangeAddress region = new CellRangeAddress(currentRow, currentRow, 1, 11);
 		sheet.addMergedRegion(region);
 		HSSFCell cell = contentRow.createCell(1);
 		cell.setCellStyle(cellStyle);
@@ -845,12 +809,10 @@ public class ExcelUtils {
 		// cell.setCellValue("①存根（白色） ②客户（红色） ③仓库留底（黄色）");
 
 		HSSFPatriarch patriarch = sheet.createDrawingPatriarch();
-		HSSFClientAnchor bigValueAnchorTextBox = new HSSFClientAnchor(0, 0, 0,
-				0, (short) 12, currentRow, (short) 12, currentRow);
-		HSSFTextbox bigValueTextbox = patriarch
-				.createTextbox(bigValueAnchorTextBox);
-		bigValueTextbox.setString(new HSSFRichTextString(
-				"①存根（白色） ②客户（红色） ③仓库留底（黄色）"));
+		HSSFClientAnchor bigValueAnchorTextBox = new HSSFClientAnchor(0, 0, 0, 0, (short) 12, currentRow, (short) 12,
+				currentRow);
+		HSSFTextbox bigValueTextbox = patriarch.createTextbox(bigValueAnchorTextBox);
+		bigValueTextbox.setString(new HSSFRichTextString("①存根（白色） ②客户（红色） ③仓库留底（黄色）"));
 		bigValueTextbox.setLineStyle(HSSFSimpleShape.LINESTYLE_NONE);
 		bigValueTextbox.setFillColor(0, 0, 0);
 
@@ -1062,8 +1024,7 @@ public class ExcelUtils {
 
 		OutputStream os = null;
 		try {
-			response.addHeader("Content-Disposition", "attachment;filename="
-					+ fileName + ".xls");
+			response.addHeader("Content-Disposition", "attachment;filename=" + fileName + ".xls");
 			response.reset();
 			response.setContentType("application/vnd.ms-excel;charset=utf-8");
 			os = response.getOutputStream();
@@ -1085,7 +1046,7 @@ public class ExcelUtils {
 	public static <E> void exportDeliveryBill(HttpServletRequest request, HttpServletResponse response,
 			Delivery delivery, String sheetName, String fileName) throws NoSuchFieldException, IOException {
 
-		//List<Stock_in_detail> items = delivery.getItems();
+		// List<Stock_in_detail> items = delivery.getItems();
 
 		// 创建工作簿
 		HSSFWorkbook wb = new HSSFWorkbook();
@@ -1101,7 +1062,7 @@ public class ExcelUtils {
 		cellStyle.setBorderBottom(HSSFCellStyle.BORDER_THIN);
 		Font font = wb.createFont();
 		font.setFontName("宋体");
-		//font.setBoldweight(Font.BOLDWEIGHT_BOLD);
+		// font.setBoldweight(Font.BOLDWEIGHT_BOLD);
 		font.setFontHeightInPoints((short) 20);
 		cellStyle.setFont(font);
 
@@ -1123,7 +1084,7 @@ public class ExcelUtils {
 		font2.setFontName("宋体");
 		font2.setFontHeightInPoints((short) 11);
 		cellStyle2.setFont(font2);
-		
+
 		HSSFCellStyle cellStyle3 = wb.createCellStyle();
 		cellStyle3.setWrapText(true);
 		cellStyle3.setAlignment(HSSFCellStyle.ALIGN_CENTER);
@@ -1133,7 +1094,7 @@ public class ExcelUtils {
 		font3.setBoldweight(Font.BOLDWEIGHT_BOLD);
 		font3.setFontHeightInPoints((short) 14);
 		cellStyle3.setFont(font3);
-		
+
 		HSSFCellStyle cellStyle4 = wb.createCellStyle();
 		cellStyle4.setWrapText(true);
 		cellStyle4.setAlignment(HSSFCellStyle.ALIGN_CENTER);
@@ -1158,7 +1119,17 @@ public class ExcelUtils {
 		font5.setBoldweight(Font.BOLDWEIGHT_BOLD);
 		font5.setFontHeightInPoints((short) 14);
 		cellStyle5.setFont(font5);
-		
+
+		HSSFCellStyle cellStyle6 = wb.createCellStyle();
+		cellStyle6.setWrapText(true);
+		cellStyle6.setAlignment(HSSFCellStyle.ALIGN_CENTER);
+		cellStyle6.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);
+		cellStyle6.setBorderBottom(HSSFCellStyle.BORDER_THIN);
+		Font font6 = wb.createFont();
+		font6.setFontName("宋体");
+		font6.setFontHeightInPoints((short) 11);
+		cellStyle6.setFont(font6);
+
 		contentRow = sheet.createRow(++currentRow);
 		CellRangeAddress region = new CellRangeAddress(currentRow, currentRow, 0, 7);
 		sheet.addMergedRegion(region);
@@ -1179,15 +1150,14 @@ public class ExcelUtils {
 		cell.setCellStyle(cellStyle);
 		cell = contentRow.createCell(7);
 		cell.setCellStyle(cellStyle);
-		
-		
+
 		contentRow = sheet.createRow(++currentRow);
 		region = new CellRangeAddress(currentRow, currentRow, 0, 7);
 		sheet.addMergedRegion(region);
 		cell = contentRow.createCell(0);
 		cell.setCellStyle(cellStyle2);
 		cell.setCellValue("电话：82396784     传真：82390130");
-		
+
 		contentRow = sheet.createRow(++currentRow);
 		region = new CellRangeAddress(currentRow, currentRow, 0, 7);
 		sheet.addMergedRegion(region);
@@ -1208,30 +1178,30 @@ public class ExcelUtils {
 		cell.setCellStyle(cellStyle1);
 		cell = contentRow.createCell(7);
 		cell.setCellStyle(cellStyle1);
-		
+
 		contentRow = sheet.createRow(++currentRow);
 		cell = contentRow.createCell(0);
 		cell.setCellStyle(cellStyle3);
 		cell.setCellValue("车 号：");
-		sheet.setColumnWidth(0, 4*3 * 256);
+		sheet.setColumnWidth(0, 4 * 3 * 256);
 		region = new CellRangeAddress(currentRow, currentRow, 1, 2);
 		sheet.addMergedRegion(region);
 		cell = contentRow.createCell(1);
 		cell.setCellStyle(cellStyle4);
 		cell.setCellValue(delivery.getCarNo());
-		sheet.setColumnWidth(1, 6*3 * 256);
+		sheet.setColumnWidth(1, 6 * 3 * 256);
 		cell = contentRow.createCell(2);
 		cell.setCellStyle(cellStyle4);
 		cell = contentRow.createCell(3);
 		cell.setCellStyle(cellStyle3);
 		cell.setCellValue("司 机：");
-		sheet.setColumnWidth(3, 4*3 * 256);
+		sheet.setColumnWidth(3, 4 * 3 * 256);
 		region = new CellRangeAddress(currentRow, currentRow, 4, 5);
 		sheet.addMergedRegion(region);
 		cell = contentRow.createCell(4);
 		cell.setCellStyle(cellStyle4);
 		cell.setCellValue(delivery.getDriver());
-		sheet.setColumnWidth(4, 5*3 * 256);
+		sheet.setColumnWidth(4, 5 * 3 * 256);
 		cell = contentRow.createCell(5);
 		cell.setCellStyle(cellStyle4);
 		region = new CellRangeAddress(currentRow, currentRow, 6, 7);
@@ -1239,10 +1209,10 @@ public class ExcelUtils {
 		cell = contentRow.createCell(6);
 		cell.setCellStyle(cellStyle3);
 		cell.setCellValue(new SimpleDateFormat("yyyy年MM月dd日").format(new Date()));
-		sheet.setColumnWidth(6, 6*3 * 256);
+		sheet.setColumnWidth(6, 6 * 3 * 256);
 		cell = contentRow.createCell(7);
 		cell.setCellStyle(cellStyle3);
-		
+
 		currentRow++;
 		contentRow = sheet.createRow(++currentRow);
 		cell = contentRow.createCell(0);
@@ -1269,11 +1239,11 @@ public class ExcelUtils {
 		cell.setCellValue(delivery.getCaseModel());
 		cell = contentRow.createCell(7);
 		cell.setCellStyle(cellStyle5);
-		region = new CellRangeAddress(currentRow, currentRow+2, 7, 7);
+		region = new CellRangeAddress(currentRow, currentRow + 2, 7, 7);
 		sheet.addMergedRegion(region);
 		cell.setCellStyle(cellStyle5);
 		cell.setCellValue("过磅" + delivery.getWeigh());
-				
+
 		contentRow = sheet.createRow(++currentRow);
 		cell = contentRow.createCell(0);
 		cell.setCellStyle(cellStyle5);
@@ -1291,7 +1261,9 @@ public class ExcelUtils {
 		cell = contentRow.createCell(4);
 		cell.setCellStyle(cellStyle5);
 		cell.setCellValue(delivery.getRport());
-		
+		cell = contentRow.createCell(7);
+		cell.setCellStyle(cellStyle5);
+
 		contentRow = sheet.createRow(++currentRow);
 		cell = contentRow.createCell(0);
 		cell.setCellStyle(cellStyle5);
@@ -1307,7 +1279,9 @@ public class ExcelUtils {
 		cell.setCellStyle(cellStyle5);
 		cell = contentRow.createCell(4);
 		cell.setCellStyle(cellStyle5);
-		
+		cell = contentRow.createCell(7);
+		cell.setCellStyle(cellStyle5);
+
 		contentRow = sheet.createRow(++currentRow);
 		cell = contentRow.createCell(0);
 		cell.setCellStyle(cellStyle5);
@@ -1333,7 +1307,7 @@ public class ExcelUtils {
 		cell.setCellStyle(cellStyle5);
 		cell = contentRow.createCell(7);
 		cell.setCellStyle(cellStyle5);
-		
+
 		contentRow = sheet.createRow(++currentRow);
 		cell = contentRow.createCell(0);
 		cell.setCellStyle(cellStyle5);
@@ -1359,12 +1333,12 @@ public class ExcelUtils {
 		cell.setCellValue(delivery.getContact());
 		cell = contentRow.createCell(7);
 		cell.setCellStyle(cellStyle5);
-		
+
 		contentRow = sheet.createRow(++currentRow);
 		cell = contentRow.createCell(0);
 		cell.setCellStyle(cellStyle5);
 		cell.setCellValue("到厂时间");
-		region = new CellRangeAddress(currentRow, currentRow, 1, 4);
+		region = new CellRangeAddress(currentRow, currentRow, 1, 7);
 		sheet.addMergedRegion(region);
 		cell = contentRow.createCell(1);
 		cell.setCellStyle(cellStyle5);
@@ -1374,46 +1348,419 @@ public class ExcelUtils {
 		cell.setCellStyle(cellStyle5);
 		cell = contentRow.createCell(4);
 		cell.setCellStyle(cellStyle5);
-		
+		cell = contentRow.createCell(5);
+		cell.setCellStyle(cellStyle5);
+		cell = contentRow.createCell(6);
+		cell.setCellStyle(cellStyle5);
+		cell = contentRow.createCell(7);
+		cell.setCellStyle(cellStyle5);
+
 		contentRow = sheet.createRow(++currentRow);
-		region = new CellRangeAddress(currentRow, currentRow+4, 0, 0);
+		region = new CellRangeAddress(currentRow, currentRow + 3, 0, 0);
 		sheet.addMergedRegion(region);
 		cell = contentRow.createCell(0);
-		cell.setCellStyle(cellStyle2);
+		cell.setCellStyle(cellStyle5);
 		cell.setCellValue("备 注");
+		region = new CellRangeAddress(currentRow, currentRow + 3, 1, 4);
+		sheet.addMergedRegion(region);
 		cell = contentRow.createCell(1);
-		cell.setCellStyle(cellStyle2);
+		cell.setCellStyle(cellStyle5);
 		cell.setCellValue(delivery.getMemo());
-		cell = contentRow.createCell(5);
-		cell.setCellStyle(cellStyle2);
-		cell.setCellValue("客户签章");
-		
-		currentRow++;
-		currentRow++;
-		contentRow = sheet.createRow(++currentRow);
+		cell = contentRow.createCell(4);
+		cell.setCellStyle(cellStyle5);
 		region = new CellRangeAddress(currentRow, currentRow, 5, 6);
 		sheet.addMergedRegion(region);
 		cell = contentRow.createCell(5);
 		cell.setCellStyle(cellStyle2);
-		cell.setCellValue("日期：");
-		cell = contentRow.createCell(6);
-		cell.setCellStyle(cellStyle2);
+		cell.setCellValue("客户签章");
 		cell = contentRow.createCell(7);
-		cell.setCellStyle(cellStyle2);
+		cell.setCellStyle(cellStyle5);
+
+		contentRow = sheet.createRow(++currentRow);
+		cell = contentRow.createCell(0);
+		cell.setCellStyle(cellStyle5);
+		cell = contentRow.createCell(1);
+		cell.setCellStyle(cellStyle5);
+		cell = contentRow.createCell(2);
+		cell.setCellStyle(cellStyle5);
+		cell = contentRow.createCell(3);
+		cell.setCellStyle(cellStyle5);
+		cell = contentRow.createCell(4);
+		cell.setCellStyle(cellStyle5);
+		cell = contentRow.createCell(7);
+		cell.setCellStyle(cellStyle5);
+
+		contentRow = sheet.createRow(++currentRow);
+		cell = contentRow.createCell(0);
+		cell.setCellStyle(cellStyle5);
+		cell = contentRow.createCell(1);
+		cell.setCellStyle(cellStyle5);
+		cell = contentRow.createCell(2);
+		cell.setCellStyle(cellStyle5);
+		cell = contentRow.createCell(3);
+		cell.setCellStyle(cellStyle5);
+		cell = contentRow.createCell(4);
+		cell.setCellStyle(cellStyle5);
+		cell = contentRow.createCell(7);
+		cell.setCellStyle(cellStyle5);
+
+		contentRow = sheet.createRow(++currentRow);
+		cell = contentRow.createCell(0);
+		cell.setCellStyle(cellStyle5);
+		cell = contentRow.createCell(1);
+		cell.setCellStyle(cellStyle5);
+		cell = contentRow.createCell(2);
+		cell.setCellStyle(cellStyle5);
+		cell = contentRow.createCell(3);
+		cell.setCellStyle(cellStyle5);
+		cell = contentRow.createCell(4);
+		cell.setCellStyle(cellStyle5);
+		cell = contentRow.createCell(5);
+		cell.setCellStyle(cellStyle5);
+		cell = contentRow.createCell(6);
+		cell.setCellStyle(cellStyle5);
+		cell = contentRow.createCell(7);
+		cell.setCellStyle(cellStyle5);
+
+		cell = contentRow.createCell(5);
+		cell.setCellStyle(cellStyle6);
+		cell.setCellValue("日期：");
+		region = new CellRangeAddress(currentRow, currentRow, 6, 7);
+		sheet.addMergedRegion(region);
+		cell = contentRow.createCell(6);
+		cell.setCellStyle(cellStyle6);
 		cell.setCellValue("    年     月    日");
-		
+
 		contentRow = sheet.createRow(++currentRow);
 		region = new CellRangeAddress(currentRow, currentRow, 0, 1);
 		sheet.addMergedRegion(region);
-		cell = contentRow.createCell(5);
+		cell = contentRow.createCell(0);
 		cell.setCellStyle(cellStyle2);
 		cell.setCellValue("注意事项：");
-		region = new CellRangeAddress(currentRow, currentRow, 1, 7);
+		region = new CellRangeAddress(currentRow, currentRow, 2, 7);
 		sheet.addMergedRegion(region);
-		cell = contentRow.createCell(3);
+		cell = contentRow.createCell(2);
 		cell.setCellStyle(cellStyle2);
 		cell.setCellValue(delivery.getAttention());
+
+		OutputStream os = null;
+		try {
+			response.addHeader("Content-Disposition", "attachment;filename=" + fileName + ".xls");
+			response.reset();
+			response.setContentType("application/vnd.ms-excel;charset=utf-8");
+			os = response.getOutputStream();
+			wb.write(os);
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if (os != null) {
+				try {
+					os.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+
+	@SuppressWarnings({ "unchecked", "rawtypes", "deprecation" })
+	public static <E> void exportDeliveryBill2(HttpServletRequest request, HttpServletResponse response,
+			Delivery delivery, String sheetName, String fileName)
+					throws NoSuchFieldException, IOException, ParseException {
+
+		// List<Stock_in_detail> items = delivery.getItems();
+
+		// 创建工作簿
+		HSSFWorkbook wb = new HSSFWorkbook();
+		// 创建一个sheet
+		HSSFSheet sheet = wb.createSheet(sheetName);
+		int currentRow = 0;
+		HSSFRow contentRow = null;
+
+		HSSFCellStyle cellStyle = wb.createCellStyle();
+		//cellStyle.setWrapText(true);
+		cellStyle.setAlignment(HSSFCellStyle.ALIGN_CENTER);
+		cellStyle.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);
+		cellStyle.setBorderBottom(HSSFCellStyle.BORDER_THIN);
+		Font font = wb.createFont();
+		font.setFontName("宋体");
+		font.setBoldweight(Font.BOLDWEIGHT_BOLD);
+		font.setFontHeightInPoints((short) 20);
+		cellStyle.setFont(font);
+
+		HSSFCellStyle cellStyle1 = wb.createCellStyle();
+		//cellStyle1.setWrapText(true);
+		cellStyle1.setAlignment(HSSFCellStyle.ALIGN_CENTER);
+		cellStyle1.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);
+		Font font1 = wb.createFont();
+		font1.setFontName("宋体");
+		font1.setBoldweight(Font.BOLDWEIGHT_BOLD);
+		font1.setFontHeightInPoints((short) 20);
+		cellStyle1.setFont(font1);
+
+		HSSFCellStyle cellStyle2 = wb.createCellStyle();
+		//cellStyle2.setWrapText(true);
+		cellStyle2.setAlignment(HSSFCellStyle.ALIGN_CENTER);
+		cellStyle2.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);
+		Font font2 = wb.createFont();
+		font2.setFontName("宋体");
+		font2.setFontHeightInPoints((short) 12);
+		cellStyle2.setFont(font2);
+
+		HSSFCellStyle cellStyle3 = wb.createCellStyle();
+		//cellStyle3.setWrapText(true);
+		cellStyle3.setAlignment(HSSFCellStyle.ALIGN_CENTER);
+		cellStyle3.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);
+		Font font3 = wb.createFont();
+		font3.setFontName("宋体");
+		font3.setBoldweight(Font.BOLDWEIGHT_BOLD);
+		font3.setFontHeightInPoints((short) 12);
+		cellStyle3.setFont(font3);
+
+		HSSFCellStyle cellStyle4 = wb.createCellStyle();
+		//cellStyle4.setWrapText(true);
+		cellStyle4.setAlignment(HSSFCellStyle.ALIGN_CENTER);
+		cellStyle4.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);
+		cellStyle4.setBorderBottom(HSSFCellStyle.BORDER_THIN);
+		Font font4 = wb.createFont();
+		font4.setFontName("宋体");
+		font4.setBoldweight(Font.BOLDWEIGHT_BOLD);
+		font4.setFontHeightInPoints((short) 14);
+		cellStyle4.setFont(font4);
+
+		HSSFCellStyle cellStyle5 = wb.createCellStyle();
+		//cellStyle5.setWrapText(true);
+		cellStyle5.setAlignment(HSSFCellStyle.ALIGN_CENTER);
+		cellStyle5.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);
+		cellStyle5.setBorderTop(HSSFCellStyle.BORDER_THIN);
+		cellStyle5.setBorderBottom(HSSFCellStyle.BORDER_THIN);
+		cellStyle5.setBorderLeft(HSSFCellStyle.BORDER_THIN);
+		cellStyle5.setBorderRight(HSSFCellStyle.BORDER_THIN);
+		Font font5 = wb.createFont();
+		font5.setFontName("宋体");
+		// font5.setBoldweight(Font.BOLDWEIGHT_BOLD);
+		font5.setFontHeightInPoints((short) 12);
+		cellStyle5.setFont(font5);
+
+		contentRow = sheet.createRow(++currentRow);
+		CellRangeAddress region = new CellRangeAddress(currentRow, currentRow, 0, 7);
+		sheet.addMergedRegion(region);
+		HSSFCell cell = contentRow.createCell(0);
+		cell.setCellStyle(cellStyle);
+		cell.setCellValue("佛山市东方医疗设备厂有限公司");
+		cell = contentRow.createCell(1);
+		cell.setCellStyle(cellStyle);
+		cell = contentRow.createCell(2);
+		cell.setCellStyle(cellStyle);
+		cell = contentRow.createCell(3);
+		cell.setCellStyle(cellStyle);
+		cell = contentRow.createCell(4);
+		cell.setCellStyle(cellStyle);
+		cell = contentRow.createCell(5);
+		cell.setCellStyle(cellStyle);
+		cell = contentRow.createCell(6);
+		cell.setCellStyle(cellStyle);
+		cell = contentRow.createCell(7);
 		
+		contentRow = sheet.createRow(++currentRow);
+		region = new CellRangeAddress(currentRow, currentRow, 0, 7);
+		sheet.addMergedRegion(region);
+		cell = contentRow.createCell(0);
+		cell.setCellStyle(cellStyle1);
+		cell.setCellValue("提 货 凭 证");
+
+		contentRow = sheet.createRow(++currentRow);
+		region = new CellRangeAddress(currentRow, currentRow, 0, 7);
+		sheet.addMergedRegion(region);
+		cell = contentRow.createCell(0);
+		cell.setCellStyle(cellStyle2);
+		cell.setCellValue("(中国名牌: 佛山轮椅)");
+
+		contentRow = sheet.createRow(++currentRow);
+		cell = contentRow.createCell(5);
+		cell.setCellStyle(cellStyle2);
+		cell.setCellValue("日期：" + new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
+
+		contentRow = sheet.createRow(++currentRow);
+		region = new CellRangeAddress(currentRow, currentRow + 4, 1, 1);
+		sheet.addMergedRegion(region);
+		cell = contentRow.createCell(1);
+		cell.setCellStyle(cellStyle5);
+		cell.setCellValue("1");
+		region = new CellRangeAddress(currentRow, currentRow, 2, 5);
+		sheet.addMergedRegion(region);
+		cell = contentRow.createCell(2);
+		cell.setCellStyle(cellStyle5);
+		cell.setCellValue("厂 方 填 写");
+		cell = contentRow.createCell(3);
+		cell.setCellStyle(cellStyle5);
+		cell = contentRow.createCell(4);
+		cell.setCellStyle(cellStyle5);
+		cell = contentRow.createCell(5);
+		cell.setCellStyle(cellStyle5);
+
+		contentRow = sheet.createRow(++currentRow);
+		cell = contentRow.createCell(1);
+		cell.setCellStyle(cellStyle5);
+		cell = contentRow.createCell(2);
+		cell.setCellStyle(cellStyle5);
+		cell.setCellValue("生产编号");
+		sheet.setColumnWidth(2, 5 * 3 * 256);
+		cell = contentRow.createCell(3);
+		cell.setCellStyle(cellStyle5);
+		cell.setCellValue(delivery.getCode());
+		sheet.setColumnWidth(3, 10 * 3 * 256);
+		cell = contentRow.createCell(4);
+		cell.setCellStyle(cellStyle5);
+		cell.setCellValue("起运港");
+		sheet.setColumnWidth(4, 5 * 3 * 256);
+		cell = contentRow.createCell(5);
+		cell.setCellStyle(cellStyle5);
+		cell.setCellValue("黄埔");
+		sheet.setColumnWidth(5, 10 * 3 * 256);
+
+		contentRow = sheet.createRow(++currentRow);
+		cell = contentRow.createCell(1);
+		cell.setCellStyle(cellStyle5);
+		cell = contentRow.createCell(2);
+		cell.setCellStyle(cellStyle5);
+		cell.setCellValue("业务员");
+		cell = contentRow.createCell(3);
+		cell.setCellStyle(cellStyle5);
+		cell.setCellValue("");
+		cell = contentRow.createCell(4);
+		cell.setCellStyle(cellStyle5);
+		cell.setCellValue("目的港");
+		cell = contentRow.createCell(5);
+		cell.setCellStyle(cellStyle5);
+		cell.setCellValue("");
+
+		contentRow = sheet.createRow(++currentRow);
+		cell = contentRow.createCell(1);
+		cell.setCellStyle(cellStyle5);
+		cell = contentRow.createCell(2);
+		cell.setCellStyle(cellStyle5);
+		cell.setCellValue("货物名称");
+		cell = contentRow.createCell(3);
+		cell.setCellStyle(cellStyle5);
+		cell.setCellValue(delivery.getGoodsName());
+		cell = contentRow.createCell(4);
+		cell.setCellStyle(cellStyle5);
+		cell.setCellValue("柜型");
+		cell = contentRow.createCell(5);
+		cell.setCellStyle(cellStyle5);
+		cell.setCellValue(delivery.getCaseModel());
+
+		contentRow = sheet.createRow(++currentRow);
+		cell = contentRow.createCell(1);
+		cell.setCellStyle(cellStyle5);
+		cell = contentRow.createCell(2);
+		cell.setCellStyle(cellStyle5);
+		cell.setCellValue("装货日期");
+		region = new CellRangeAddress(currentRow, currentRow, 3, 5);
+		sheet.addMergedRegion(region);
+		cell = contentRow.createCell(3);
+		cell.setCellStyle(cellStyle5);
+		Date d = new SimpleDateFormat("yyyy-MM-dd HH:mm").parse(delivery.getDdate());
+		cell.setCellValue(
+				d.getYear() + 1900 + " 年 " + d.getMonth() + 1 + " 月 " + d.getDate() + " 日 " + d.getHours() + " 时 到厂 ");
+		cell = contentRow.createCell(4);
+		cell.setCellStyle(cellStyle5);
+		cell = contentRow.createCell(5);
+		cell.setCellStyle(cellStyle5);
+
+		contentRow = sheet.createRow(++currentRow);
+		region = new CellRangeAddress(currentRow, currentRow + 4, 1, 1);
+		sheet.addMergedRegion(region);
+		cell = contentRow.createCell(1);
+		cell.setCellStyle(cellStyle5);
+		cell.setCellValue("2");
+		region = new CellRangeAddress(currentRow, currentRow, 2, 5);
+		sheet.addMergedRegion(region);
+		cell = contentRow.createCell(2);
+		cell.setCellStyle(cellStyle5);
+		cell.setCellValue("谭先生  (电话: 0757-8120 2191)---13612503173");
+		cell = contentRow.createCell(3);
+		cell.setCellStyle(cellStyle5);
+		cell = contentRow.createCell(4);
+		cell.setCellStyle(cellStyle5);
+		cell = contentRow.createCell(5);
+		cell.setCellStyle(cellStyle5);
+
+		contentRow = sheet.createRow(++currentRow);
+		cell = contentRow.createCell(1);
+		cell.setCellStyle(cellStyle5);
+		cell = contentRow.createCell(2);
+		cell.setCellStyle(cellStyle5);
+		cell.setCellValue("订舱号");
+		cell = contentRow.createCell(3);
+		cell.setCellStyle(cellStyle5);
+		cell.setCellValue(delivery.getCode());
+		cell = contentRow.createCell(4);
+		cell.setCellStyle(cellStyle5);
+		cell.setCellValue("车牌");
+		cell = contentRow.createCell(5);
+		cell.setCellStyle(cellStyle5);
+		cell.setCellValue(delivery.getCarNo());
+
+		contentRow = sheet.createRow(++currentRow);
+		cell = contentRow.createCell(1);
+		cell.setCellStyle(cellStyle5);
+		cell = contentRow.createCell(2);
+		cell.setCellStyle(cellStyle5);
+		cell.setCellValue("柜号");
+		cell = contentRow.createCell(3);
+		cell.setCellStyle(cellStyle5);
+		cell.setCellValue(delivery.getCaseNo());
+		cell = contentRow.createCell(4);
+		cell.setCellStyle(cellStyle5);
+		cell.setCellValue("封条号");
+		cell = contentRow.createCell(5);
+		cell.setCellStyle(cellStyle5);
+		cell.setCellValue(delivery.getSealNo());
+
+		contentRow = sheet.createRow(++currentRow);
+		cell = contentRow.createCell(1);
+		cell.setCellStyle(cellStyle5);
+		cell = contentRow.createCell(2);
+		cell.setCellStyle(cellStyle5);
+		cell.setCellValue("司机姓名");
+		cell = contentRow.createCell(3);
+		cell.setCellStyle(cellStyle5);
+		cell.setCellValue(delivery.getDriver());
+		cell = contentRow.createCell(4);
+		cell.setCellStyle(cellStyle5);
+		cell.setCellValue("司机电话");
+		cell = contentRow.createCell(5);
+		cell.setCellStyle(cellStyle5);
+		cell.setCellValue(delivery.getDriverPhone());
+
+		contentRow = sheet.createRow(++currentRow);
+		cell = contentRow.createCell(1);
+		cell.setCellStyle(cellStyle5);
+		cell = contentRow.createCell(2);
+		cell.setCellStyle(cellStyle5);
+		cell.setCellValue("提柜点");
+		cell = contentRow.createCell(3);
+		cell.setCellStyle(cellStyle5);
+		cell.setCellValue(delivery.getDport());
+		cell = contentRow.createCell(4);
+		cell.setCellStyle(cellStyle5);
+		cell.setCellValue("还柜点");
+		cell = contentRow.createCell(5);
+		cell.setCellStyle(cellStyle5);
+		cell.setCellValue(delivery.getRport());
+
+		contentRow = sheet.createRow(++currentRow);
+		cell = contentRow.createCell(1);
+		cell.setCellStyle(cellStyle2);
+		cell.setCellValue("备注：");
+		region = new CellRangeAddress(currentRow, currentRow, 2, 5);
+		sheet.addMergedRegion(region);
+		cell = contentRow.createCell(2);
+		cell.setCellStyle(cellStyle2);
+		cell.setCellValue(delivery.getMemo());
+
 		OutputStream os = null;
 		try {
 			response.addHeader("Content-Disposition", "attachment;filename=" + fileName + ".xls");
