@@ -157,9 +157,9 @@ public class DeliveryController {
 		try {
 			Delivery delivery = deliveryService.getById(id);
 			if (type == 2)
-				ExcelUtils.exportDeliveryBill2(request, response, delivery, "sheetName", "fileName");
+				ExcelUtils.exportDeliveryBill2(request, response, delivery, "delivery2", "东方派车单");
 			else
-				ExcelUtils.exportDeliveryBill(request, response, delivery, "sheetName", "fileName");
+				ExcelUtils.exportDeliveryBill(request, response, delivery, "delivery1", "信树派车单");
 		} catch (Exception e) {
 			logger.error(e);
 			e.printStackTrace();

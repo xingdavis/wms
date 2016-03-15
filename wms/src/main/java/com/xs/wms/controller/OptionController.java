@@ -39,8 +39,8 @@ public class OptionController {
 	public Json list(HttpServletRequest request) {
 		Json j = new Json();
 		try {
-			//String otype = request.getParameter("otype");
-			String otype = new String(request.getParameter("otype").getBytes("iso-8859-1"), "utf-8");
+			String otype = request.getParameter("otype");
+			//String otype = new String(request.getParameter("otype").getBytes("iso-8859-1"), "utf-8");
 			logger.info("获得请求option类型：" + otype);
 			Option o = new Option();
 			o.setOtype(otype);

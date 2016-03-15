@@ -1470,297 +1470,60 @@ public class ExcelUtils {
 
 		// List<Stock_in_detail> items = delivery.getItems();
 
-		// 创建工作簿
-		HSSFWorkbook wb = new HSSFWorkbook();
-		// 创建一个sheet
-		HSSFSheet sheet = wb.createSheet(sheetName);
-		int currentRow = 0;
-		HSSFRow contentRow = null;
-
-		HSSFCellStyle cellStyle = wb.createCellStyle();
-		//cellStyle.setWrapText(true);
-		cellStyle.setAlignment(HSSFCellStyle.ALIGN_CENTER);
-		cellStyle.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);
-		cellStyle.setBorderBottom(HSSFCellStyle.BORDER_THIN);
-		Font font = wb.createFont();
-		font.setFontName("宋体");
-		font.setBoldweight(Font.BOLDWEIGHT_BOLD);
-		font.setFontHeightInPoints((short) 20);
-		cellStyle.setFont(font);
-
-		HSSFCellStyle cellStyle1 = wb.createCellStyle();
-		//cellStyle1.setWrapText(true);
-		cellStyle1.setAlignment(HSSFCellStyle.ALIGN_CENTER);
-		cellStyle1.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);
-		Font font1 = wb.createFont();
-		font1.setFontName("宋体");
-		font1.setBoldweight(Font.BOLDWEIGHT_BOLD);
-		font1.setFontHeightInPoints((short) 20);
-		cellStyle1.setFont(font1);
-
-		HSSFCellStyle cellStyle2 = wb.createCellStyle();
-		//cellStyle2.setWrapText(true);
-		cellStyle2.setAlignment(HSSFCellStyle.ALIGN_CENTER);
-		cellStyle2.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);
-		Font font2 = wb.createFont();
-		font2.setFontName("宋体");
-		font2.setFontHeightInPoints((short) 12);
-		cellStyle2.setFont(font2);
-
-		HSSFCellStyle cellStyle3 = wb.createCellStyle();
-		//cellStyle3.setWrapText(true);
-		cellStyle3.setAlignment(HSSFCellStyle.ALIGN_CENTER);
-		cellStyle3.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);
-		Font font3 = wb.createFont();
-		font3.setFontName("宋体");
-		font3.setBoldweight(Font.BOLDWEIGHT_BOLD);
-		font3.setFontHeightInPoints((short) 12);
-		cellStyle3.setFont(font3);
-
-		HSSFCellStyle cellStyle4 = wb.createCellStyle();
-		//cellStyle4.setWrapText(true);
-		cellStyle4.setAlignment(HSSFCellStyle.ALIGN_CENTER);
-		cellStyle4.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);
-		cellStyle4.setBorderBottom(HSSFCellStyle.BORDER_THIN);
-		Font font4 = wb.createFont();
-		font4.setFontName("宋体");
-		font4.setBoldweight(Font.BOLDWEIGHT_BOLD);
-		font4.setFontHeightInPoints((short) 14);
-		cellStyle4.setFont(font4);
-
-		HSSFCellStyle cellStyle5 = wb.createCellStyle();
-		//cellStyle5.setWrapText(true);
-		cellStyle5.setAlignment(HSSFCellStyle.ALIGN_CENTER);
-		cellStyle5.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);
-		cellStyle5.setBorderTop(HSSFCellStyle.BORDER_THIN);
-		cellStyle5.setBorderBottom(HSSFCellStyle.BORDER_THIN);
-		cellStyle5.setBorderLeft(HSSFCellStyle.BORDER_THIN);
-		cellStyle5.setBorderRight(HSSFCellStyle.BORDER_THIN);
-		Font font5 = wb.createFont();
-		font5.setFontName("宋体");
-		// font5.setBoldweight(Font.BOLDWEIGHT_BOLD);
-		font5.setFontHeightInPoints((short) 12);
-		cellStyle5.setFont(font5);
-
-		contentRow = sheet.createRow(++currentRow);
-		CellRangeAddress region = new CellRangeAddress(currentRow, currentRow, 0, 7);
-		sheet.addMergedRegion(region);
-		HSSFCell cell = contentRow.createCell(0);
-		cell.setCellStyle(cellStyle);
-		cell.setCellValue("佛山市东方医疗设备厂有限公司");
-		cell = contentRow.createCell(1);
-		cell.setCellStyle(cellStyle);
-		cell = contentRow.createCell(2);
-		cell.setCellStyle(cellStyle);
-		cell = contentRow.createCell(3);
-		cell.setCellStyle(cellStyle);
-		cell = contentRow.createCell(4);
-		cell.setCellStyle(cellStyle);
-		cell = contentRow.createCell(5);
-		cell.setCellStyle(cellStyle);
-		cell = contentRow.createCell(6);
-		cell.setCellStyle(cellStyle);
-		cell = contentRow.createCell(7);
-		
-		contentRow = sheet.createRow(++currentRow);
-		region = new CellRangeAddress(currentRow, currentRow, 0, 7);
-		sheet.addMergedRegion(region);
-		cell = contentRow.createCell(0);
-		cell.setCellStyle(cellStyle1);
-		cell.setCellValue("提 货 凭 证");
-
-		contentRow = sheet.createRow(++currentRow);
-		region = new CellRangeAddress(currentRow, currentRow, 0, 7);
-		sheet.addMergedRegion(region);
-		cell = contentRow.createCell(0);
-		cell.setCellStyle(cellStyle2);
-		cell.setCellValue("(中国名牌: 佛山轮椅)");
-
-		contentRow = sheet.createRow(++currentRow);
-		cell = contentRow.createCell(5);
-		cell.setCellStyle(cellStyle2);
-		cell.setCellValue("日期：" + new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
-
-		contentRow = sheet.createRow(++currentRow);
-		region = new CellRangeAddress(currentRow, currentRow + 4, 1, 1);
-		sheet.addMergedRegion(region);
-		cell = contentRow.createCell(1);
-		cell.setCellStyle(cellStyle5);
-		cell.setCellValue("1");
-		region = new CellRangeAddress(currentRow, currentRow, 2, 5);
-		sheet.addMergedRegion(region);
-		cell = contentRow.createCell(2);
-		cell.setCellStyle(cellStyle5);
-		cell.setCellValue("厂 方 填 写");
-		cell = contentRow.createCell(3);
-		cell.setCellStyle(cellStyle5);
-		cell = contentRow.createCell(4);
-		cell.setCellStyle(cellStyle5);
-		cell = contentRow.createCell(5);
-		cell.setCellStyle(cellStyle5);
-
-		contentRow = sheet.createRow(++currentRow);
-		cell = contentRow.createCell(1);
-		cell.setCellStyle(cellStyle5);
-		cell = contentRow.createCell(2);
-		cell.setCellStyle(cellStyle5);
-		cell.setCellValue("生产编号");
-		sheet.setColumnWidth(2, 5 * 3 * 256);
-		cell = contentRow.createCell(3);
-		cell.setCellStyle(cellStyle5);
-		cell.setCellValue(delivery.getCode());
-		sheet.setColumnWidth(3, 10 * 3 * 256);
-		cell = contentRow.createCell(4);
-		cell.setCellStyle(cellStyle5);
-		cell.setCellValue("起运港");
-		sheet.setColumnWidth(4, 5 * 3 * 256);
-		cell = contentRow.createCell(5);
-		cell.setCellStyle(cellStyle5);
+		String path = request.getServletContext().getRealPath("exlmodel/delivery2.xls");
+		InputStream in = new FileInputStream(new File(path));
+		HSSFWorkbook wb = new HSSFWorkbook(in);
+		HSSFSheet sheet = wb.getSheetAt(0);
+		HSSFRow row = sheet.getRow(3);
+		HSSFCell cell = row.getCell(0);
+		cell.setCellValue("日期：" + new Date().toString());
+		cell = row.getCell(5);
+		cell.setCellValue("过磅：" + delivery.getWeigh());
+		row = sheet.getRow(5);
+		cell = row.getCell(2);
+		cell.setCellValue(delivery.getId());
+		cell = row.getCell(5);
 		cell.setCellValue("黄埔");
-		sheet.setColumnWidth(5, 10 * 3 * 256);
-
-		contentRow = sheet.createRow(++currentRow);
-		cell = contentRow.createCell(1);
-		cell.setCellStyle(cellStyle5);
-		cell = contentRow.createCell(2);
-		cell.setCellStyle(cellStyle5);
-		cell.setCellValue("业务员");
-		cell = contentRow.createCell(3);
-		cell.setCellStyle(cellStyle5);
-		cell.setCellValue("");
-		cell = contentRow.createCell(4);
-		cell.setCellStyle(cellStyle5);
-		cell.setCellValue("目的港");
-		cell = contentRow.createCell(5);
-		cell.setCellStyle(cellStyle5);
-		cell.setCellValue("");
-
-		contentRow = sheet.createRow(++currentRow);
-		cell = contentRow.createCell(1);
-		cell.setCellStyle(cellStyle5);
-		cell = contentRow.createCell(2);
-		cell.setCellStyle(cellStyle5);
-		cell.setCellValue("货物名称");
-		cell = contentRow.createCell(3);
-		cell.setCellStyle(cellStyle5);
+		row = sheet.getRow(6);
+		cell = row.getCell(2);
+		cell.setCellValue(delivery.getContact());
+		row = sheet.getRow(7);
+		cell = row.getCell(2);
 		cell.setCellValue(delivery.getGoodsName());
-		cell = contentRow.createCell(4);
-		cell.setCellStyle(cellStyle5);
-		cell.setCellValue("柜型");
-		cell = contentRow.createCell(5);
-		cell.setCellStyle(cellStyle5);
+		cell = row.getCell(5);
 		cell.setCellValue(delivery.getCaseModel());
-
-		contentRow = sheet.createRow(++currentRow);
-		cell = contentRow.createCell(1);
-		cell.setCellStyle(cellStyle5);
-		cell = contentRow.createCell(2);
-		cell.setCellStyle(cellStyle5);
-		cell.setCellValue("装货日期");
-		region = new CellRangeAddress(currentRow, currentRow, 3, 5);
-		sheet.addMergedRegion(region);
-		cell = contentRow.createCell(3);
-		cell.setCellStyle(cellStyle5);
+		row = sheet.getRow(8);
+		cell = row.getCell(2);
 		Date d = new SimpleDateFormat("yyyy-MM-dd HH:mm").parse(delivery.getDdate());
 		cell.setCellValue(
 				d.getYear() + 1900 + " 年 " + d.getMonth() + 1 + " 月 " + d.getDate() + " 日 " + d.getHours() + " 时 到厂 ");
-		cell = contentRow.createCell(4);
-		cell.setCellStyle(cellStyle5);
-		cell = contentRow.createCell(5);
-		cell.setCellStyle(cellStyle5);
-
-		contentRow = sheet.createRow(++currentRow);
-		region = new CellRangeAddress(currentRow, currentRow + 4, 1, 1);
-		sheet.addMergedRegion(region);
-		cell = contentRow.createCell(1);
-		cell.setCellStyle(cellStyle5);
-		cell.setCellValue("2");
-		region = new CellRangeAddress(currentRow, currentRow, 2, 5);
-		sheet.addMergedRegion(region);
-		cell = contentRow.createCell(2);
-		cell.setCellStyle(cellStyle5);
-		cell.setCellValue("谭先生  (电话: 0757-8120 2191)---13612503173");
-		cell = contentRow.createCell(3);
-		cell.setCellStyle(cellStyle5);
-		cell = contentRow.createCell(4);
-		cell.setCellStyle(cellStyle5);
-		cell = contentRow.createCell(5);
-		cell.setCellStyle(cellStyle5);
-
-		contentRow = sheet.createRow(++currentRow);
-		cell = contentRow.createCell(1);
-		cell.setCellStyle(cellStyle5);
-		cell = contentRow.createCell(2);
-		cell.setCellStyle(cellStyle5);
-		cell.setCellValue("订舱号");
-		cell = contentRow.createCell(3);
-		cell.setCellStyle(cellStyle5);
+		row = sheet.getRow(10);
+		cell = row.getCell(2);
 		cell.setCellValue(delivery.getCode());
-		cell = contentRow.createCell(4);
-		cell.setCellStyle(cellStyle5);
-		cell.setCellValue("车牌");
-		cell = contentRow.createCell(5);
-		cell.setCellStyle(cellStyle5);
+		cell = row.getCell(5);
 		cell.setCellValue(delivery.getCarNo());
-
-		contentRow = sheet.createRow(++currentRow);
-		cell = contentRow.createCell(1);
-		cell.setCellStyle(cellStyle5);
-		cell = contentRow.createCell(2);
-		cell.setCellStyle(cellStyle5);
-		cell.setCellValue("柜号");
-		cell = contentRow.createCell(3);
-		cell.setCellStyle(cellStyle5);
+		
+		row = sheet.getRow(11);
+		cell = row.getCell(2);
 		cell.setCellValue(delivery.getCaseNo());
-		cell = contentRow.createCell(4);
-		cell.setCellStyle(cellStyle5);
-		cell.setCellValue("封条号");
-		cell = contentRow.createCell(5);
-		cell.setCellStyle(cellStyle5);
+		cell = row.getCell(5);
 		cell.setCellValue(delivery.getSealNo());
-
-		contentRow = sheet.createRow(++currentRow);
-		cell = contentRow.createCell(1);
-		cell.setCellStyle(cellStyle5);
-		cell = contentRow.createCell(2);
-		cell.setCellStyle(cellStyle5);
-		cell.setCellValue("司机姓名");
-		cell = contentRow.createCell(3);
-		cell.setCellStyle(cellStyle5);
+		
+		row = sheet.getRow(12);
+		cell = row.getCell(2);
 		cell.setCellValue(delivery.getDriver());
-		cell = contentRow.createCell(4);
-		cell.setCellStyle(cellStyle5);
-		cell.setCellValue("司机电话");
-		cell = contentRow.createCell(5);
-		cell.setCellStyle(cellStyle5);
+		cell = row.getCell(5);
 		cell.setCellValue(delivery.getDriverPhone());
-
-		contentRow = sheet.createRow(++currentRow);
-		cell = contentRow.createCell(1);
-		cell.setCellStyle(cellStyle5);
-		cell = contentRow.createCell(2);
-		cell.setCellStyle(cellStyle5);
-		cell.setCellValue("提柜点");
-		cell = contentRow.createCell(3);
-		cell.setCellStyle(cellStyle5);
+		
+		row = sheet.getRow(13);
+		cell = row.getCell(2);
 		cell.setCellValue(delivery.getDport());
-		cell = contentRow.createCell(4);
-		cell.setCellStyle(cellStyle5);
-		cell.setCellValue("还柜点");
-		cell = contentRow.createCell(5);
-		cell.setCellStyle(cellStyle5);
+		cell = row.getCell(5);
 		cell.setCellValue(delivery.getRport());
-
-		contentRow = sheet.createRow(++currentRow);
-		cell = contentRow.createCell(1);
-		cell.setCellStyle(cellStyle2);
-		cell.setCellValue("备注：");
-		region = new CellRangeAddress(currentRow, currentRow, 2, 5);
-		sheet.addMergedRegion(region);
-		cell = contentRow.createCell(2);
-		cell.setCellStyle(cellStyle2);
+		
+		row = sheet.getRow(14);
+		cell = row.getCell(2);
 		cell.setCellValue(delivery.getMemo());
-
 		OutputStream os = null;
 		try {
 			response.addHeader("Content-Disposition", "attachment;filename=" + fileName + ".xls");
