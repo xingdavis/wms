@@ -53,6 +53,8 @@
 	//DOM加载完毕执行
 	$(document).ready(
 			function() {
+				initClientData();
+				initOrderData();
 				if ($('#e_id').val() != '') {
 					getModel($('#e_id').val());
 				} else {
@@ -64,53 +66,99 @@
 				//ports.push($('#e_caseModel'));
 				getOptionList('码头', [ '#e_dport', '#e_rport' ]);
 				//getOptionList('港口', [ '#e_start_port', '#e_end_port' ]);
-
-				$('#e_orderId').combogrid(
-						{
-							panelWidth : 300,
-							queryParams : {
-								code : $('#e_orderId').val()
-							},
-							mode : 'remote',
-							idField : 'id',
-							textField : 'code',
-							method : 'get',
-							url : path + '/orders',
-							fitColumns : true,
-							columns : [ [ {
-								field : 'id',
-								title : 'id',
-								hidden : true
-							}, {
-								field : 'code',
-								title : '单号',
-								width : 200
-							} ] ],
-							keyHandler : {
-								up : function() {
-								},
-								down : function() {
-								},
-								enter : function() {
-								},
-								query : function(q) {
-									//动态搜索
-									$('#e_orderId').combogrid("grid").datagrid(
-											"reload", {
-												'code' : q
-											});
-									$('#e_orderId').combogrid("setValue", q);
-								}
-							},
-							/* onChange:function(newValue,oldValue){
-								alert(newValue);
-							} */
-							onSelect : function(index, row) {
-								$('#e_orderCode').val(row.code);
-								//getOrder(row.id);
-							}
-						});
 			});
+
+	function initOrderData() {
+		$('#e_orderId').combogrid({
+			panelWidth : 300,
+			queryParams : {
+				code : $('#e_orderId').val()
+			},
+			mode : 'remote',
+			idField : 'id',
+			textField : 'code',
+			method : 'get',
+			url : path + '/orders',
+			fitColumns : true,
+			columns : [ [ {
+				field : 'id',
+				title : 'id',
+				hidden : true
+			}, {
+				field : 'code',
+				title : '单号',
+				width : 200
+			} ] ],
+			keyHandler : {
+				up : function() {
+				},
+				down : function() {
+				},
+				enter : function() {
+				},
+				query : function(q) {
+					//动态搜索
+					$('#e_orderId').combogrid("grid").datagrid("reload", {
+						'code' : q
+					});
+					$('#e_orderId').combogrid("setValue", q);
+				}
+			},
+			/* onChange:function(newValue,oldValue){
+				alert(newValue);
+			} */
+			onSelect : function(index, row) {
+				$('#e_orderCode').val(row.code);
+			}
+		});
+	}
+
+	function initClientData() {
+		$('#e_client').combogrid({
+			panelWidth : 300,
+			queryParams : {
+				cname : $('#e_client').val()
+			},
+			mode : 'remote',
+			idField : 'id',
+			textField : 'cname',
+			method : 'get',
+			url : path + '/clients',
+			fitColumns : true,
+			columns : [ [ {
+				field : 'id',
+				title : 'id',
+				hidden : true
+			}, {
+				field : 'cname',
+				title : '名称',
+				width : 200
+			} ] ],
+			keyHandler : {
+				up : function() {
+				},
+				down : function() {
+				},
+				enter : function() {
+				},
+				query : function(q) {
+					//动态搜索
+					$('#e_client').combogrid("grid").datagrid("reload", {
+						'cname' : q
+					});
+					$('#e_client').combogrid("setValue", q);
+				}
+			},
+			/* onChange:function(newValue,oldValue){
+				alert(newValue);
+			} */
+			onSelect : function(index, row) {
+				$('#e_orderId').combogrid("grid").datagrid("reload", {
+					'clienId' : row.id
+				});
+			}
+		});
+	}
 
 	function getOptionList(flag, els) {
 		$.ajax({
@@ -158,6 +206,10 @@
 			}
 		});
 	}
+
+	function goBack() {
+		location.href = '${path}/deliverys/list';
+	}
 </script>
 </head>
 <body>
@@ -173,9 +225,19 @@
 							data-options="required:true" id="e_code" name="code" /></td>
 					</tr>
 					<tr>
-						<td>订单号:</td>
+						<td>客户:</td>
+						<td><input class="easyui-textbox" type="text" name="clientId"
+							id="e_client" /></td>
+					</tr>
+					<tr>
+						<td>入仓订单号:</td>
 						<td><input class="easyui-textbox" type="text" name="orderId"
 							id="e_orderId" /></td>
+					</tr>
+					<tr>
+						<td>生产编号(东方):</td>
+						<td><input class="easyui-textbox" type="text"
+							id="e_clientCode" name="clientCode" /></td>
 					</tr>
 					<tr>
 						<td>车牌号:</td>
@@ -219,6 +281,11 @@
 							data-options="valueField: 'oname',textField: 'oname',method : 'GET'" /></td>
 					</tr>
 					<tr>
+						<td>目的地:</td>
+						<td><input class="easyui-textbox" type="text" id="e_destination"
+							name="destination" /></td>
+					</tr>
+					<tr>
 						<td>还柜点:</td>
 						<td><input class="easyui-combobox" id="e_rport" name="rport"
 							data-options="valueField: 'oname',textField: 'oname',method : 'GET'" /></td>
@@ -243,7 +310,7 @@
 							name="weigh" /></td>
 					</tr>
 					<tr>
-						<td>收货人:</td>
+						<td>联系人:</td>
 						<td><input class="easyui-textbox" type="text"
 							id="e_consignee" name="consignee" /></td>
 					</tr>
@@ -285,7 +352,8 @@
 
 			<div style="text-align: center; padding: 5px">
 				<a href="javascript:void(0)" class="easyui-linkbutton"
-					onclick="submitForm(0)">保存</a> 
+					onclick="submitForm(0)">保存</a> <a href="javascript:goBack()"
+					class="easyui-linkbutton">返回</a>
 			</div>
 		</div>
 	</div>

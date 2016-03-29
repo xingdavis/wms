@@ -59,8 +59,8 @@
 		var bill_id = 0;
 		if (r) {
 			bill_id = r.id;
-			if (r.order)
-				client_id = r.order.clientId;
+			if (r.clientId > 0)
+				client_id = r.clientId;
 		}
 		_AddTab('费用管理-新增[' + type + '-' + client_id + '-' + bill_id + ']',
 				'${path}/fees/page/' + type + '/' + client_id + '/' + bill_id
@@ -81,6 +81,13 @@
 		if (r)
 			window.open(path + '/deliverys/report/' + type + "/" + r.id);
 	}
+	function formatClient(value, row) {
+		if (row.client) {
+			return row.client.cname;
+		} else {
+			return value;
+		}
+	}
 </script>
 
 </head>
@@ -88,9 +95,10 @@
 	<div region="center" border="false" style="overflow: hidden;">
 		<div id="toolbar">
 			<input class="easyui-textbox" type="text" name="code" id="q_code"
-				data-options="prompt:'输入订舱号查询'" /> <a href="javascript:search()"
-				class="easyui-linkbutton" data-options="iconCls:'icon-search'">查询</a>
-			<a href="${path}/deliverys/page" class="easyui-linkbutton"
+				data-options="prompt:'输入订舱号/生产编号/客户名称/入仓单号查询'" /> <a
+				href="javascript:search()" class="easyui-linkbutton"
+				data-options="iconCls:'icon-search'">查询</a> <a
+				href="${path}/deliverys/page" class="easyui-linkbutton"
 				data-options="iconCls:'icon-add'">新增</a><a href="javascript:del()"
 				class="easyui-linkbutton" data-options="iconCls:'icon-remove'">删除</a>
 			<a href="javascript:edit()" class="easyui-linkbutton"
@@ -108,19 +116,23 @@
 			rownumbers="true" striped="true" border="false" nowrap="false">
 			<thead>
 				<tr>
-					<th field="code" width="100">订舱号</th>
 					<th field="ddate" width="100">装货时间</th>
+					<th data-options="field:'client',width:100,formatter:formatClient">客户</th>
 					<th field="orderCode" width="120">入仓订单号</th>
-					<th field="carNo" width="100">车牌号</th>
-					<th field="driver" width="100">司机</th>
+					<th field="clientCode" width="120">生产编号</th>
+					<th field="code" width="100">订舱号</th>
 					<th field="dport" width="100">提柜点</th>
+					<th field="destination" width="100">目的地</th>
 					<th field="rport" width="100">还柜点</th>
+					<th field="caseNo" width="100">柜号</th>
+					<th field="sealNo" width="100">封号</th>
+					<th field="carNo" width="100">车牌号</th>
+					<!--
+					<th field="driver" width="100">司机</th>
 					<th field="consignee" width="100">收货人</th>
 					<th field="goodsName" width="100">货名</th>
 					<th field="caseModel" width="100">柜型</th>
-					<th field="caseNo" width="100">柜号</th>
-					<th field="sealNo" width="100">封号</th>
-					<!-- 
+					 
 					<th field="startPort" width="100">起运港</th>
 					<th field="endPort" width="100">目的港</th>
 					 -->

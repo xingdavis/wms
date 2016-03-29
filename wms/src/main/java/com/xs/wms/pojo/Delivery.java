@@ -10,12 +10,18 @@ public class Delivery {
 	private Integer id;
 
 	private String code;
-	
+
+	private String clientCode;
+
+	private Integer clientId;
+
 	private Integer orderId;
-	
+
 	private String orderCode;
-	
+
 	private Order order;
+
+	private Client client;
 
 	private String carNo;
 
@@ -28,7 +34,7 @@ public class Delivery {
 	private String rport;
 
 	private String consignee;
-	
+
 	private String ddate;
 
 	private Date crDate;
@@ -40,7 +46,7 @@ public class Delivery {
 	private String weigh;
 
 	private String caseModel;
-	
+
 	private String caseNo;
 
 	private String sealNo;
@@ -57,6 +63,8 @@ public class Delivery {
 
 	private String startPort;
 
+	private String destination;
+
 	private String endPort;
 
 	private String memo;
@@ -67,12 +75,15 @@ public class Delivery {
 		id = 0;
 	}
 
-	public Delivery(Integer id, String code,Integer orderId, String orderCode,String caseModel, String carNo, String driver, String driverPhone, String dport,
-			String rport, String consignee, String ddate, Date crDate, Integer op, String goodsName, String weigh,
-			String caseNo, String sealNo, String address, String contact, Date arrivalTime, String attention,
-			Date signTime, String startPort, String endPort, String memo, Integer flag) {
+	public Delivery(Integer id, String code, String clientCode, Integer clientId, Integer orderId, String orderCode,
+			String caseModel, String carNo, String driver, String driverPhone, String dport, String rport,
+			String consignee, String ddate, Date crDate, Integer op, String goodsName, String weigh, String caseNo,
+			String sealNo, String address, String contact, Date arrivalTime, String attention, Date signTime,
+			String startPort, String destination, String endPort, String memo, Integer flag) {
 		this.id = id;
 		this.code = code;
+		this.clientCode = clientCode;
+		this.clientId = clientId;
 		this.orderId = orderId;
 		this.orderCode = orderCode;
 		this.caseModel = caseModel;
@@ -90,15 +101,16 @@ public class Delivery {
 		this.caseNo = caseNo;
 		this.sealNo = sealNo;
 		this.address = address;
-		this.contact=contact;
-		this.arrivalTime=arrivalTime;
-		this.attention=attention;
-		this.signTime=signTime;
-		this.startPort=startPort;
-		this.endPort=endPort;
-		this.memo=memo;
-		this.flag=flag;
-		
+		this.contact = contact;
+		this.arrivalTime = arrivalTime;
+		this.attention = attention;
+		this.signTime = signTime;
+		this.startPort = startPort;
+		this.destination = destination;
+		this.endPort = endPort;
+		this.memo = memo;
+		this.flag = flag;
+
 	}
 
 	public Integer getId() {
@@ -116,7 +128,23 @@ public class Delivery {
 	public void setCode(String code) {
 		this.code = code == null ? null : code.trim();
 	}
-	
+
+	public String getClientCode() {
+		return clientCode;
+	}
+
+	public void setClientCode(String clientCode) {
+		this.clientCode = clientCode == null ? null : clientCode.trim();
+	}
+
+	public Integer getClientId() {
+		return clientId;
+	}
+
+	public void setClientId(Integer clientId) {
+		this.clientId = clientId;
+	}
+
 	public Integer getOrderId() {
 		return orderId;
 	}
@@ -124,7 +152,7 @@ public class Delivery {
 	public void setOrderId(Integer orderId) {
 		this.orderId = orderId;
 	}
-	
+
 	public String getOrderCode() {
 		return orderCode;
 	}
@@ -164,6 +192,14 @@ public class Delivery {
 	public void setDport(String dport) {
 		this.dport = dport == null ? null : dport.trim();
 	}
+	
+	public String getDestination() {
+		return destination;
+	}
+
+	public void setDestination(String destination) {
+		this.destination = destination == null ? null : destination.trim();
+	}
 
 	public String getRport() {
 		return rport;
@@ -181,8 +217,6 @@ public class Delivery {
 		this.consignee = consignee == null ? null : consignee.trim();
 	}
 
-	  
-	
 	public String getDdate() {
 		return ddate;
 	}
@@ -222,7 +256,7 @@ public class Delivery {
 	public void setWeigh(String weigh) {
 		this.weigh = weigh == null ? null : weigh.trim();
 	}
-	
+
 	public String getCaseModel() {
 		return caseModel;
 	}
@@ -318,12 +352,20 @@ public class Delivery {
 	public void setFlag(Integer flag) {
 		this.flag = flag;
 	}
-	
+
 	public Order getOrder() {
 		return order;
 	}
 
 	public void setOrder(Order order) {
 		this.order = order;
+	}
+
+	public Client getClient() {
+		return client;
+	}
+
+	public void setClient(Client client) {
+		this.client = client;
 	}
 }

@@ -4,12 +4,15 @@
 	<resultMap id="BaseResultMap" type="com.xs.wms.pojo.Delivery">
 		<id column="id" property="id" jdbcType="INTEGER" />
 		<result column="code" property="code" jdbcType="VARCHAR" />
+		<result column="client_code" property="clientCode" jdbcType="VARCHAR" />
+		<result column="client_id" property="clientId" jdbcType="INTEGER" />
 		<result column="order_id" property="orderId" jdbcType="INTEGER" />
 		<result column="order_code" property="orderCode" jdbcType="VARCHAR" />
 		<result column="car_no" property="carNo" jdbcType="VARCHAR" />
 		<result column="driver" property="driver" jdbcType="VARCHAR" />
 		<result column="driver_phone" property="driverPhone" jdbcType="VARCHAR" />
 		<result column="dport" property="dport" jdbcType="VARCHAR" />
+		<result column="destination" property="destination" jdbcType="VARCHAR" />
 		<result column="rport" property="rport" jdbcType="VARCHAR" />
 		<result column="consignee" property="consignee" jdbcType="VARCHAR" />
 		<result column="ddate" property="ddate" jdbcType="TIMESTAMP" />
@@ -33,12 +36,15 @@
 	<resultMap id="BaseResultMap1" type="com.xs.wms.pojo.Delivery">
 		<id column="id" property="id" jdbcType="INTEGER" />
 		<result column="code" property="code" jdbcType="VARCHAR" />
+		<result column="client_code" property="clientCode" jdbcType="VARCHAR" />
+		<result column="client_id" property="clientId" jdbcType="INTEGER" />
 		<result column="order_id" property="orderId" jdbcType="INTEGER" />
 		<result column="order_code" property="orderCode" jdbcType="VARCHAR" />
 		<result column="car_no" property="carNo" jdbcType="VARCHAR" />
 		<result column="driver" property="driver" jdbcType="VARCHAR" />
 		<result column="driver_phone" property="driverPhone" jdbcType="VARCHAR" />
 		<result column="dport" property="dport" jdbcType="VARCHAR" />
+		<result column="destination" property="destination" jdbcType="VARCHAR" />
 		<result column="rport" property="rport" jdbcType="VARCHAR" />
 		<result column="consignee" property="consignee" jdbcType="VARCHAR" />
 		<result column="ddate" property="ddate" jdbcType="TIMESTAMP" />
@@ -61,23 +67,32 @@
 		<association property="order" column="order_id"
 			javaType="com.xs.wms.pojo.Order">
 			<id property="id" column="id" />
-			<result column="client_id" property="clientId" jdbcType="INTEGER" />
-			<association property="client" column="client_id"
-				javaType="com.xs.wms.pojo.Client">
-				<id property="id" column="id" />
-				<result column="cname" property="cname" jdbcType="VARCHAR" />
-			</association>
+		</association>
+		<association property="client" column="client_id"
+			javaType="com.xs.wms.pojo.Client">
+			<id property="id" column="id" />
+			<result column="cname" property="cname" jdbcType="VARCHAR" />
 		</association>
 	</resultMap>
 	<sql id="Base_Column_List">
-		id, code, order_id orderId, order_code orderCode, car_no
-		carNo, driver, driver_phone driverPhone, dport, rport, consignee,
+		id, code, client_code, client_id, order_id orderId,
+		order_code
+		orderCode, car_no
+		carNo, driver, driver_phone driverPhone,
+		dport, destination,
+		rport, consignee,
 		ddate,
 		cr_date crDate,
-		op, goods_name goodsName, weigh, case_model
-		caseModel, case_no caseNo, seal_no sealNo, address, contact,
+		op,
+		goods_name goodsName,
+		weigh,
+		case_model
+		caseModel, case_no caseNo,
+		seal_no sealNo, address,
+		contact,
 		arrival_time arrivalTime, attention,
-		sign_time signTime, start_port
+		sign_time signTime,
+		start_port
 		startPort, end_port endPort, memo, flag
 	</sql>
 	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
@@ -90,35 +105,62 @@
 	<select id="getDatagridTotal" resultType="long">
 		select
 		count(1)
-		from t_delivery where 1=1
-		<if test="delivery.code!=null and delivery.code != ''">
-			and code=#{delivery.code,jdbcType=VARCHAR}
-		</if>
+		from t_delivery d left
+		join t_order o on
+		d.order_id=o.id
+		left
+		join t_client c on
+		d.client_id=c.id
+		<where>
+			<if test="delivery.code!=null and delivery.code != ''">
+				d.code like
+				concat('%',#{delivery.code,jdbcType=VARCHAR},'%')
+				or d.client_code
+				like
+				concat('%',#{delivery.code,jdbcType=VARCHAR},'%')
+				or o.code
+				like
+				concat('%',#{delivery.code,jdbcType=VARCHAR},'%')
+				or c.cname like
+				concat('%',#{delivery.code,jdbcType=VARCHAR},'%')
+			</if>
+		</where>
 	</select>
 	<select id="datagrid" resultMap="BaseResultMap1">
 		select
-		d.id, d.code, d.order_id, d.order_code,
-		d.car_no, d.driver,
-		d.driver_phone, d.dport,
-		d.rport, d.consignee, d.ddate,
+		d.id, d.code, d.client_code, d.client_id, d.order_id,
+		d.order_code,
+		d.car_no,
+		d.driver,
+		d.driver_phone, d.dport, d.destination,
+		d.rport,
+		d.consignee, d.ddate,
 		d.cr_date,
 		d.op,
-		d.goods_name, d.weigh, d.case_model, d.case_no,
+		d.goods_name, d.weigh,
+		d.case_model, d.case_no,
 		d.seal_no, d.address,
 		d.contact,
 		d.arrival_time,
 		d.attention,
 		d.sign_time, d.start_port,
-		d.end_port, d.memo, d.flag, o.client_id, c.cname
+		d.end_port,
+		d.memo, d.flag, c.cname
 		from t_delivery
 		d left
-		join t_order o on d.order_id=o.id left join t_client c on
-		o.client_id=c.id
+		join t_order o on
+		d.order_id=o.id left
+		join t_client c on
+		d.client_id=c.id
 		<where>
 			<if test="delivery.code!=null and delivery.code != ''">
 				d.code like
 				concat('%',#{delivery.code,jdbcType=VARCHAR},'%')
-				or o.code like
+				or d.client_code
+				like
+				concat('%',#{delivery.code,jdbcType=VARCHAR},'%')
+				or o.code
+				like
 				concat('%',#{delivery.code,jdbcType=VARCHAR},'%')
 				or c.cname like
 				concat('%',#{delivery.code,jdbcType=VARCHAR},'%')
@@ -138,34 +180,49 @@
 	</delete>
 	<insert id="insert" parameterType="com.xs.wms.pojo.Delivery">
 		insert into t_delivery (id,
-		code, order_id, order_code, car_no,
-		driver, driver_phone, dport,
+		code, client_code, client_id, order_id, order_code, car_no,
+		driver,
+		driver_phone,
+		dport, destination,
 		rport,
 		consignee, ddate,
-		cr_date, op, goods_name,
-		weigh, case_model, case_no,
+		cr_date, op,
+		goods_name,
+		weigh,
+		case_model, case_no,
 		seal_no,
-		address, contact, arrival_time,
-		attention, sign_time,
+		address, contact,
+		arrival_time,
+		attention,
+		sign_time,
 		start_port,
 		end_port, memo, flag
 		)
-		values (#{id,jdbcType=INTEGER},
-		#{code,jdbcType=VARCHAR},#{orderId,jdbcType=INTEGER},#{orderCode,jdbcType=VARCHAR},
+		values
+		(#{id,jdbcType=INTEGER},
+		#{code,jdbcType=VARCHAR},#{clientCode,jdbcType=VARCHAR},#{clientId,jdbcType=INTEGER},#{orderId,jdbcType=INTEGER},#{orderCode,jdbcType=VARCHAR},
 		#{carNo,jdbcType=VARCHAR},
 		#{driver,jdbcType=VARCHAR},
 		#{driverPhone,jdbcType=VARCHAR}, #{dport,jdbcType=VARCHAR},
-		#{rport,jdbcType=VARCHAR}, #{consignee,jdbcType=VARCHAR},
+		#{destination,jdbcType=VARCHAR},
+		#{rport,jdbcType=VARCHAR},
+		#{consignee,jdbcType=VARCHAR},
 		#{ddate,jdbcType=TIMESTAMP},
 		#{crDate,jdbcType=TIMESTAMP},
-		#{op,jdbcType=INTEGER}, #{goodsName,jdbcType=VARCHAR},
-		#{weigh,jdbcType=VARCHAR}, #{caseModel,jdbcType=VARCHAR},
-		#{caseNo,jdbcType=VARCHAR}, #{sealNo,jdbcType=VARCHAR},
-		#{address,jdbcType=VARCHAR}, #{contact,jdbcType=VARCHAR},
+		#{op,jdbcType=INTEGER},
+		#{goodsName,jdbcType=VARCHAR},
+		#{weigh,jdbcType=VARCHAR},
+		#{caseModel,jdbcType=VARCHAR},
+		#{caseNo,jdbcType=VARCHAR},
+		#{sealNo,jdbcType=VARCHAR},
+		#{address,jdbcType=VARCHAR},
+		#{contact,jdbcType=VARCHAR},
 		#{arrivalTime,jdbcType=TIMESTAMP},
 		#{attention,jdbcType=VARCHAR},
-		#{signTime,jdbcType=TIMESTAMP}, #{startPort,jdbcType=VARCHAR},
-		#{endPort,jdbcType=VARCHAR}, #{memo,jdbcType=VARCHAR},
+		#{signTime,jdbcType=TIMESTAMP},
+		#{startPort,jdbcType=VARCHAR},
+		#{endPort,jdbcType=VARCHAR},
+		#{memo,jdbcType=VARCHAR},
 		#{flag,jdbcType=TINYINT}
 		)
 	</insert>
@@ -177,6 +234,12 @@
 			</if>
 			<if test="code != null">
 				code,
+			</if>
+			<if test="clientCode != null">
+				client_code,
+			</if>
+			<if test="orderId != null">
+				client_id,
 			</if>
 			<if test="orderId != null">
 				order_id,
@@ -195,6 +258,9 @@
 			</if>
 			<if test="dport != null">
 				dport,
+			</if>
+			<if test="destination != null">
+				destination,
 			</if>
 			<if test="rport != null">
 				rport,
@@ -261,6 +327,12 @@
 			<if test="code != null">
 				#{code,jdbcType=VARCHAR},
 			</if>
+			<if test="clientCode != null">
+				#{clientCode,jdbcType=VARCHAR},
+			</if>
+			<if test="clientId != null">
+				#{clientId,jdbcType=INTEGER},
+			</if>
 			<if test="orderId != null">
 				#{orderId,jdbcType=INTEGER},
 			</if>
@@ -278,6 +350,9 @@
 			</if>
 			<if test="dport != null">
 				#{dport,jdbcType=VARCHAR},
+			</if>
+			<if test="destination != null">
+				#{destination,jdbcType=VARCHAR},
 			</if>
 			<if test="rport != null">
 				#{rport,jdbcType=VARCHAR},
@@ -344,8 +419,11 @@
 			<if test="code != null">
 				code = #{code,jdbcType=VARCHAR},
 			</if>
-			<if test="orderId != null">
-				order_id = #{orderId,jdbcType=INTEGER},
+			<if test="code != null">
+				client_code = #{clientCode,jdbcType=VARCHAR},
+			</if>
+			<if test="clientId != null">
+				client_id = #{orderId,jdbcType=INTEGER},
 			</if>
 			<if test="orderCode != null">
 				order_code = #{orderCode,jdbcType=VARCHAR},
@@ -361,6 +439,9 @@
 			</if>
 			<if test="dport != null">
 				dport = #{dport,jdbcType=VARCHAR},
+			</if>
+			<if test="destination != null">
+				destination = #{destination,jdbcType=VARCHAR},
 			</if>
 			<if test="rport != null">
 				rport = #{rport,jdbcType=VARCHAR},
@@ -425,31 +506,46 @@
 	<update id="updateByPrimaryKey" parameterType="com.xs.wms.pojo.Delivery">
 		update t_delivery
 		set code = #{code,jdbcType=VARCHAR},
+		client_code =
+		#{clientCode,jdbcType=VARCHAR},
+		client_id =
+		#{clientId,jdbcType=INTEGER},
 		order_id =
 		#{orderId,jdbcType=INTEGER},
 		order_code =
 		#{orderCode,jdbcType=VARCHAR},
-		car_no = #{carNo,jdbcType=VARCHAR},
+		car_no =
+		#{carNo,jdbcType=VARCHAR},
 		driver = #{driver,jdbcType=VARCHAR},
 		driver_phone =
 		#{driverPhone,jdbcType=VARCHAR},
-		dport = #{dport,jdbcType=VARCHAR},
+		dport =
+		#{dport,jdbcType=VARCHAR},
+		destination =
+		#{destination,jdbcType=VARCHAR},
 		rport = #{rport,jdbcType=VARCHAR},
-		consignee =
+		consignee
+		=
 		#{consignee,jdbcType=VARCHAR},
-		ddate = #{ddate,jdbcType=TIMESTAMP},
-		op =
+		ddate =
+		#{ddate,jdbcType=TIMESTAMP},
+		op
+		=
 		#{op,jdbcType=INTEGER},
-		goods_name = #{goodsName,jdbcType=VARCHAR},
+		goods_name =
+		#{goodsName,jdbcType=VARCHAR},
 		weigh = #{weigh,jdbcType=VARCHAR},
 		case_model =
 		#{caseModel,jdbcType=VARCHAR},
-		case_no = #{caseNo,jdbcType=VARCHAR},
+		case_no =
+		#{caseNo,jdbcType=VARCHAR},
 		seal_no = #{sealNo,jdbcType=VARCHAR},
 		address =
 		#{address,jdbcType=VARCHAR},
-		contact = #{contact,jdbcType=VARCHAR},
-		arrival_time = #{arrivalTime,jdbcType=TIMESTAMP},
+		contact =
+		#{contact,jdbcType=VARCHAR},
+		arrival_time =
+		#{arrivalTime,jdbcType=TIMESTAMP},
 		attention =
 		#{attention,jdbcType=VARCHAR},
 		sign_time =
