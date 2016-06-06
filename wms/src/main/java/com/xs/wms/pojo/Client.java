@@ -2,7 +2,7 @@ package com.xs.wms.pojo;
 
 public class Client {
     private Integer id;
-
+    String code;
     private String cname;
 
     private String contactMan;
@@ -17,6 +17,14 @@ public class Client {
         this.id = id;
     }
 
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code == null ? null : code.trim();
+    }
+    
     public String getCname() {
         return cname;
     }

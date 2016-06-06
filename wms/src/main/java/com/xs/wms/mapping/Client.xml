@@ -3,12 +3,13 @@
 <mapper namespace="com.xs.wms.dao.IClient">
 	<resultMap id="BaseResultMap" type="com.xs.wms.pojo.Client">
 		<id column="id" property="id" jdbcType="INTEGER" />
+		<result column="code" property="code" jdbcType="VARCHAR" />
 		<result column="cname" property="cname" jdbcType="VARCHAR" />
 		<result column="contact_man" property="contactMan" jdbcType="VARCHAR" />
 		<result column="contact_tel" property="contactTel" jdbcType="VARCHAR" />
 	</resultMap>
 	<sql id="Base_Column_List">
-		id, cname, contact_man contactMan, contact_tel contactTel
+		id, code, cname, contact_man contactMan, contact_tel contactTel
 	</sql>
 	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
 		parameterType="java.lang.Integer">
@@ -71,10 +72,10 @@
 	</delete>
 	<insert id="insert" parameterType="com.xs.wms.pojo.Client"
 		useGeneratedKeys="true" keyProperty="id">
-		insert into t_client ( cname,
+		insert into t_client ( code,cname,
 		contact_man,
 		contact_tel)
-		values ( #{cname,jdbcType=VARCHAR},
+		values ( #{code,jdbcType=VARCHAR},#{cname,jdbcType=VARCHAR},
 		#{contactMan,jdbcType=VARCHAR},
 		#{contactTel,jdbcType=VARCHAR})
 	</insert>
@@ -83,6 +84,9 @@
 		<trim prefix="(" suffix=")" suffixOverrides=",">
 			<if test="id != null">
 				id,
+			</if>
+			<if test="code != null">
+				code,
 			</if>
 			<if test="cname != null">
 				cname,
@@ -98,6 +102,9 @@
 			<if test="id != null">
 				#{id,jdbcType=INTEGER},
 			</if>
+			<if test="code != null">
+				#{code,jdbcType=VARCHAR},
+			</if>
 			<if test="cname != null">
 				#{cname,jdbcType=VARCHAR},
 			</if>
@@ -112,6 +119,9 @@
 	<update id="updateByPrimaryKeySelective" parameterType="com.xs.wms.pojo.Client">
 		update t_client
 		<set>
+			<if test="code != null">
+				code = #{code,jdbcType=VARCHAR},
+			</if>
 			<if test="cname != null">
 				cname = #{cname,jdbcType=VARCHAR},
 			</if>
@@ -126,7 +136,8 @@
 	</update>
 	<update id="updateByPrimaryKey" parameterType="com.xs.wms.pojo.Client">
 		update t_client
-		set cname = #{cname,jdbcType=VARCHAR},
+		set code = #{code,jdbcType=VARCHAR},
+		cname = #{cname,jdbcType=VARCHAR},
 		contact_man =
 		#{contactMan,jdbcType=VARCHAR},
 		contact_tel =

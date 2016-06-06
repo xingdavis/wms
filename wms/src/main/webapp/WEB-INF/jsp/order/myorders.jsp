@@ -5,20 +5,21 @@
 <head>
 <title>我的订单</title>
 <%@include file="/WEB-INF/jsp/include/easyui_core.jsp"%>
-
+<script type="text/javascript"
+	src="${path}/js/easyui/datagrid-detailview.js"></script>
 <script type="text/javascript">
 	//DOM加载完毕执行
 	$(document).ready(function() {
 		$('#q_client').combogrid({
 			panelWidth : 300,
 			queryParams : {
-				cname : $('#clientId').val()
+				cname : 'please input client name'
 			},
 			mode : 'remote',
 			idField : 'id',
 			textField : 'cname',
 			method : 'get',
-			url : path + '/clients',
+			url : path + '/clients/order_client',
 			fitColumns : true,
 			columns : [ [ {
 				field : 'id',
@@ -39,9 +40,9 @@
 				query : function(q) {
 					//动态搜索
 					$('#q_client').combogrid("grid").datagrid("reload", {
-						'cname' : q
+						'cname' : $.trim(q)
 					});
-					$('#q_client').combogrid("setValue", q);
+					$('#q_client').combogrid("setValue", $.trim(q));
 				}
 			},
 			/* onChange:function(newValue,oldValue){
@@ -54,9 +55,11 @@
 		});
 	});
 	function search() {
+		if (!$('#fm').form('validate'))
+			return;
 		$('#dg').datagrid('load', {
 			clientId : $('#q_client').textbox('getValue'),
-			code : $('#q_code').textbox('getValue')
+			code : $.trim($('#q_code').textbox('getValue'))
 		});
 	}
 
@@ -92,26 +95,66 @@
 		else
 			return value;
 	}
+
+	function detailFormatter(rowIndex, rowData) {
+		var html = '<div class="ddv" style="padding:5px 0"><table border="0" cellspacing="0" cellpadding="20" style="width:100%;">';
+		if (rowData.order_details) {
+			for (var i = 0; i < rowData.order_details.length; i++) {
+				html += '<tr style="height: 34px;"><td>货名：'
+						+ rowData.order_details[i].cname + '</td><td>件数：'
+						+ rowData.order_details[i].num + '</td><td>体积：'
+						+ rowData.order_details[i].vol + '</td><td>重量：'
+						+ rowData.order_details[i].weight + '</td></tr>';
+			}
+		}
+		html += '</table></div>';
+		return html;
+	}
+
+	function onExpandRow(index, row) {
+		var ddv = $(this).datagrid('getRowDetail', index).find('div.ddv');
+		ddv.panel({
+			height : 80,
+			border : false,
+			cache : false,
+			//href:'datagrid21_getdetail.php?itemid='+row.itemid,
+			onLoad : function() {
+				$('#dg').datagrid('fixDetailRowHeight', index);
+			}
+		});
+		$('#dg').datagrid('fixDetailRowHeight', index);
+	}
+
+	function onLoadDataSuccess(data) {
+		var me = this;
+		setTimeout(function() {
+			$(me).parent().find('span.datagrid-row-expander').trigger('click');
+		}, 10);
+	}
 </script>
 
 </head>
 <body class="easyui-layout" fit="true">
 	<div region="center" border="false" style="overflow: hidden;">
 		<div id="toolbar">
-			<input class="easyui-textbox" type="text" name="clientId"
-				id="q_client" data-options="prompt:'输入客户名称查询'" /> <input
-				class="easyui-textbox" type="text" name="code" id="q_code"
-				data-options="prompt:'输入单号查询'" /> <a href="javascript:search()"
-				class="easyui-linkbutton" data-options="iconCls:'icon-search'">查询</a>
-			<a href="${path}/orders/new" class="easyui-linkbutton"
-				data-options="iconCls:'icon-add'">新增</a> <a
-				href="javascript:exportOrder()" class="easyui-linkbutton"
-				data-options="iconCls:'icon-add'">打印路线图</a>
+			<form id="fm" method="post">
+				<input class="easyui-textbox" type="text" name="clientId"
+					id="q_client" data-options="prompt:'输入客户名称查询'" /> <input
+					class="easyui-textbox" type="text" name="code" id="q_code"
+					data-options="prompt:'输入单号查询',required:true" /> <a
+					href="javascript:search()" class="easyui-linkbutton"
+					data-options="iconCls:'icon-search',required:true">查询</a> <a
+					href="${path}/orders/new" class="easyui-linkbutton"
+					data-options="iconCls:'icon-add'">录入入仓订单</a> <a
+					href="javascript:exportOrder()" class="easyui-linkbutton"
+					data-options="iconCls:'icon-add'">打印路线图</a>
+			</form>
 		</div>
-		<table id="dg" class="easyui-datagrid" fit="true"
-			url="${path}/orders/my" method="GET" toolbar="#toolbar"
-			pagination="true" fitColumns="true" singleSelect="true"
-			rownumbers="true" striped="true" border="false" nowrap="false">
+		<table id="dg" class="easyui-datagrid" fit="true" toolbar="#toolbar"
+			border="false" nowrap="false"
+			data-options="view:detailview,rownumbers:true,singleSelect:true,
+                url:'${path}/orders/my',onLoadSuccess:onLoadDataSuccess,onExpandRow:onExpandRow,
+                autoRowHeight:false,method:'GET',pagination:true,fitColumns:true,detailFormatter:detailFormatter">
 			<thead>
 				<tr>
 					<th field="code" width="100">单号</th>

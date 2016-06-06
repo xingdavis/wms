@@ -10,12 +10,16 @@
 		<result column="fname" property="fname" jdbcType="VARCHAR" />
 		<result column="price" property="price" jdbcType="DOUBLE" />
 		<result column="amount" property="amount" jdbcType="DOUBLE" />
+		<result column="pay" property="pay" jdbcType="DOUBLE" />
 		<result column="sdate" property="sdate" jdbcType="TIMESTAMP" />
 		<result column="edate" property="edate" jdbcType="TIMESTAMP" />
 		<result column="memo" property="memo" jdbcType="VARCHAR" />
 		<result column="flag" property="flag" jdbcType="SMALLINT" />
 		<result column="op" property="op" jdbcType="INTEGER" />
 		<result column="cr_date" property="crDate" jdbcType="TIMESTAMP" />
+		<result column="is_collect" property="isCollect" jdbcType="BOOLEAN" />
+		<result column="is_pay" property="isPay" jdbcType="BOOLEAN" />
+		<result column="profit" property="profit" jdbcType="DOUBLE" />
 	</resultMap>
 	<resultMap id="BaseResultMap1" type="com.xs.wms.pojo.Fee">
 		<id column="id" property="id" jdbcType="INTEGER" />
@@ -25,6 +29,7 @@
 		<result column="ftype" property="ftype" jdbcType="SMALLINT" />
 		<result column="fname" property="fname" jdbcType="VARCHAR" />
 		<result column="price" property="price" jdbcType="DOUBLE" />
+		<result column="pay" property="pay" jdbcType="DOUBLE" />
 		<result column="amount" property="amount" jdbcType="DOUBLE" />
 		<result column="sdate" property="sdate" jdbcType="TIMESTAMP" />
 		<result column="edate" property="edate" jdbcType="TIMESTAMP" />
@@ -32,6 +37,9 @@
 		<result column="flag" property="flag" jdbcType="SMALLINT" />
 		<result column="op" property="op" jdbcType="INTEGER" />
 		<result column="cr_date" property="crDate" jdbcType="TIMESTAMP" />
+		<result column="is_collect" property="isCollect" jdbcType="BOOLEAN" />
+		<result column="is_pay" property="isPay" jdbcType="BOOLEAN" />
+		<result column="profit" property="profit" jdbcType="DOUBLE" />
 		<association property="client" column="client_id"
 			javaType="com.xs.wms.pojo.Client">
 			<id property="id" column="id" />
@@ -42,11 +50,14 @@
 		<id column="id" property="id" jdbcType="INTEGER" />
 		<result column="fname" property="fname" jdbcType="VARCHAR" />
 		<result column="amount" property="amount" jdbcType="DOUBLE" />
+		<result column="pay" property="pay" jdbcType="DOUBLE" />
 		<result column="sdate" property="sdate" jdbcType="TIMESTAMP" />
 		<result column="edate" property="edate" jdbcType="TIMESTAMP" />
 		<result column="memo" property="memo" jdbcType="VARCHAR" />
 		<result column="op" property="op" jdbcType="INTEGER" />
 		<result column="cr_date" property="crDate" jdbcType="TIMESTAMP" />
+		<result column="is_collect" property="isCollect" jdbcType="BOOLEAN" />
+		<result column="is_pay" property="isPay" jdbcType="BOOLEAN" />
 		<association property="client" column="client_id"
 			javaType="com.xs.wms.pojo.Client">
 			<id property="id" column="id" />
@@ -71,11 +82,14 @@
 		<id column="id" property="id" jdbcType="INTEGER" />
 		<result column="fname" property="fname" jdbcType="VARCHAR" />
 		<result column="amount" property="amount" jdbcType="DOUBLE" />
+		<result column="pay" property="pay" jdbcType="DOUBLE" />
 		<result column="sdate" property="sdate" jdbcType="TIMESTAMP" />
 		<result column="edate" property="edate" jdbcType="TIMESTAMP" />
 		<result column="memo" property="memo" jdbcType="VARCHAR" />
 		<result column="op" property="op" jdbcType="INTEGER" />
 		<result column="cr_date" property="crDate" jdbcType="TIMESTAMP" />
+		<result column="is_collect" property="isCollect" jdbcType="BOOLEAN" />
+		<result column="is_pay" property="isPay" jdbcType="BOOLEAN" />
 		<association property="client" column="client_id"
 			javaType="com.xs.wms.pojo.Client">
 			<id property="id" column="id" />
@@ -108,8 +122,8 @@
 		id, bill_id billId, bill_code billCode, client_id clientId,
 		ftype,
 		fname, price,
-		amount, sdate, edate, memo,
-		flag,op,cr_date crDate
+		amount, pay, sdate, edate, memo,
+		flag,op,cr_date crDate,is_collect,is_pay,ifnull(amount-ifnull(pay,0),0) profit
 	</sql>
 	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
 		parameterType="java.lang.Integer">
@@ -129,6 +143,9 @@
 			and (f.bill_code like concat('%',#{key},'%') or c.cname
 			like concat('%',#{key},'%') or
 			f.fname like
+			concat('%',#{key},'%')
+			or
+			f.memo like
 			concat('%',#{key},'%'))
 		</if>
 		<if test="sdate!=null and sdate != '' and edate!=null and edate != ''">
@@ -138,9 +155,9 @@
 	<!-- 费用列表 -->
 	<select id="datagrid" resultMap="BaseResultMap1">
 		select f.id, f.bill_id, f.bill_code,f.client_id,
-		f.ftype,f.fname,f.price,f.amount,
+		f.ftype,f.fname,f.price,f.amount,f.pay,
 		f.sdate, f.edate,
-		f.memo,f.flag,f.op,f.cr_date,f.cr_date,c.cname
+		f.memo,f.flag,f.op,f.cr_date,f.cr_date,f.is_collect,f.is_pay,ifnull(f.amount-ifnull(f.pay,0),0) profit,c.cname
 		from
 		t_fee f,t_client c
 		where f.client_id=c.id
@@ -151,6 +168,8 @@
 			and (f.bill_code like concat('%',#{key},'%') or c.cname
 			like concat('%',#{key},'%') or
 			f.fname like
+			concat('%',#{key},'%') or
+			f.memo like
 			concat('%',#{key},'%'))
 		</if>
 		<if test="sdate!=null and sdate != '' and edate!=null and edate != ''">
@@ -190,8 +209,8 @@
 		</if>
 	</select>
 	<select id="datagridDeliveryBill" resultMap="DeliveryBillResultMap">
-		select f.id, f.bill_id,f.fname,f.amount,f.sdate, f.edate,
-		f.memo,f.op,f.cr_date,c.cname,d.code,d.order_code,d.case_model,
+		select f.id, f.bill_id,f.fname,f.amount,f.pay,f.sdate, f.edate,
+		f.memo,f.op,f.cr_date,f.is_collect,f.is_pay,c.cname,d.code,d.order_code,d.case_model,
 		d.address,d.start_port,d.end_port,d.dport,d.rport,d.case_no,d.seal_no
 		from
 		t_fee f,t_client c,t_delivery d
@@ -251,8 +270,8 @@
 		</if>
 	</select>
 	<select id="datagridStockInBill" resultMap="StockInBillResultMap">
-		select f.id, f.bill_id,f.fname,f.amount,f.sdate, f.edate,
-		f.memo,f.op,f.cr_date,c.cname,s.code,s.order_code,s.car_no,s.indate,s.out_date
+		select f.id, f.bill_id,f.fname,f.amount,f.pay,f.sdate, f.edate,
+		f.memo,f.op,f.cr_date,f.is_collect,f.is_pay,c.cname,s.code,s.order_code,s.car_no,s.indate,s.out_date
 		from
 		t_fee f,t_client c,t_stock_in s
 		where
@@ -336,18 +355,18 @@
 		insert into t_fee (id,
 		bill_id, bill_code, client_id,
 		ftype, fname, price,
-		amount, sdate,
+		amount, pay, sdate,
 		edate,
-		memo,flag,op,cr_date)
+		memo,flag,op,cr_date,is_collect,is_pay)
 		values (#{id,jdbcType=INTEGER},
 		#{billId,jdbcType=INTEGER},#{billCode,jdbcType=VARCHAR},
 		#{clientId,jdbcType=INTEGER},
 		#{ftype,jdbcType=SMALLINT},
 		#{fname,jdbcType=VARCHAR}, #{price,jdbcType=DOUBLE},
-		#{amount,jdbcType=DOUBLE}, #{sdate,jdbcType=TIMESTAMP},
+		#{amount,jdbcType=DOUBLE}, #{pay,jdbcType=DOUBLE}, #{sdate,jdbcType=TIMESTAMP},
 		#{edate,jdbcType=TIMESTAMP},
 		#{memo,jdbcType=VARCHAR},
-		0,#{op,jdbcType=INTEGER},now())
+		0,#{op,jdbcType=INTEGER},now(),#{isCollect,jdbcType=SMALLINT},#{isPay,jdbcType=SMALLINT})
 	</insert>
 	<insert id="insertSelective" parameterType="com.xs.wms.pojo.Fee">
 		insert into t_fee
@@ -376,6 +395,9 @@
 			<if test="amount != null">
 				amount,
 			</if>
+			<if test="pay != null">
+				pay,
+			</if>
 			<if test="sdate != null">
 				sdate,
 			</if>
@@ -393,6 +415,12 @@
 			</if>
 			<if test="crDate != null">
 				cr_date,
+			</if>
+			<if test="isCollect != null">
+				is_Collect,
+			</if>
+			<if test="isPay != null">
+				is_Pay,
 			</if>
 		</trim>
 		<trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -420,6 +448,9 @@
 			<if test="amount != null">
 				#{amount,jdbcType=DOUBLE},
 			</if>
+			<if test="pay != null">
+				#{pay,jdbcType=DOUBLE},
+			</if>
 			<if test="sdate != null">
 				#{sdate,jdbcType=TIMESTAMP},
 			</if>
@@ -437,6 +468,12 @@
 			</if>
 			<if test="crDate != null">
 				#{crDate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="isCollect != null">
+				#{isCollect,jdbcType=SMALLINT},
+			</if>
+			<if test="isPay != null">
+				#{isPay,jdbcType=SMALLINT},
 			</if>
 		</trim>
 	</insert>
@@ -464,6 +501,9 @@
 			<if test="amount != null">
 				amount = #{amount,jdbcType=DOUBLE},
 			</if>
+			<if test="pay != null">
+				pay = #{amount,jdbcType=DOUBLE},
+			</if>
 			<if test="sdate != null">
 				sdate = #{sdate,jdbcType=TIMESTAMP},
 			</if>
@@ -475,6 +515,12 @@
 			</if>
 			<if test="op != null">
 				op = #{op,jdbcType=INTEGER},
+			</if>
+			<if test="isCollect != null">
+				is_collect = #{isCollect,jdbcType=SMALLINT},
+			</if>
+			<if test="isPay != null">
+				is_pay = #{isPay,jdbcType=SMALLINT},
 			</if>
 		</set>
 		where id = #{id,jdbcType=INTEGER}
@@ -493,11 +539,15 @@
 		price = #{price,jdbcType=DOUBLE},
 		amount =
 		#{amount,jdbcType=DOUBLE},
+		pay =
+		#{pay,jdbcType=DOUBLE},
 		sdate = #{sdate,jdbcType=TIMESTAMP},
 		edate =
 		#{edate,jdbcType=TIMESTAMP},
 		memo = #{memo,jdbcType=VARCHAR},
-		op=#{op,jdbcType=INTEGER}
+		op=#{op,jdbcType=INTEGER},
+		is_collect = #{isCollect,jdbcType=SMALLINT},
+		is_pay = #{isPay,jdbcType=SMALLINT}
 		where id = #{id,jdbcType=INTEGER}
 	</update>
 </mapper>

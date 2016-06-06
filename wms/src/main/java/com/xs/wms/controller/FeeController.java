@@ -191,8 +191,16 @@ public class FeeController {
 	 * 
 	 * @return
 	 */
-	@RequestMapping(value = "list", method = RequestMethod.GET)
-	public String listPage(Model model) {
+	@RequestMapping(value = "/list", method = RequestMethod.GET)
+	public String listPage(HttpServletRequest request,Model model) {
+		String key = request.getParameter("key");
+		String ftype = request.getParameter("ftype");
+		String clientId = request.getParameter("clientId");
+		String billId = request.getParameter("billId");
+		model.addAttribute("key", key);
+		model.addAttribute("ftype", ftype);
+		model.addAttribute("clientId", clientId);
+		model.addAttribute("billId", billId);
 		return "fee/list";
 	}
 

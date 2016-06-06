@@ -1,9 +1,11 @@
 package com.xs.wms.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.codec.binary.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -34,6 +36,30 @@ public class ClientController {
 		dg.setTotal(clientService.getDatagridTotal(client));
 		List<Client> list = clientService.datagridClient(page, client);
 		dg.setRows(list);
+		return dg;
+	}
+
+	/**
+	 * 客户查单选择的客户列表
+	 * 
+	 * @param page
+	 * @param client
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/order_client", method = RequestMethod.GET)
+	public DataGrid orderClient(PageHelper page, Client client) {
+		DataGrid dg = new DataGrid();
+		if (client.getCname().length()>=2) {
+			dg.setTotal(clientService.getDatagridTotal(client));
+			List<Client> list = clientService.datagridClient(page, client);
+			dg.setRows(list);
+		}
+		else
+		{
+			dg.setTotal(Long.valueOf("0"));
+			dg.setRows(new ArrayList());
+		}
 		return dg;
 	}
 

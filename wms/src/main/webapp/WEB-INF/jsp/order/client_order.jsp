@@ -179,7 +179,7 @@
 		    idField:'id',
 		    textField:'cname',
 		    method:'get',
-		    url: path + '/clients',
+		    url: path + '/clients/order_client',
 		    fitColumns: true,
 		    columns:[[
 		              {field:'id',title:'id',hidden:true},
@@ -286,13 +286,18 @@
 
 			<div style="text-align: center; padding: 5px">
 				<a href="javascript:void(0)" class="easyui-linkbutton"
-					onclick="submitForm()">提交订单</a>
+					onclick="submitForm()">提交订单</a> <a href="${path}/orders/mypage"
+					class="easyui-linkbutton">返回查单</a>
 			</div>
 			<div id="dlg" class="easyui-dialog" title="客户登记"
 				data-options="iconCls:'icon-save',closed:true"
 				style="width: 400px; height: 200px; padding: 10px">
 				<form id="fm_client" method="post">
 					<table cellpadding="5">
+						<tr>
+							<td>公司代号:</td>
+							<td><input class="easyui-textbox" type="text" name="code" /></td>
+						</tr>
 						<tr>
 							<td>公司名称:</td>
 							<td><input class="easyui-textbox" type="text" name="cname"

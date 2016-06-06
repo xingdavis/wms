@@ -4,6 +4,7 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -37,6 +38,7 @@ import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.Picture;
 import org.apache.poi.util.IOUtils;
 
+import com.mysql.jdbc.StringUtils;
 import com.xs.wms.pojo.Delivery;
 import com.xs.wms.pojo.Order;
 import com.xs.wms.pojo.Order_detail;
@@ -501,532 +503,128 @@ public class ExcelUtils {
 		}
 	}
 
-	@SuppressWarnings({ "unchecked", "rawtypes", "deprecation" })
+	@SuppressWarnings("deprecation")
 	public static <E> void exportStockInBill(HttpServletRequest request, HttpServletResponse response,
-			Stock_in stock_in, String sheetName, String fileName) throws NoSuchFieldException, IOException {
+			Stock_in stock_in, String sheetName, String fileName) throws Exception {
+		String path = request.getServletContext().getRealPath("exlmodel/stockin.xls");
+		InputStream in = new FileInputStream(new File(path));
+		HSSFWorkbook wb = new HSSFWorkbook(in);
+		HSSFSheet sheet = wb.getSheetAt(0);
+		HSSFRow row = sheet.getRow(2);
+		HSSFCell cell = row.getCell(9);
+		cell.setCellValue(stock_in.getCode());
+		row = sheet.getRow(3);
+		cell = row.getCell(2);
+		cell.setCellValue(stock_in.getInDate().getYear() + 1900 + " 年");
+		cell = row.getCell(3);
+		cell.setCellValue(stock_in.getInDate().getMonth() + 1);
+		cell = row.getCell(5);
+		cell.setCellValue(stock_in.getInDate().getDate());
+		cell = row.getCell(8);
+		cell.setCellValue(stock_in.getInDate().getHours());
+		cell = row.getCell(10);
+		cell.setCellValue(stock_in.getInDate().getMinutes());
 
-		List<Stock_in_detail> items = stock_in.getItems();
+		row = sheet.getRow(5);
+		cell = row.getCell(3);
+		cell.setCellValue(stock_in.getOrderCode());
+		cell = row.getCell(9);
+		if (!StringUtils.isNullOrEmpty(stock_in.getClient().getCode()))
+			cell.setCellValue(stock_in.getClient().getCode());
+		else
+			cell.setCellValue(stock_in.getClient().getCname());
+		row = sheet.getRow(6);
+		cell = row.getCell(5);
+		cell.setCellValue(stock_in.getCarNo());
 
-		// 创建工作簿
-		HSSFWorkbook wb = new HSSFWorkbook();
-		// 创建一个sheet
-		HSSFSheet sheet = wb.createSheet(sheetName);
-		int currentRow = 0;
-		HSSFRow contentRow = null;
+		row = sheet.getRow(24);
+		cell = row.getCell(9);
+		cell.setCellValue(stock_in.getCode());
 
-		HSSFCellStyle cellStyle = wb.createCellStyle();
-		cellStyle.setAlignment(HSSFCellStyle.ALIGN_CENTER);
-		cellStyle.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);
+		row = sheet.getRow(25);
+		cell = row.getCell(2);
+		cell.setCellValue(stock_in.getInDate().getYear() + 1900 + " 年");
+		cell = row.getCell(3);
+		cell.setCellValue(stock_in.getInDate().getMonth() + 1);
+		cell = row.getCell(5);
+		cell.setCellValue(stock_in.getInDate().getDate());
+		cell = row.getCell(8);
+		cell.setCellValue(stock_in.getInDate().getHours());
+		cell = row.getCell(10);
+		cell.setCellValue(stock_in.getInDate().getMinutes());
+
+		row = sheet.getRow(27);
+		cell = row.getCell(3);
+		cell.setCellValue(stock_in.getOrderCode());
+		cell = row.getCell(8);
+		if (!StringUtils.isNullOrEmpty(stock_in.getClient().getCode()))
+			cell.setCellValue(stock_in.getClient().getCode());
+		else
+			cell.setCellValue(stock_in.getClient().getCname());
+
 		Font font = wb.createFont();
 		font.setFontName("宋体");
 		font.setBoldweight(Font.BOLDWEIGHT_BOLD);
-		font.setFontHeightInPoints((short) 16);
+		font.setFontHeightInPoints((short) 14); // 将字体大小设置为18px
+
+		HSSFCellStyle cellStyle = wb.createCellStyle();
+		cellStyle.setWrapText(true);
+		cellStyle.setBorderLeft(HSSFCellStyle.BORDER_THIN);
+		cellStyle.setBorderRight(HSSFCellStyle.BORDER_THIN);
+		cellStyle.setBorderTop(HSSFCellStyle.BORDER_THIN);
+		cellStyle.setBorderBottom(HSSFCellStyle.BORDER_THIN);
+		cellStyle.setAlignment(HSSFCellStyle.ALIGN_CENTER);
+		cellStyle.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);
 		cellStyle.setFont(font);
-
-		HSSFCellStyle cellStyle1 = wb.createCellStyle();
-		cellStyle1.setWrapText(true);
-		cellStyle1.setAlignment(HSSFCellStyle.ALIGN_CENTER);
-		cellStyle1.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);
-		Font font1 = wb.createFont();
-		font1.setFontName("宋体");
-		font1.setBoldweight(Font.BOLDWEIGHT_BOLD);
-		font1.setFontHeightInPoints((short) 11);
-		cellStyle1.setFont(font1);
-
-		HSSFCellStyle cellStyle2 = wb.createCellStyle();
-		cellStyle2.setWrapText(true);
-		// cellStyle2.setAlignment(HSSFCellStyle.ALIGN_CENTER);
-		// cellStyle2.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);
-		Font font2 = wb.createFont();
-		font2.setFontName("宋体");
-		font2.setFontHeightInPoints((short) 11);
-		cellStyle2.setFont(font2);
-
-		HSSFCellStyle cellStyle3 = wb.createCellStyle();
-		// cellStyle3.setWrapText(true);
-		cellStyle3.setAlignment(HSSFCellStyle.ALIGN_CENTER);
-		cellStyle3.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);
-		cellStyle3.setBorderLeft(HSSFCellStyle.BORDER_THIN);
-		cellStyle3.setBorderRight(HSSFCellStyle.BORDER_THIN);
-		cellStyle3.setBorderTop(HSSFCellStyle.BORDER_THIN);
-		cellStyle3.setBorderBottom(HSSFCellStyle.BORDER_THIN);
-		cellStyle3.setAlignment(HSSFCellStyle.ALIGN_CENTER);
-		cellStyle3.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);
-		Font font3 = wb.createFont();
-		font3.setFontName("宋体");
-		font3.setBoldweight(Font.BOLDWEIGHT_BOLD);
-		font3.setFontHeightInPoints((short) 12);
-		cellStyle3.setFont(font3);
-
-		HSSFCellStyle cellStyle4 = wb.createCellStyle();
-		cellStyle4.setAlignment(HSSFCellStyle.ALIGN_CENTER);
-		cellStyle4.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);
-		Font font4 = wb.createFont();
-		font4.setFontName("宋体");
-		font4.setBoldweight(Font.BOLDWEIGHT_BOLD);
-		font4.setFontHeightInPoints((short) 11);
-		cellStyle4.setFont(font4);
-
-		HSSFCellStyle cellStyle5 = wb.createCellStyle();
-		cellStyle5.setAlignment(HSSFCellStyle.ALIGN_CENTER);
-		cellStyle5.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);
-		cellStyle5.setBorderBottom(HSSFCellStyle.BORDER_THIN);
-		Font font5 = wb.createFont();
-		font5.setFontName("宋体");
-		font5.setBoldweight(Font.BOLDWEIGHT_BOLD);
-		font5.setFontHeightInPoints((short) 11);
-		cellStyle5.setFont(font5);
-
-		HSSFCellStyle cellStyle6 = wb.createCellStyle();
-		cellStyle6.setWrapText(true);
-		cellStyle6.setAlignment(HSSFCellStyle.ALIGN_CENTER);
-		cellStyle6.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);
-		Font font6 = wb.createFont();
-		font6.setFontName("宋体");
-		font6.setFontHeightInPoints((short) 11);
-		cellStyle6.setFont(font6);
-
-		contentRow = sheet.createRow(++currentRow);
-		CellRangeAddress region = new CellRangeAddress(currentRow, currentRow, 1, 11);
-		sheet.addMergedRegion(region);
-		HSSFCell cell = contentRow.createCell(1);
-		cell.setCellStyle(cellStyle);
-		cell.setCellValue("收 款 收 据");
-
-		contentRow = sheet.createRow(++currentRow);
-		cell = contentRow.createCell(8);
-		cell.setCellStyle(cellStyle1);
-		cell.setCellValue("编号：");
-
-		region = new CellRangeAddress(currentRow, currentRow, 9, 11);
-		sheet.addMergedRegion(region);
-		cell = contentRow.createCell(9);
-		cell.setCellStyle(cellStyle5);
-		cell.setCellValue(stock_in.getCode());
-		cell = contentRow.createCell(10);
-		cell.setCellStyle(cellStyle5);
-		cell = contentRow.createCell(11);
-		cell.setCellStyle(cellStyle5);
-
-		contentRow = sheet.createRow(++currentRow);
-		cell = contentRow.createCell(1);
-		cell.setCellStyle(cellStyle2);
-		sheet.setColumnWidth(1, 3 * 3 * 256);
-		cell.setCellValue("日期：");
-		cell = contentRow.createCell(2);
-		cell.setCellStyle(cellStyle2);
-		// Calendar now = Calendar.getInstance();
-		cell.setCellValue(stock_in.getInDate().getYear() + 1900 + " 年");
-		cell = contentRow.createCell(3);
-		cell.setCellStyle(cellStyle2);
-		sheet.setColumnWidth(3, 2 * 3 * 256);
-		cell.setCellValue(stock_in.getInDate().getMonth() + 1);
-		cell = contentRow.createCell(4);
-		cell.setCellStyle(cellStyle2);
-		sheet.setColumnWidth(4, 3 * 256);
-		cell.setCellValue("月");
-		cell = contentRow.createCell(5);
-		cell.setCellStyle(cellStyle2);
-		sheet.setColumnWidth(5, 2 * 3 * 256);
-		cell.setCellValue(stock_in.getInDate().getDate());
-		cell = contentRow.createCell(6);
-		cell.setCellStyle(cellStyle2);
-		sheet.setColumnWidth(6, 3 * 256);
-		cell.setCellValue("日");
-		cell = contentRow.createCell(7);
-		cell.setCellStyle(cellStyle2);
-		cell.setCellValue("时间：");
-		cell = contentRow.createCell(8);
-		cell.setCellStyle(cellStyle2);
-		cell.setCellValue(stock_in.getInDate().getHours());
-		cell = contentRow.createCell(9);
-		cell.setCellStyle(cellStyle2);
-		sheet.setColumnWidth(9, 3 * 256);
-		cell.setCellValue("时");
-		cell = contentRow.createCell(10);
-		cell.setCellStyle(cellStyle2);
-		cell.setCellValue(stock_in.getInDate().getMinutes());
-		cell = contentRow.createCell(11);
-		cell.setCellStyle(cellStyle2);
-		cell.setCellValue("分");
-
-		currentRow++;
-		contentRow = sheet.createRow(++currentRow);
-		region = new CellRangeAddress(currentRow, currentRow, 1, 2);
-		sheet.addMergedRegion(region);
-		cell = contentRow.createCell(1);
-		cell.setCellStyle(cellStyle3);
-		cell.setCellValue("入仓单号：");
-		cell = contentRow.createCell(2);
-		cell.setCellStyle(cellStyle3);
-
-		region = new CellRangeAddress(currentRow, currentRow, 3, 7);
-		sheet.addMergedRegion(region);
-		cell = contentRow.createCell(3);
-		cell.setCellStyle(cellStyle3);
-		cell.setCellValue(stock_in.getOrderCode());
-		cell = contentRow.createCell(4);
-		cell.setCellStyle(cellStyle3);
-		cell = contentRow.createCell(5);
-		cell.setCellStyle(cellStyle3);
-		cell = contentRow.createCell(6);
-		cell.setCellStyle(cellStyle3);
-		cell = contentRow.createCell(7);
-		cell.setCellStyle(cellStyle3);
-
-		cell = contentRow.createCell(8);
-		cell.setCellStyle(cellStyle3);
-		sheet.setColumnWidth(8, 5 * 3 * 256);
-		cell.setCellValue("所属公司：");
-
-		region = new CellRangeAddress(currentRow, currentRow, 9, 11);
-		sheet.addMergedRegion(region);
-		cell = contentRow.createCell(9);
-		cell.setCellStyle(cellStyle3);
-		// sheet.setColumnWidth(9, 12*3 * 256);
-		cell.setCellValue(stock_in.getClient().getCname());
-		cell = contentRow.createCell(10);
-		cell.setCellStyle(cellStyle3);
-		cell = contentRow.createCell(11);
-		cell.setCellStyle(cellStyle3);
-
-		contentRow = sheet.createRow(++currentRow);
-		region = new CellRangeAddress(currentRow, currentRow, 1, 2);
-		sheet.addMergedRegion(region);
-		cell = contentRow.createCell(1);
-		cell.setCellStyle(cellStyle4);
-		cell.setCellValue("今  收  到");
-		cell = contentRow.createCell(3);
-		cell.setCellStyle(cellStyle4);
-		cell.setCellValue("车号：");
-		region = new CellRangeAddress(currentRow, currentRow, 5, 7);
-		sheet.addMergedRegion(region);
-		cell = contentRow.createCell(5);
-		cell.setCellStyle(cellStyle5);
-		cell.setCellValue(stock_in.getCarNo());
-		cell = contentRow.createCell(6);
-		cell.setCellStyle(cellStyle5);
-		cell = contentRow.createCell(7);
-		cell.setCellStyle(cellStyle5);
-		region = new CellRangeAddress(currentRow, currentRow, 8, 11);
-		sheet.addMergedRegion(region);
-		cell = contentRow.createCell(8);
-		cell.setCellStyle(cellStyle4);
-		cell.setCellValue("交来入仓费合计人民币   元整。");
-
-		currentRow++;
-		contentRow = sheet.createRow(++currentRow);
-		region = new CellRangeAddress(currentRow, currentRow, 1, 2);
-		sheet.addMergedRegion(region);
-		cell = contentRow.createCell(1);
-		cell.setCellStyle(cellStyle4);
-		cell.setCellValue("金额（大写）：");
-
-		cell = contentRow.createCell(9);
-		cell.setCellStyle(cellStyle4);
-		cell.setCellValue("¥");
-		region = new CellRangeAddress(currentRow, currentRow, 10, 11);
-		sheet.addMergedRegion(region);
-		cell = contentRow.createCell(10);
-		cell.setCellStyle(cellStyle5);
-		cell = contentRow.createCell(11);
-		cell.setCellStyle(cellStyle5);
-
-		currentRow++;
-		contentRow = sheet.createRow(++currentRow);
-		region = new CellRangeAddress(currentRow, currentRow, 1, 2);
-		sheet.addMergedRegion(region);
-		cell = contentRow.createCell(1);
-		cell.setCellStyle(cellStyle2);
-		cell.setCellValue("收款单位（盖章）");
-		cell = contentRow.createCell(8);
-		cell.setCellStyle(cellStyle2);
-		cell.setCellValue("经手人：");
-		region = new CellRangeAddress(currentRow, currentRow, 9, 11);
-		sheet.addMergedRegion(region);
-		cell = contentRow.createCell(9);
-		cell.setCellStyle(cellStyle5);
-		cell = contentRow.createCell(10);
-		cell.setCellStyle(cellStyle5);
-		cell = contentRow.createCell(11);
-		cell.setCellStyle(cellStyle5);
-
-		currentRow++;
-		contentRow = sheet.createRow(++currentRow);
-		region = new CellRangeAddress(currentRow, currentRow, 1, 3);
-		sheet.addMergedRegion(region);
-		cell = contentRow.createCell(1);
-		cell.setCellStyle(cellStyle4);
-		cell.setCellValue("司机注意事项：");
-
-		contentRow = sheet.createRow(++currentRow);
-		region = new CellRangeAddress(currentRow, currentRow, 1, 11);
-		sheet.addMergedRegion(region);
-		cell = contentRow.createCell(1);
-		cell.setCellStyle(cellStyle2);
-		cell.setCellValue("1.司机需遵从本仓人员工作安排，并以此收据编号先后顺序排队。");
-
-		contentRow = sheet.createRow(++currentRow);
-		region = new CellRangeAddress(currentRow, currentRow, 1, 11);
-		sheet.addMergedRegion(region);
-		cell = contentRow.createCell(1);
-		cell.setCellStyle(cellStyle2);
-		cell.setCellValue("2.仓库范围内禁止吸烟以及一切明火行为，并需注意安全，一切必须听从仓库人员安排，");
-
-		contentRow = sheet.createRow(++currentRow);
-		region = new CellRangeAddress(currentRow, currentRow, 1, 11);
-		sheet.addMergedRegion(region);
-		cell = contentRow.createCell(1);
-		cell.setCellStyle(cellStyle2);
-		cell.setCellValue("  如有违反或威胁到安全的情况，必究。");
-
-		contentRow = sheet.createRow(++currentRow);
-		region = new CellRangeAddress(currentRow, currentRow, 1, 11);
-		sheet.addMergedRegion(region);
-		cell = contentRow.createCell(1);
-		cell.setCellStyle(cellStyle2);
-		cell.setCellValue("3.请核对清楚实际数量与入仓单数量是否一致，签收后所产生的一切损失我司不负责，");
-
-		contentRow = sheet.createRow(++currentRow);
-		region = new CellRangeAddress(currentRow, currentRow, 1, 11);
-		sheet.addMergedRegion(region);
-		cell = contentRow.createCell(1);
-		cell.setCellStyle(cellStyle2);
-		cell.setCellValue("  并收取翻堆装卸费35元/CBM");
-
-		contentRow = sheet.createRow(++currentRow);
-		region = new CellRangeAddress(currentRow, currentRow, 1, 12);
-		sheet.addMergedRegion(region);
-		cell = contentRow.createCell(1);
-		cell.setCellStyle(cellStyle2);
-		cell.setCellValue("4.货物一经司机签收，若需提货必须得到我司客人文件通知出仓方能提取并需收取相应装卸费35元/CBM。");
-
-		currentRow++;
-		// region = new CellRangeAddress(currentRow, currentRow, 12, 12);
-		// sheet.addMergedRegion(region);
-		// cell = contentRow.createCell(12);
-		// cell.setCellStyle(cellStyle);
-		// cell.setCellValue("①存根（白色） ②客户（红色） ③仓库留底（黄色）");
-
-		HSSFPatriarch patriarch = sheet.createDrawingPatriarch();
-		HSSFClientAnchor bigValueAnchorTextBox = new HSSFClientAnchor(0, 0, 0, 0, (short) 12, currentRow, (short) 12,
-				currentRow);
-		HSSFTextbox bigValueTextbox = patriarch.createTextbox(bigValueAnchorTextBox);
-		bigValueTextbox.setString(new HSSFRichTextString("①存根（白色） ②客户（红色） ③仓库留底（黄色）"));
-		bigValueTextbox.setLineStyle(HSSFSimpleShape.LINESTYLE_NONE);
-		bigValueTextbox.setFillColor(0, 0, 0);
-
-		currentRow++;
-		currentRow++;
-		currentRow++;
-		contentRow = sheet.createRow(++currentRow);
-		region = new CellRangeAddress(currentRow, currentRow, 1, 11);
-		sheet.addMergedRegion(region);
-		cell = contentRow.createCell(1);
-		cell.setCellStyle(cellStyle);
-		cell.setCellValue("入 仓 单");
-
-		currentRow++;
-		contentRow = sheet.createRow(++currentRow);
-		cell = contentRow.createCell(8);
-		cell.setCellStyle(cellStyle1);
-		cell.setCellValue("编号：");
-
-		region = new CellRangeAddress(currentRow, currentRow, 9, 11);
-		sheet.addMergedRegion(region);
-		cell = contentRow.createCell(9);
-		cell.setCellStyle(cellStyle5);
-		cell.setCellValue(stock_in.getCode());
-		cell = contentRow.createCell(10);
-		cell.setCellStyle(cellStyle5);
-		cell = contentRow.createCell(11);
-		cell.setCellStyle(cellStyle5);
-
-		contentRow = sheet.createRow(++currentRow);
-		cell = contentRow.createCell(1);
-		cell.setCellStyle(cellStyle2);
-		sheet.setColumnWidth(1, 3 * 3 * 256);
-		cell.setCellValue("日期：");
-		cell = contentRow.createCell(2);
-		cell.setCellStyle(cellStyle2);
-		// Calendar now = Calendar.getInstance();
-		cell.setCellValue(stock_in.getInDate().getYear() + 1900 + " 年");
-		cell = contentRow.createCell(3);
-		cell.setCellStyle(cellStyle2);
-		sheet.setColumnWidth(3, 2 * 3 * 256);
-		cell.setCellValue(stock_in.getInDate().getMonth() + 1);
-		cell = contentRow.createCell(4);
-		cell.setCellStyle(cellStyle2);
-		sheet.setColumnWidth(4, 3 * 256);
-		cell.setCellValue("月");
-		cell = contentRow.createCell(5);
-		cell.setCellStyle(cellStyle2);
-		sheet.setColumnWidth(5, 2 * 3 * 256);
-		cell.setCellValue(stock_in.getInDate().getDate());
-		cell = contentRow.createCell(6);
-		cell.setCellStyle(cellStyle2);
-		sheet.setColumnWidth(6, 3 * 256);
-		cell.setCellValue("日");
-		cell = contentRow.createCell(7);
-		cell.setCellStyle(cellStyle2);
-		cell.setCellValue("时间：");
-		cell = contentRow.createCell(8);
-		cell.setCellStyle(cellStyle2);
-		cell.setCellValue(stock_in.getInDate().getHours());
-		cell = contentRow.createCell(9);
-		cell.setCellStyle(cellStyle2);
-		sheet.setColumnWidth(9, 3 * 256);
-		cell.setCellValue("时");
-		cell = contentRow.createCell(10);
-		cell.setCellStyle(cellStyle2);
-		cell.setCellValue(stock_in.getInDate().getMinutes());
-		cell = contentRow.createCell(11);
-		cell.setCellStyle(cellStyle2);
-		cell.setCellValue("分");
-
-		currentRow++;
-		contentRow = sheet.createRow(++currentRow);
-		region = new CellRangeAddress(currentRow, currentRow, 1, 2);
-		sheet.addMergedRegion(region);
-		cell = contentRow.createCell(1);
-		cell.setCellStyle(cellStyle3);
-		cell.setCellValue("入仓单号：");
-		cell = contentRow.createCell(2);
-		cell.setCellStyle(cellStyle3);
-
-		region = new CellRangeAddress(currentRow, currentRow, 3, 6);
-		sheet.addMergedRegion(region);
-		cell = contentRow.createCell(3);
-		cell.setCellStyle(cellStyle3);
-		cell.setCellValue(stock_in.getOrderCode());
-		cell = contentRow.createCell(4);
-		cell.setCellStyle(cellStyle3);
-		cell = contentRow.createCell(5);
-		cell.setCellStyle(cellStyle3);
-		cell = contentRow.createCell(6);
-		cell.setCellStyle(cellStyle3);
-
-		cell = contentRow.createCell(7);
-		cell.setCellStyle(cellStyle3);
-		// sheet.setColumnWidth(8, 5*3 * 256);
-		cell.setCellValue("所属公司：");
-
-		region = new CellRangeAddress(currentRow, currentRow, 8, 9);
-		sheet.addMergedRegion(region);
-		cell = contentRow.createCell(8);
-		cell.setCellStyle(cellStyle3);
-		// sheet.setColumnWidth(9, 12*3 * 256);
-		cell.setCellValue(stock_in.getClient().getCname());
-		cell = contentRow.createCell(9);
-		cell.setCellStyle(cellStyle3);
-		region = new CellRangeAddress(currentRow, currentRow, 10, 11);
-		sheet.addMergedRegion(region);
-		cell = contentRow.createCell(10);
-		cell.setCellStyle(cellStyle3);
-		// sheet.setColumnWidth(8, 5*3 * 256);
-		cell.setCellValue("堆位");
-		cell = contentRow.createCell(11);
-		cell.setCellStyle(cellStyle3);
-
-		// List<Stock_in_detail> items = stock_in.getItems();
+		int r = 27;
+		CellRangeAddress region;
+		List<Stock_in_detail> items = stock_in.getItems();
 		for (int i = 0; i < items.size(); i++) {
-			currentRow++;
-			contentRow = sheet.createRow(currentRow);
-			region = new CellRangeAddress(currentRow, currentRow, 1, 2);
+			r++;
+			row = sheet.createRow(r);
+			region = new CellRangeAddress(r, r, 1, 2);
 			sheet.addMergedRegion(region);
-			cell = contentRow.createCell(1);
-			cell.setCellStyle(cellStyle3);
+			region = new CellRangeAddress(r, r, 3, 6);
+			sheet.addMergedRegion(region);
+			region = new CellRangeAddress(r, r, 8, 9);
+			sheet.addMergedRegion(region);
+			region = new CellRangeAddress(r, r, 10, 11);
+			sheet.addMergedRegion(region);
+
+			cell = row.createCell(1);
+			cell.setCellStyle(cellStyle);
 			cell.setCellValue("品 名：");
-			cell = contentRow.createCell(2);
-			cell.setCellStyle(cellStyle3);
-			region = new CellRangeAddress(currentRow, currentRow, 3, 6);
-			sheet.addMergedRegion(region);
-			cell = contentRow.createCell(3);
-			cell.setCellStyle(cellStyle3);
+			cell = row.createCell(2);
+			cell.setCellStyle(cellStyle);
+			cell = row.createCell(3);
+			cell.setCellStyle(cellStyle);
 			cell.setCellValue(items.get(i).getCname());
-			cell = contentRow.createCell(4);
-			cell.setCellStyle(cellStyle3);
-			cell = contentRow.createCell(5);
-			cell.setCellStyle(cellStyle3);
-			cell = contentRow.createCell(6);
-			cell.setCellStyle(cellStyle3);
-			cell = contentRow.createCell(7);
-			cell.setCellStyle(cellStyle3);
+			cell = row.createCell(4);
+			cell.setCellStyle(cellStyle);
+			cell = row.createCell(5);
+			cell.setCellStyle(cellStyle);
+			cell = row.createCell(6);
+			cell.setCellStyle(cellStyle);
+			cell = row.createCell(7);
+			cell.setCellStyle(cellStyle);
 			cell.setCellValue("件 数：");
-			region = new CellRangeAddress(currentRow, currentRow, 8, 9);
-			sheet.addMergedRegion(region);
-			cell = contentRow.createCell(8);
-			cell.setCellStyle(cellStyle3);
+			cell = row.createCell(8);
+			cell.setCellStyle(cellStyle);
 			cell.setCellValue(items.get(i).getNum());
-			cell = contentRow.createCell(9);
-			cell.setCellStyle(cellStyle3);
-			// sheet.setColumnWidth(8, 5*3 * 256);
-			region = new CellRangeAddress(currentRow, currentRow, 10, 11);
-			sheet.addMergedRegion(region);
-			cell = contentRow.createCell(10);
-			cell.setCellStyle(cellStyle3);
+			cell = row.createCell(9);
+			cell.setCellStyle(cellStyle);
+			cell = row.createCell(10);
+			cell.setCellStyle(cellStyle);
 			cell.setCellValue(items.get(i).getYard());
-			cell = contentRow.createCell(11);
-			cell.setCellStyle(cellStyle3);
-
+			cell = row.createCell(11);
+			cell.setCellStyle(cellStyle);
 		}
-
-		currentRow++;
-		currentRow++;
-		region = new CellRangeAddress(currentRow, currentRow, 1, 2);
-		sheet.addMergedRegion(region);
-		contentRow = sheet.createRow(currentRow);
-		cell = contentRow.createCell(1);
-		cell.setCellStyle(cellStyle2);
-		cell.setCellValue("盖章无效");
-		cell = contentRow.createCell(2);
-		cell.setCellStyle(cellStyle2);
-		cell = contentRow.createCell(8);
-		cell.setCellStyle(cellStyle2);
-		cell.setCellValue("仓管签名：");
-		region = new CellRangeAddress(currentRow, currentRow, 9, 11);
-		sheet.addMergedRegion(region);
-		cell = contentRow.createCell(9);
-		cell.setCellStyle(cellStyle5);
-		cell = contentRow.createCell(10);
-		cell.setCellStyle(cellStyle5);
-		cell = contentRow.createCell(11);
-		cell.setCellStyle(cellStyle5);
-
-		currentRow++;
-		contentRow = sheet.createRow(currentRow);
-		region = new CellRangeAddress(currentRow, currentRow, 1, 7);
-		sheet.addMergedRegion(region);
-		cell = contentRow.createCell(1);
-		cell.setCellStyle(cellStyle4);
-		cell.setCellValue("注意事项：（此单不作提货用）");
-
-		contentRow = sheet.createRow(++currentRow);
-		region = new CellRangeAddress(currentRow, currentRow, 1, 11);
-		sheet.addMergedRegion(region);
-		cell = contentRow.createCell(1);
-		cell.setCellStyle(cellStyle2);
-		cell.setCellValue("1.本单显示数量为包装箱数量，不负责清点箱内明细。");
-
-		contentRow = sheet.createRow(++currentRow);
-		region = new CellRangeAddress(currentRow, currentRow, 1, 11);
-		sheet.addMergedRegion(region);
-		cell = contentRow.createCell(1);
-		cell.setCellStyle(cellStyle2);
-		cell.setCellValue("2.本入仓单不作提货用，如需提货，请与委托入仓公司（所属客户）联系。");
-
-		contentRow = sheet.createRow(++currentRow);
-		region = new CellRangeAddress(currentRow, currentRow, 1, 11);
-		sheet.addMergedRegion(region);
-		cell = contentRow.createCell(1);
-		cell.setCellStyle(cellStyle2);
-		cell.setCellValue("3.请核对清楚实际数量与入仓单数量是否一致，签收后所产生的一切责任与损失我司不负责。");
-
 		OutputStream os = null;
 		try {
-			response.addHeader("Content-Disposition", "attachment;filename=" + fileName + ".xls");
 			response.reset();
 			response.setContentType("application/vnd.ms-excel;charset=utf-8");
+			response.addHeader("Content-Disposition",
+					"attachment;filename=" + java.net.URLEncoder.encode(fileName, "UTF-8") + ".xls");
 			os = response.getOutputStream();
 			wb.write(os);
 		} catch (Exception e) {
@@ -1069,7 +667,7 @@ public class ExcelUtils {
 		}
 		cell = row.getCell(7);
 		cell.setCellValue(delivery.getWeigh() + "过磅");
-		
+
 		row = sheet.getRow(7);
 		cell = row.getCell(1);
 		cell.setCellValue(delivery.getGoodsName());
@@ -1079,7 +677,7 @@ public class ExcelUtils {
 			cell = row.getCell(6);
 			cell.setCellValue("√");
 		}
-		
+
 		row = sheet.getRow(8);
 		cell = row.getCell(1);
 		cell.setCellValue(delivery.getConsignee());
@@ -1087,7 +685,7 @@ public class ExcelUtils {
 			cell = row.getCell(6);
 			cell.setCellValue("√");
 		}
-		
+
 		row = sheet.getRow(9);
 		cell = row.getCell(1);
 		cell.setCellValue(delivery.getCaseNo());
@@ -1099,7 +697,7 @@ public class ExcelUtils {
 		cell.setCellValue(delivery.getAddress());
 		cell = row.getCell(6);
 		cell.setCellValue(delivery.getContact());
-		
+
 		row = sheet.getRow(14);
 		cell = row.getCell(1);
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm");
@@ -1109,20 +707,21 @@ public class ExcelUtils {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		
+
 		row = sheet.getRow(16);
 		cell = row.getCell(0);
 		cell.setCellValue(delivery.getMemo());
-		
+
 		row = sheet.getRow(20);
 		cell = row.getCell(2);
 		cell.setCellValue(delivery.getAttention());
-		
+
 		OutputStream os = null;
 		try {
 			response.reset();
 			response.setContentType("application/vnd.ms-excel;charset=utf-8");
-			response.addHeader("Content-Disposition", "attachment;filename=" + java.net.URLEncoder.encode(fileName, "UTF-8") + ".xls");
+			response.addHeader("Content-Disposition",
+					"attachment;filename=" + java.net.URLEncoder.encode(fileName, "UTF-8") + ".xls");
 			os = response.getOutputStream();
 			wb.write(os);
 		} catch (Exception e) {
@@ -1170,8 +769,8 @@ public class ExcelUtils {
 		row = sheet.getRow(8);
 		cell = row.getCell(2);
 		Date d = new SimpleDateFormat("yyyy-MM-dd HH:mm").parse(delivery.getDdate());
-		cell.setCellValue(
-				(d.getYear() + 1900) + " 年 " + (d.getMonth() + 1) + " 月 " + d.getDate() + " 日 " + d.getHours() + " 时 到厂 ");
+		cell.setCellValue((d.getYear() + 1900) + " 年 " + (d.getMonth() + 1) + " 月 " + d.getDate() + " 日 " + d.getHours()
+				+ " 时 到厂 ");
 		row = sheet.getRow(10);
 		cell = row.getCell(2);
 		cell.setCellValue(delivery.getCode());
@@ -1203,8 +802,9 @@ public class ExcelUtils {
 		try {
 			response.reset();
 			response.setContentType("application/vnd.ms-excel;charset=utf-8");
-			response.addHeader("Content-Disposition", "attachment;filename=" + java.net.URLEncoder.encode(fileName, "UTF-8") + ".xls");
-			
+			response.addHeader("Content-Disposition",
+					"attachment;filename=" + java.net.URLEncoder.encode(fileName, "UTF-8") + ".xls");
+
 			os = response.getOutputStream();
 			wb.write(os);
 		} catch (Exception e) {

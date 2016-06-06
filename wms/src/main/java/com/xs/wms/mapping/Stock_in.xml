@@ -16,6 +16,7 @@
 		<association property="client" column="client_id"
 			javaType="com.xs.wms.pojo.Client">
 			<id property="id" column="id" />
+			<result column="client_code" property="code" jdbcType="VARCHAR" />
 			<result column="cname" property="cname" jdbcType="VARCHAR" />
 		</association>
 		<collection property="items" column="id" javaType="ArrayList"
@@ -26,6 +27,7 @@
 		<result column="uid" property="uid" jdbcType="INTEGER" />
 		<result column="code" property="code" jdbcType="VARCHAR" />
 		<result column="order_code" property="orderCode" jdbcType="VARCHAR" />
+		<result column="client_id" property="clientId" jdbcType="INTEGER" />
 		<result column="car_no" property="carNo" jdbcType="VARCHAR" />
 		<result column="in_date" property="inDate" jdbcType="TIMESTAMP" />
 		<result column="cr_date" property="crDate" jdbcType="TIMESTAMP" />
@@ -34,12 +36,13 @@
 		<association property="client" column="client_id"
 			javaType="com.xs.wms.pojo.Client">
 			<id property="id" column="id" />
+			<result column="client_code" property="code" jdbcType="VARCHAR" />
 			<result column="cname" property="cname" jdbcType="INTEGER" />
 		</association>
 	</resultMap>
 	<sql id="Base_Column_List">
 		s.id,s.uid, s.code,s.order_id,s.order_code, s.client_id, s.car_no,
-		s.in_date,s.out_date, s.cr_date, s.flag, c.cname
+		s.in_date,s.out_date, s.cr_date, s.flag, c.code client_code, c.cname
 	</sql>
 	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
 		parameterType="java.lang.Integer">
@@ -63,7 +66,7 @@
 	</select>
 	<select id="getDatagrid" resultMap="BillResultMap">
 		select
-		s.id,s.uid,s.code,s.order_code,c.cname,s.car_no,s.in_date,s.out_date,s.flag
+		s.id,s.uid,s.code,s.order_code,s.client_id, c.code client_code,c.cname,s.car_no,s.in_date,s.out_date,s.flag
 		from
 		t_stock_in s,t_client c where s.client_id=c.id
 		and s.flag>=0

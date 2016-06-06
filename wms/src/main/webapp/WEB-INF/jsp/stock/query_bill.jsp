@@ -103,11 +103,29 @@
 		else
 			return value;
 	}
-	
+
 	function exportBill() {
 		var row = $('#dg').datagrid('getSelected');
 		if (row)
 			window.open(path + '/stock_ins/report/' + row.id);
+	}
+
+	function formatDate(value, row) {
+		if (value) {
+			return new Date(value).Format("yyyy-MM-dd");
+		} else {
+			return value;
+		}
+	}
+	
+	function editFee() {
+		var r = $('#dg').datagrid('getSelected');
+		if (r) {
+			var strTitle = '费用管理-[' + r.code + ' | ' + r.id + ' | ' + r.clientId + ']';
+			var strUrl = '${path}/fees/list?key=' + r.code + '&ftype=1&billId='
+					+ r.id + '&clientId=' + r.clientId;
+			_AddTab(strTitle,strUrl);
+		}
 	}
 </script>
 
@@ -131,8 +149,10 @@
 				data-options="iconCls:'icon-edit'">反审批</a> <a
 				href="javascript:verify(2)" class="easyui-linkbutton"
 				data-options="iconCls:'icon-edit'">出仓</a> <a
+				href="javascript:editFee()" class="easyui-linkbutton"
+				data-options="iconCls:'icon-edit'">单据费用</a> <a
 				href="javascript:exportBill()" class="easyui-linkbutton"
-				data-options="iconCls:'icon-edit'">导出</a>
+				data-options="iconCls:'icon-edit'">打印单据</a>
 		</div>
 		<table id="dg" class="easyui-datagrid" fit="true"
 			url="${path}/stock_ins/bills" method="GET" toolbar="#toolbar"
@@ -144,8 +164,8 @@
 					<th field="orderCode" width="100">订单号</th>
 					<th data-options="field:'client',width:100,formatter:formatClient">客户</th>
 					<th field="carNo" width="100">车牌号</th>
-					<th field="inDate" width="100">进仓日期</th>
-					<th field="outDate" width="100">出仓日期</th>
+					<th data-options="field:'inDate',width:100,formatter:formatDate">进仓日期</th>
+					<th data-options="field:'outDate',width:100,formatter:formatDate">出仓日期</th>
 					<th data-options="field:'flag',width:100,formatter:formatStatus">当前状态</th>
 				</tr>
 			</thead>

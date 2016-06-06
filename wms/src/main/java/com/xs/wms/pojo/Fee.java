@@ -20,6 +20,8 @@ public class Fee {
 	private Double price;
 
 	private Double amount;
+	
+	private Double pay;
 
 	private Date sdate;
 
@@ -36,6 +38,10 @@ public class Fee {
 	private Delivery delivery;
 	
 	private Stock_in stock_in;
+	
+	Boolean isCollect;
+	Boolean isPay;
+	Double profit;
 
 	public Integer getId() {
 		return id;
@@ -99,6 +105,14 @@ public class Fee {
 
 	public void setAmount(Double amount) {
 		this.amount = amount;
+	}
+	
+	public Double getPay() {
+		return pay;
+	}
+
+	public void setPay(Double pay) {
+		this.pay = pay;
 	}
 
 	public Date getSdate() {
@@ -171,5 +185,29 @@ public class Fee {
 
 	public void setStockIn(Stock_in stock_in) {
 		this.stock_in = stock_in;
+	}
+	
+	public Boolean getIsCollect() {
+		return isCollect;
+	}
+
+	public void setIsCollect(Boolean isCollect) {
+		this.isCollect = isCollect;
+	}
+	
+	public Boolean getIsPay() {
+		return isPay;
+	}
+
+	public void setIsPay(Boolean isPay) {
+		this.isPay = isPay;
+	}
+	
+	public Double getProfit() {
+		return profit;
+	}
+
+	public void setProfit(Double profit) {
+		this.profit = profit;
 	}
 }

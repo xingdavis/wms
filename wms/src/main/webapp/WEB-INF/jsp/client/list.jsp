@@ -29,7 +29,7 @@
 			$('#dlg').dialog('open').dialog('setTitle', '编辑');
 			$('#fm').form('load', row);//这句话有问题，第一次加载时正确的，第二次就出错了，还保持第一次的数据
 			//$('#fm').attr("method", "PUT");
-			$('#e_uname').textbox('readonly',true);
+			$('#e_uname').textbox('readonly', true);
 			$('#userid').val(id);
 			url = path + "/clients/" + id;
 			mesTitle = '编辑成功';
@@ -123,7 +123,6 @@
 	function reload() {
 		$('#dg').datagrid('reload');
 	}
-
 </script>
 
 </head>
@@ -131,11 +130,12 @@
 	<div region="center" border="false" style="overflow: hidden;">
 		<!-- 用户信息列表 title="用户管理" -->
 		<table id="dg" class="easyui-datagrid" fit="true"
-			url="${path}/clients" method="GET" toolbar="#toolbar" pagination="true"
-			fitColumns="true" singleSelect="true" rownumbers="true"
-			striped="true" border="false" nowrap="false">
+			url="${path}/clients" method="GET" toolbar="#toolbar"
+			pagination="true" fitColumns="true" singleSelect="true"
+			rownumbers="true" striped="true" border="false" nowrap="false">
 			<thead>
 				<tr>
+					<th field="code" width="100">代号</th>
 					<th field="cname" width="100">名称</th>
 					<th field="contactMan" width="100">负责人</th>
 					<th field="contactTel" width="100">联系电话</th>
@@ -166,14 +166,19 @@
 				<!-- <input type="hidden" id="_method" name="_method" value="PUT" /> -->
 				<input type="hidden" id="clientid" name="id" />
 				<div class="fitem">
-					<label>名称:</label> <input name="cname" id="e_cname" class="easyui-textbox"
-						required="true">
+					<label>代号:</label> <input name="code" id="e_code"
+						class="easyui-textbox">
+				</div>
+				<div class="fitem">
+					<label>名称:</label> <input name="cname" id="e_cname"
+						class="easyui-textbox" required="true">
 				</div>
 				<div class="fitem">
 					<label>负责人:</label> <input name="contactMan" class="easyui-textbox">
 				</div>
 				<div class="fitem">
-					<label>联系电话:</label> <input name="contactTel" class="easyui-textbox">
+					<label>联系电话:</label> <input name="contactTel"
+						class="easyui-textbox">
 				</div>
 			</form>
 		</div>
@@ -200,8 +205,8 @@
 		<!-- 删除对话框按钮 -->
 		<div id="dlg-del-buttons">
 			<a href="javascript:void(0)" class="easyui-linkbutton c6"
-				iconCls="icon-ok" onclick="saveDel()" style="width: 90px">删除</a>
-			<a href="javascript:void(0)" class="easyui-linkbutton"
+				iconCls="icon-ok" onclick="saveDel()" style="width: 90px">删除</a> <a
+				href="javascript:void(0)" class="easyui-linkbutton"
 				iconCls="icon-cancel"
 				onclick="javascript:$('#dlg_delete').dialog('close')"
 				style="width: 90px">取消</a>

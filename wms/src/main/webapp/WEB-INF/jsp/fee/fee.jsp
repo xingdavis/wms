@@ -328,9 +328,15 @@
 							data-options="required:true,min:0,precision:1,onChange:function(newValue,oldValue){calAmount();}"></td>
 					</tr>
 					<tr>
-						<td>总额:</td>
+						<td>应收:</td>
 						<td><input id="e_amount" name="amount" type="text"
 							class="easyui-numberbox" value="100"
+							data-options="required:true,min:0,precision:1"></td>
+					</tr>
+					<tr>
+						<td>应付:</td>
+						<td><input id="e_pay" name="pay" type="text"
+							class="easyui-numberbox" value="0"
 							data-options="required:true,min:0,precision:1"></td>
 					</tr>
 					<tr>

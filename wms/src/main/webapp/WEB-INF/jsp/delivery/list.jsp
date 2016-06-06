@@ -67,6 +67,23 @@
 						+ '/');
 	}
 
+	function editFee() {
+		var r = $('#dg').datagrid('getSelected');
+		if (r) {
+			var clientId = r.clientId;
+			var strTitle = '费用管理-[' + r.code + ' | ' + r.id;
+			var strUrl = '${path}/fees/list?key=' + r.code + '&ftype=2&billId='
+					+ r.id;
+
+			if (r.clientId) {
+				strTitle = strTitle + ' | ' + clientId;
+				strUrl = strUrl + '&clientId=' + clientId;
+			}
+			strTitle = strTitle + ']';
+			_AddTab(strTitle,strUrl);
+		}
+	}
+
 	function formatStatus(value, row) {
 		if (value == '0')
 			return '登记';
@@ -103,8 +120,8 @@
 				class="easyui-linkbutton" data-options="iconCls:'icon-remove'">删除</a>
 			<a href="javascript:edit()" class="easyui-linkbutton"
 				data-options="iconCls:'icon-edit'">编辑</a> <a
-				href="javascript:addFee(2)" class="easyui-linkbutton"
-				data-options="iconCls:'icon-add'">新增费用</a><a
+				href="javascript:editFee()" class="easyui-linkbutton"
+				data-options="iconCls:'icon-add'">单据费用</a><a
 				href="javascript:exportBill(1)" class="easyui-linkbutton"
 				data-options="iconCls:'icon-add'">打印派车单</a> <a
 				href="javascript:exportBill(2)" class="easyui-linkbutton"
