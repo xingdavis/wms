@@ -51,4 +51,11 @@ public interface IFee {
 
 	List<Bill> datagridBill(@Param("page") PageHelper page, @Param("client") String client,
 			@Param("sdate") String sdate, @Param("edate") String edate);
+	
+	/**
+	 * 根据账单id获取费用明细
+	 * @param billId
+	 * @return
+	 */
+	List<Fee> getFeesByBillId(@Param("billId") int billId);
 }

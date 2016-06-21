@@ -71,9 +71,11 @@ public class FeeController {
 		return j;
 	}
 
-	@RequestMapping(value = "/bill", method = RequestMethod.GET)
-	public Json burnBill(HttpServletRequest request, @RequestParam("ids") String ids, @RequestParam("client") String clientId,
-			@RequestParam("sdate") String sDate, @RequestParam("edate") String eDate) {
+	@ResponseBody
+	@RequestMapping(value = "/bill", method = RequestMethod.GET, consumes = "application/json")
+	public Json burnBill(HttpServletRequest request, @RequestParam("ids") String ids,
+			@RequestParam("client") String clientId, @RequestParam("sdate") String sDate,
+			@RequestParam("edate") String eDate) {
 		Json j = new Json();
 		boolean ok = false;
 		try {
@@ -192,7 +194,7 @@ public class FeeController {
 	 * @return
 	 */
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
-	public String listPage(HttpServletRequest request,Model model) {
+	public String listPage(HttpServletRequest request, Model model) {
 		String key = request.getParameter("key");
 		String ftype = request.getParameter("ftype");
 		String clientId = request.getParameter("clientId");
@@ -210,7 +212,8 @@ public class FeeController {
 	 * @return
 	 */
 	@RequestMapping(value = "/page/{ftype}/{client_id}/{bill_id}", method = RequestMethod.GET)
-	public String addPage(@PathVariable Integer ftype,@PathVariable Integer client_id,@PathVariable Integer bill_id, Model model) {
+	public String addPage(@PathVariable Integer ftype, @PathVariable Integer client_id, @PathVariable Integer bill_id,
+			Model model) {
 		model.addAttribute("ftype", ftype);
 		model.addAttribute("client_id", client_id);
 		model.addAttribute("bill_id", bill_id);
@@ -294,11 +297,20 @@ public class FeeController {
 		return dg;
 	}
 
-	@RequestMapping(value = "/bills/report")
-	public void ExportDeliveryBill(HttpServletRequest request, HttpServletResponse response) {
+	/**
+	 * 根据账单id导出账单
+	 * 
+	 * @param request
+	 * @param response
+	 * @param billId
+	 */
+	@RequestMapping(value = "/bills/report/{bId}", method = RequestMethod.GET)
+	public void ExportDeliveryBill(HttpServletRequest request, HttpServletResponse response, @PathVariable int bId) {
 		try {
 			PageHelper page = new PageHelper();
-			List<Fee> fees = feeService.datagridDeliveryBill(page, "1", "1", "1", "", "2011-01-01", "2016-03-01");
+			// List<Fee> fees = feeService.datagridDeliveryBill(page, "1", "1",
+			// "1", "", "2011-01-01", "2016-03-01");
+			List<Fee> fees = feeService.getFeesByBillId(bId);
 			List<Fee> list = new ArrayList<Fee>();
 			Map<Integer, Fee> map = new HashMap<Integer, Fee>();
 			double total = 0;

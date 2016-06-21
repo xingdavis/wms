@@ -85,9 +85,27 @@
 			return value;
 		}
 	}
-	
-	function bill_Details(tag){
+
+	function bill_Details(tag) {
 		location.href = '${path}/fees/bills/' + tag + '_details';
+	}
+
+	function exportBill(bId) {
+		var row = $('#dg').datagrid('getSelected');
+		if (row)
+			window.open('${path}/fees/bills/report/' + row.id);
+	}
+
+	function queryUnCheckedFee() {
+		var strTitle = '未出账单费用明细';
+		var strUrl = '${path}/fees/bills/uncheck_details'
+		_AddTab(strTitle, strUrl);
+	}
+
+	function queryCheckedFee() {
+		var strTitle = '已出账单费用明细';
+		var strUrl = '${path}/fees/bills/check_details'
+		_AddTab(strTitle, strUrl);
 	}
 </script>
 
@@ -100,11 +118,13 @@
 			rownumbers="true" striped="true" border="false" nowrap="false">
 			<thead>
 				<tr>
-					<th field="code" width="100">单号</th>
+					<th field="code" width="100">账单号</th>
 					<th data-options="field:'client',width:100,formatter:formatClient">客户</th>
+					<!-- 
 					<th field="total" width="50">金额</th>
-					<th data-options="field:'sdate',width:50,formatter:formatDate">开始</th>
-					<th data-options="field:'edate',width:50,formatter:formatDate">结束</th>
+					-->
+					<th data-options="field:'sdate',width:50,formatter:formatDate">开始时间</th>
+					<th data-options="field:'edate',width:50,formatter:formatDate">结束时间</th>
 				</tr>
 			</thead>
 		</table>
@@ -116,10 +136,12 @@
 				id="q_edate" type="text" class="easyui-datebox" /> <a
 				href="javascript:search()" class="easyui-linkbutton"
 				data-options="iconCls:'icon-search'">查询</a> <a
-				href="javascript:bill_Details('check')" class="easyui-linkbutton"
-				data-options="iconCls:'icon-search'">已出账单费用明细</a><a
-				href="javascript:bill_Details('uncheck')" class="easyui-linkbutton"
-				data-options="iconCls:'icon-search'">未出账单费用明细</a>
+				href="javascript:exportBill()" class="easyui-linkbutton"
+				data-options="iconCls:'icon-search'" id="btn_export">导出账单</a> <a
+				href="javascript:queryUnCheckedFee()" class="easyui-linkbutton"
+				data-options="iconCls:'icon-search'">查未出账单费用</a> <a
+				href="javascript:queryCheckedFee()" class="easyui-linkbutton"
+				data-options="iconCls:'icon-search'">查已出账单费用</a>
 		</div>
 
 	</div>

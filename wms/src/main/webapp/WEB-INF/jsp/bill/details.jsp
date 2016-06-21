@@ -200,9 +200,12 @@
 					href="javascript:search()" class="easyui-linkbutton"
 					data-options="iconCls:'icon-search'">查询</a> <a
 					href="javascript:burn()" class="easyui-linkbutton"
-					data-options="iconCls:'icon-search'" id="btn_burn">出账单</a> <a
+					data-options="iconCls:'icon-search'" id="btn_burn">出账单</a> 
+					<!--
+					<a
 					href="javascript:exportBill()" class="easyui-linkbutton"
 					data-options="iconCls:'icon-search'" id="btn_export">导出账单</a>
+					-->
 			</form>
 		</div>
 

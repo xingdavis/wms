@@ -123,7 +123,8 @@
 		ftype,
 		fname, price,
 		amount, pay, sdate, edate, memo,
-		flag,op,cr_date crDate,is_collect,is_pay,ifnull(amount-ifnull(pay,0),0) profit
+		flag,op,cr_date
+		crDate,is_collect,is_pay,ifnull(amount-ifnull(pay,0),0) profit
 	</sql>
 	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
 		parameterType="java.lang.Integer">
@@ -131,6 +132,17 @@
 		<include refid="Base_Column_List" />
 		from t_fee
 		where id = #{id,jdbcType=INTEGER}
+	</select>
+	<select id="getFeesByBillId" resultMap="DeliveryBillResultMap"
+		parameterType="java.lang.Integer">
+		select f.id, f.bill_id,f.fname,f.amount,f.pay,f.sdate, f.edate,
+		f.memo,f.op,f.cr_date,f.is_collect,f.is_pay,c.cname,d.code,d.order_code,d.case_model,
+		d.address,d.start_port,d.end_port,d.dport,d.rport,d.case_no,d.seal_no
+		from t_fee f INNER JOIN t_bill_detail bd on f.id=bd.fid
+		inner join t_client c on f.client_id=c.id
+		inner join t_delivery d on f.bill_id=d.id
+		where bd.bid =
+		#{billId,jdbcType=INTEGER}
 	</select>
 	<select id="getDatagridTotal" resultType="long">
 		select
@@ -157,7 +169,8 @@
 		select f.id, f.bill_id, f.bill_code,f.client_id,
 		f.ftype,f.fname,f.price,f.amount,f.pay,
 		f.sdate, f.edate,
-		f.memo,f.flag,f.op,f.cr_date,f.cr_date,f.is_collect,f.is_pay,ifnull(f.amount-ifnull(f.pay,0),0) profit,c.cname
+		f.memo,f.flag,f.op,f.cr_date,f.cr_date,f.is_collect,f.is_pay,ifnull(f.amount-ifnull(f.pay,0),0)
+		profit,c.cname
 		from
 		t_fee f,t_client c
 		where f.client_id=c.id
@@ -358,12 +371,14 @@
 		amount, pay, sdate,
 		edate,
 		memo,flag,op,cr_date,is_collect,is_pay)
-		values (#{id,jdbcType=INTEGER},
+		values
+		(#{id,jdbcType=INTEGER},
 		#{billId,jdbcType=INTEGER},#{billCode,jdbcType=VARCHAR},
 		#{clientId,jdbcType=INTEGER},
 		#{ftype,jdbcType=SMALLINT},
 		#{fname,jdbcType=VARCHAR}, #{price,jdbcType=DOUBLE},
-		#{amount,jdbcType=DOUBLE}, #{pay,jdbcType=DOUBLE}, #{sdate,jdbcType=TIMESTAMP},
+		#{amount,jdbcType=DOUBLE}, #{pay,jdbcType=DOUBLE},
+		#{sdate,jdbcType=TIMESTAMP},
 		#{edate,jdbcType=TIMESTAMP},
 		#{memo,jdbcType=VARCHAR},
 		0,#{op,jdbcType=INTEGER},now(),#{isCollect,jdbcType=SMALLINT},#{isPay,jdbcType=SMALLINT})
@@ -542,7 +557,8 @@
 		pay =
 		#{pay,jdbcType=DOUBLE},
 		sdate = #{sdate,jdbcType=TIMESTAMP},
-		edate =
+		edate
+		=
 		#{edate,jdbcType=TIMESTAMP},
 		memo = #{memo,jdbcType=VARCHAR},
 		op=#{op,jdbcType=INTEGER},
