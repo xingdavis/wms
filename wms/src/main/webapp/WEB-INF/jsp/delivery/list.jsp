@@ -123,9 +123,9 @@
 				href="javascript:editFee()" class="easyui-linkbutton"
 				data-options="iconCls:'icon-add'">单据费用</a><a
 				href="javascript:exportBill(1)" class="easyui-linkbutton"
-				data-options="iconCls:'icon-add'">打印派车单</a> <a
+				data-options="iconCls:'icon-add'">信树派车单</a> <a
 				href="javascript:exportBill(2)" class="easyui-linkbutton"
-				data-options="iconCls:'icon-add'">打印派车单2</a>
+				data-options="iconCls:'icon-add'">东方派车单</a>
 		</div>
 		<table id="dg" class="easyui-datagrid" fit="true"
 			url="${path}/deliverys/datagrid" method="GET" toolbar="#toolbar"

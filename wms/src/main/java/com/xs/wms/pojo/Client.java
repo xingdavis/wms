@@ -1,51 +1,60 @@
 package com.xs.wms.pojo;
 
 public class Client {
-    private Integer id;
-    String code;
-    private String cname;
+	private Integer id;
+	String code;
+	private String cname;
 
-    private String contactMan;
+	private String contactMan;
 
-    private String contactTel;
+	private String contactTel;
+	Integer flag;
 
-    public Integer getId() {
-        return id;
-    }
+	public Integer getId() {
+		return id;
+	}
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
+	public void setId(Integer id) {
+		this.id = id;
+	}
 
-    public String getCode() {
-        return code;
-    }
+	public String getCode() {
+		return code;
+	}
 
-    public void setCode(String code) {
-        this.code = code == null ? null : code.trim();
-    }
-    
-    public String getCname() {
-        return cname;
-    }
+	public void setCode(String code) {
+		this.code = code == null ? null : code.trim();
+	}
 
-    public void setCname(String cname) {
-        this.cname = cname == null ? null : cname.trim();
-    }
+	public String getCname() {
+		return cname;
+	}
 
-    public String getContactMan() {
-        return contactMan;
-    }
+	public void setCname(String cname) {
+		this.cname = cname == null ? null : cname.trim();
+	}
 
-    public void setContactMan(String contactMan) {
-        this.contactMan = contactMan == null ? null : contactMan.trim();
-    }
+	public String getContactMan() {
+		return contactMan;
+	}
 
-    public String getContactTel() {
-        return contactTel;
-    }
+	public void setContactMan(String contactMan) {
+		this.contactMan = contactMan == null ? null : contactMan.trim();
+	}
 
-    public void setContactTel(String contactTel) {
-        this.contactTel = contactTel == null ? null : contactTel.trim();
-    }
+	public String getContactTel() {
+		return contactTel;
+	}
+
+	public void setContactTel(String contactTel) {
+		this.contactTel = contactTel == null ? null : contactTel.trim();
+	}
+
+	public Integer getFlag() {
+		return flag;
+	}
+
+	public void setFlag(Integer flag) {
+		this.flag = flag;
+	}
 }

@@ -7,9 +7,11 @@
 		<result column="cname" property="cname" jdbcType="VARCHAR" />
 		<result column="contact_man" property="contactMan" jdbcType="VARCHAR" />
 		<result column="contact_tel" property="contactTel" jdbcType="VARCHAR" />
+		<result column="flag" property="flag" jdbcType="INTEGER" />
 	</resultMap>
 	<sql id="Base_Column_List">
-		id, code, cname, contact_man contactMan, contact_tel contactTel
+		id, code, cname, contact_man contactMan, contact_tel
+		contactTel,flag
 	</sql>
 	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
 		parameterType="java.lang.Integer">
@@ -29,33 +31,29 @@
 	<select id="repeatClientNum" resultType="java.lang.Integer">
 		select count(1) from
 		t_client
-		where cname = #{cname,jdbcType=VARCHAR}
+		where cname = #{cname,jdbcType=VARCHAR} and flag=0
 	</select>
 	<select id="checkForUpdate" resultType="java.lang.Integer">
 		select count(1) from
 		t_client
 		where cname = #{cname,jdbcType=VARCHAR} and
-		id!=#{id,jdbcType=INTEGER}
+		id!=#{id,jdbcType=INTEGER} and flag=0
 	</select>
 	<select id="getDatagridTotal" resultType="long">
 		select
 		count(1)
-		from t_client
-		<where>
-			<if test="client.cname!=null and client.cname != ''">
-				cname like concat('%',#{client.cname},'%')
-			</if>
-		</where>
+		from t_client where flag=0
+		<if test="client.cname!=null and client.cname != ''">
+			and cname like concat('%',#{client.cname},'%')
+		</if>
 	</select>
 	<select id="datagridClient" resultType="com.xs.wms.pojo.Client">
 		select
 		<include refid="Base_Column_List" />
-		from t_client
-		<where>
-			<if test="client.cname!=null and client.cname != ''">
-				cname like concat('%',#{client.cname},'%')
-			</if>
-		</where>
+		from t_client where flag=0
+		<if test="client.cname!=null and client.cname != ''">
+			and cname like concat('%',#{client.cname},'%')
+		</if>
 		<if test="page.sort != null and page.sort != ''">
 			order by #{page.sort} #{page.order}
 		</if>
@@ -64,18 +62,26 @@
 		</if>
 	</select>
 	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+		update
+		t_client set flag=1
+		where id = #{id,jdbcType=INTEGER}
+	</delete>
+	<!-- 
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
 		delete from
 		t_client
 		where id = #{id,jdbcType=INTEGER} and id not in (select
 		client_id from t_order) and id not in (select client_id from
-		t_stock_in)
+		t_stock_in) and id not in (select client_id from t_fee)
 	</delete>
+	 -->
 	<insert id="insert" parameterType="com.xs.wms.pojo.Client"
 		useGeneratedKeys="true" keyProperty="id">
 		insert into t_client ( code,cname,
 		contact_man,
 		contact_tel)
-		values ( #{code,jdbcType=VARCHAR},#{cname,jdbcType=VARCHAR},
+		values (
+		#{code,jdbcType=VARCHAR},#{cname,jdbcType=VARCHAR},
 		#{contactMan,jdbcType=VARCHAR},
 		#{contactTel,jdbcType=VARCHAR})
 	</insert>

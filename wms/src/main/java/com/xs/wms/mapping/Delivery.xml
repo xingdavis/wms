@@ -166,9 +166,7 @@
 				concat('%',#{delivery.code,jdbcType=VARCHAR},'%')
 			</if>
 		</where>
-		<if test="page.sort != null and page.sort != ''">
-			order by #{page.sort} #{page.order}
-		</if>
+		order by d.ddate
 		<if test="page.page > 0">
 			limit #{page.start},#{page.end}
 		</if>
