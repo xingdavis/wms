@@ -88,4 +88,13 @@ public class FeeService {
 		page.setEnd(page.getPage() * page.getRows());
 		return feeMapper.datagridBill(page, client, sdate, edate);
 	}
+	
+	/**
+	 * 根据账单id获取账单费用明细
+	 * @param billId
+	 * @return
+	 */
+	public List<Fee> getFeesByBillId(int billId){
+		return feeMapper.getFeesByBillId(billId);
+	}
 }
