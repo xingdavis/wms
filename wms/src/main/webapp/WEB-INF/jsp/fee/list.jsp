@@ -11,6 +11,8 @@
 	function search() {
 		$('#dg').datagrid('load', {
 			key : $('#q_key').val(),
+			billId : $('#q_billId').val(),
+			ftype : $('#q_ftype').val(),
 			sdate : $('#q_sdate').val(),
 			edate : $('#q_edate').val()
 		});
@@ -20,51 +22,6 @@
 	function reload() {
 		$('#dg').datagrid('reload');
 	}
-
-	// 	function del() {
-	// 		if (window.confirm("确认删除吗？")) {
-	// 			var r = $('#dg').datagrid('getSelected');
-	// 			if (r) {
-	// 				$.ajax({
-	// 					url : path + '/fees/' + r.id,
-	// 					async : false,
-	// 					method : 'DELETE',
-	// 					contentType : 'application/json',
-	// 					dataType : 'json',
-	// 					error : function(data) {
-	// 						alert("error:" + data.responseText);
-	// 					},
-	// 					success : function(result) {
-	// 						if (result.success) {
-	// 							reload();
-	// 						} else {
-	// 							alert(result.msg);
-	// 						}
-	// 					}
-	// 				});
-	// 			}
-	// 		}
-	// 	}
-
-	// 	function edit() {
-	// 		var r = $('#dg').datagrid('getSelected');
-	// 		if (r)
-	// 			_AddTab('费用管理-编辑[' + r.id + ']', '${path}/fees/page/' + r.ftype
-	// 					+ '/' + r.id);
-	// 	}
-
-	// 	function add(type) {
-	// 		var r = $('#dg').datagrid('getSelected');
-	// 		var client_id = 0;
-	// 		var bill_id = 0;
-	// 		if (r) {
-	// 			client_id = r.clientId;
-	// 			bill_id = r.billId;
-	// 		}
-	// 		_AddTab('费用管理-新增[' + type + '-' + client_id + '-' + bill_id + ']',
-	// 				'${path}/fees/page/' + type + '/' + client_id + '/' + bill_id
-	// 						+ '/');
-	// 	}
 
 	//DOM加载完毕执行
 	$(document).ready(function() {
@@ -193,18 +150,26 @@
 			return value;
 	}
 	function groupFormat(value, rows) {
-		return value + ' - ' + rows.length + ' 笔';
+		var lr = 0;
+		for (var i = 0; i < rows.length; i++) {
+			lr += rows[i].profit;
+		}
+		if (lr >= 0)
+			return "编号：" + value + '， ' + rows.length + '笔费用， 总利润：' + lr;
+		else
+			return "编号：" + value + '， ' + rows.length
+					+ '笔费用， 总利润：<font color="red">' + lr + '</font>';
 	}
-	
+
 	function formatChecked(value, row) {
 		if (value == true)
 			return '是';
 		else
 			return '否';
 	}
-	
-	function formatProfit(value,row,index){
-		if (value < 0){
+
+	function formatProfit(value, row, index) {
+		if (value < 0) {
 			return 'background-color:#ffee00;color:red;';
 			// the function can return predefined css class and inline style
 			// return {class:'c1',style:'color:red'}
@@ -281,9 +246,9 @@
 			//$('#fm').attr("method", "PUT");
 			//$('#e_uname').textbox('readonly', true);
 			//if (row.isCollect == true)
-				$("#eIsCollect").attr("checked",row.isCollect);
+			$("#eIsCollect").attr("checked", row.isCollect);
 			//if (row.isPay == true)
-				$("#eIsPay").attr("checked",row.isPay);
+			$("#eIsPay").attr("checked", row.isPay);
 			$('#e_id').val(id);
 			url = path + "/fees/" + id;
 			mesTitle = '编辑成功';
@@ -319,8 +284,8 @@
 		}
 
 		var frmObj = $('#fm').serializeObject();
-		frmObj.isCollect=$('#eIsCollect').is(':checked');
-		frmObj.isPay=$('#eIsPay').is(':checked');
+		frmObj.isCollect = $('#eIsCollect').is(':checked');
+		frmObj.isPay = $('#eIsPay').is(':checked');
 		var r;
 		if (frmObj.ftype == '2') {
 			frmObj.billId = $('#e_billId2').combogrid("getValue");
@@ -490,10 +455,11 @@
 		<!-- 用户信息列表 title="用户管理" -->
 		<table id="dg" class="easyui-datagrid" border="false" nowrap="false"
 			fit="true" toolbar="#toolbar"
-			data-options="url:'${path}/fees/datagrid',queryParams:{key:'${key}'}, collapsible:true, fitColumns:true, singleSelect:true,
-			rownumbers:true, striped:true, view:groupview, groupField:'billCode', method:'GET',groupFormatter:groupFormat">
+			data-options="url:'${path}/fees/datagrid',queryParams:{key:'${key}',billId:'${billId}',ftype:'${ftype}'}, collapsible:true, fitColumns:true, singleSelect:true,
+			rownumbers:true, striped:true, view:groupview, groupField:'billId', method:'GET',groupFormatter:groupFormat">
 			<thead>
 				<tr>
+					<th field="billId" width="50">编号</th>
 					<th field="billCode" width="100">单号</th>
 					<th data-options="field:'client',width:100,formatter:formatClient">客户</th>
 					<th data-options="field:'ftype',width:50,formatter:formatType">类型</th>

@@ -48,10 +48,13 @@ public class FeeController {
 
 	@ResponseBody
 	@RequestMapping(value = "/datagrid", method = RequestMethod.GET)
-	public DataGrid datagrid(PageHelper page, String client, String key, String sdate, String edate) {
+	public DataGrid datagrid(PageHelper page, String client, String key,
+			String sdate, String edate, String billId, String ftype) {
 		DataGrid dg = new DataGrid();
-		dg.setTotal(feeService.getDatagridTotal(client, key, sdate, edate));
-		List<Fee> list = feeService.datagrid(page, client, key, sdate, edate);
+		dg.setTotal(feeService.getDatagridTotal(client, key, sdate, edate,
+				billId, ftype));
+		List<Fee> list = feeService.datagrid(page, client, key, sdate, edate,
+				billId, ftype);
 		dg.setRows(list);
 		return dg;
 	}
@@ -73,15 +76,19 @@ public class FeeController {
 
 	@ResponseBody
 	@RequestMapping(value = "/bill", method = RequestMethod.GET, consumes = "application/json")
-	public Json burnBill(HttpServletRequest request, @RequestParam("ids") String ids,
-			@RequestParam("client") String clientId, @RequestParam("sdate") String sDate,
+	public Json burnBill(HttpServletRequest request,
+			@RequestParam("ids") String ids,
+			@RequestParam("client") String clientId,
+			@RequestParam("sdate") String sDate,
 			@RequestParam("edate") String eDate) {
 		Json j = new Json();
 		boolean ok = false;
 		try {
 			if (ids != "" & clientId != "" & sDate != "" & eDate != "") {
-				Integer op = ((User) request.getSession().getAttribute("USER")).getId();
-				int rtn = feeService.burnBill(ids, Integer.parseInt(clientId), sDate, eDate, op);
+				Integer op = ((User) request.getSession().getAttribute("USER"))
+						.getId();
+				int rtn = feeService.burnBill(ids, Integer.parseInt(clientId),
+						sDate, eDate, op);
 				if (rtn == 0) {
 					ok = true;
 					j.setMsg("生成成功！");
@@ -102,11 +109,13 @@ public class FeeController {
 		Json j = new Json();
 		boolean ok = false;
 		try {
-			if (obj.getBillId() > 0 & obj.getClientId() > 0 & obj.getFname() != "" & obj.getSdate() != null
+			if (obj.getBillId() > 0 & obj.getClientId() > 0
+					& obj.getFname() != "" & obj.getSdate() != null
 					& obj.getEdate() != null) {
 				if (!feeService.repeat(obj)) {
 					obj.setCrDate(new Date());
-					obj.setOp(((User) request.getSession().getAttribute("USER")).getId());
+					obj.setOp(((User) request.getSession().getAttribute("USER"))
+							.getId());
 					if (feeService.insert(obj) > 0) {
 						ok = true;
 						j.setMsg("新增成功！");
@@ -133,15 +142,18 @@ public class FeeController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/{id}", method = RequestMethod.PUT, consumes = "application/json")
-	public Json editUser(HttpServletRequest request, @PathVariable Integer id, @RequestBody Fee obj) {
+	public Json editUser(HttpServletRequest request, @PathVariable Integer id,
+			@RequestBody Fee obj) {
 		Json j = new Json();
 		boolean ok = false;
 		try {
 			Fee oObj = feeService.get(id);
-			if (obj.getBillId() > 0 & obj.getClientId() > 0 & obj.getFname() != "" & obj.getSdate() != null
+			if (obj.getBillId() > 0 & obj.getClientId() > 0
+					& obj.getFname() != "" & obj.getSdate() != null
 					& obj.getEdate() != null) {
 				if (oObj.getFlag() == 0) {
-					obj.setOp(((User) request.getSession().getAttribute("USER")).getId());
+					obj.setOp(((User) request.getSession().getAttribute("USER"))
+							.getId());
 					if (feeService.update(obj) > 0) {
 						ok = true;
 						j.setMsg("修改成功！");
@@ -212,7 +224,8 @@ public class FeeController {
 	 * @return
 	 */
 	@RequestMapping(value = "/page/{ftype}/{client_id}/{bill_id}", method = RequestMethod.GET)
-	public String addPage(@PathVariable Integer ftype, @PathVariable Integer client_id, @PathVariable Integer bill_id,
+	public String addPage(@PathVariable Integer ftype,
+			@PathVariable Integer client_id, @PathVariable Integer bill_id,
 			Model model) {
 		model.addAttribute("ftype", ftype);
 		model.addAttribute("client_id", client_id);
@@ -221,7 +234,8 @@ public class FeeController {
 	}
 
 	@RequestMapping(value = "/page/{ftype}/{id}", method = RequestMethod.GET)
-	public String editPage(@PathVariable Integer ftype, @PathVariable Integer id, Model model) {
+	public String editPage(@PathVariable Integer ftype,
+			@PathVariable Integer id, Model model) {
 		model.addAttribute("ftype", ftype);
 		model.addAttribute("fee_id", id);
 		return "fee/fee";
@@ -267,7 +281,8 @@ public class FeeController {
 
 	@ResponseBody
 	@RequestMapping(value = "/bills", method = RequestMethod.GET)
-	public DataGrid bill_datagrid(PageHelper page, String client, String sdate, String edate) {
+	public DataGrid bill_datagrid(PageHelper page, String client, String sdate,
+			String edate) {
 		DataGrid dg = new DataGrid();
 		dg.setTotal(feeService.getBillTotal(client, sdate, edate));
 		List<Bill> list = feeService.datagridBill(page, client, sdate, edate);
@@ -277,22 +292,26 @@ public class FeeController {
 
 	@ResponseBody
 	@RequestMapping(value = "/bills/delivery", method = RequestMethod.GET)
-	public DataGrid delivery_datagrid(PageHelper page, String fflag, String bflag, String client, String key,
-			String sdate, String edate) {
+	public DataGrid delivery_datagrid(PageHelper page, String fflag,
+			String bflag, String client, String key, String sdate, String edate) {
 		DataGrid dg = new DataGrid();
-		dg.setTotal(feeService.getDeliveryBillTotal(fflag, bflag, client, key, sdate, edate));
-		List<Fee> list = feeService.datagridDeliveryBill(page, fflag, bflag, client, key, sdate, edate);
+		dg.setTotal(feeService.getDeliveryBillTotal(fflag, bflag, client, key,
+				sdate, edate));
+		List<Fee> list = feeService.datagridDeliveryBill(page, fflag, bflag,
+				client, key, sdate, edate);
 		dg.setRows(list);
 		return dg;
 	}
 
 	@ResponseBody
 	@RequestMapping(value = "/bills/stock_in", method = RequestMethod.GET)
-	public DataGrid stockin_datagrid(PageHelper page, String fflag, String bflag, String client, String key,
-			String sdate, String edate) {
+	public DataGrid stockin_datagrid(PageHelper page, String fflag,
+			String bflag, String client, String key, String sdate, String edate) {
 		DataGrid dg = new DataGrid();
-		dg.setTotal(feeService.getStockInBillTotal(fflag, bflag, client, key, sdate, edate));
-		List<Fee> list = feeService.datagridStockInBill(page, fflag, bflag, client, key, sdate, edate);
+		dg.setTotal(feeService.getStockInBillTotal(fflag, bflag, client, key,
+				sdate, edate));
+		List<Fee> list = feeService.datagridStockInBill(page, fflag, bflag,
+				client, key, sdate, edate);
 		dg.setRows(list);
 		return dg;
 	}
@@ -305,7 +324,8 @@ public class FeeController {
 	 * @param billId
 	 */
 	@RequestMapping(value = "/bills/report/{bId}", method = RequestMethod.GET)
-	public void ExportDeliveryBill(HttpServletRequest request, HttpServletResponse response, @PathVariable int bId) {
+	public void ExportDeliveryBill(HttpServletRequest request,
+			HttpServletResponse response, @PathVariable int bId) {
 		try {
 			PageHelper page = new PageHelper();
 			// List<Fee> fees = feeService.datagridDeliveryBill(page, "1", "1",
@@ -320,13 +340,15 @@ public class FeeController {
 				total += obj.getAmount();
 				if (map.containsKey(billId)) {
 					Fee nObj = map.get(billId);
-					String fname = nObj.getFname() + "\n" + obj.getFname() + ":" + obj.getAmount().toString();
+					String fname = nObj.getFname() + "\n" + obj.getFname()
+							+ ":" + obj.getAmount().toString();
 					double amount = nObj.getAmount() + obj.getAmount();
 					nObj.setFname(fname);
 					nObj.setAmount(amount);
 				} else {
 					map.put(billId, obj);
-					String fname = obj.getFname() + ":" + obj.getAmount().toString();
+					String fname = obj.getFname() + ":"
+							+ obj.getAmount().toString();
 					double amount = obj.getAmount();
 					list.add(obj);
 					Fee nObj = list.get(list.size() - 1);
@@ -339,10 +361,12 @@ public class FeeController {
 			bt.setAmount(total);
 			list.add(bt);
 			String[] header = { "单号", "箱型", "提柜点", "还柜点", "箱号", "费目", "金额" };
-			String[] fileNames = { "delivery.code", "delivery.caseModel", "delivery.dport", "delivery.rport",
-					"delivery.caseNo", "fname", "amount" };
-			ExcelUtils.exportBill(response, header, fileNames, list, "exportBill", "exportBill",
-					fees.get(0).getClient().getCname());
+			String[] fileNames = { "delivery.code", "delivery.caseModel",
+					"delivery.dport", "delivery.rport", "delivery.caseNo",
+					"fname", "amount" };
+			ExcelUtils.exportBill(response, header, fileNames, list,
+					"exportBill", "exportBill", fees.get(0).getClient()
+							.getCname());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

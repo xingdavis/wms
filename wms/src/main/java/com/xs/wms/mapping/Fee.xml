@@ -151,6 +151,9 @@
 		<if test="client!=null and client != ''">
 			and f.client_id=#{client}
 		</if>
+		<if test="billId!=null and billId!=''">
+			and f.bill_id=#{billId} and f.ftype=#{ftype}
+		</if>
 		<if test="key!=null and key!=''">
 			and (f.bill_code like concat('%',#{key},'%') or c.cname
 			like concat('%',#{key},'%') or
@@ -176,6 +179,9 @@
 		where f.client_id=c.id
 		<if test="client!=null and client != ''">
 			and f.client_id=#{client}
+		</if>
+		<if test="billId!=null and billId!=''">
+			and f.bill_id=#{billId} and f.ftype=#{ftype}
 		</if>
 		<if test="key!=null and key!=''">
 			and (f.bill_code like concat('%',#{key},'%') or c.cname

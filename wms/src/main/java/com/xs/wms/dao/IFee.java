@@ -22,10 +22,10 @@ public interface IFee {
 	int updateByPrimaryKey(Fee record);
 
 	Long getDatagridTotal(@Param("client") String client, @Param("key") String key, @Param("sdate") String sdate,
-			@Param("edate") String edate);
+			@Param("edate") String edate, @Param("billId") String billId, @Param("ftype") String ftype);
 
 	List<Fee> datagrid(@Param("page") PageHelper page, @Param("client") String client, @Param("key") String key,
-			@Param("sdate") String sdate, @Param("edate") String edate);
+			@Param("sdate") String sdate, @Param("edate") String edate, @Param("billId") String billId, @Param("ftype") String ftype);
 
 	int repeatNum(Fee fee);
 
