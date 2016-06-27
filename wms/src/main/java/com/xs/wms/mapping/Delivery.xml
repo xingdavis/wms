@@ -32,6 +32,10 @@
 		<result column="end_port" property="endPort" jdbcType="VARCHAR" />
 		<result column="memo" property="memo" jdbcType="VARCHAR" />
 		<result column="flag" property="flag" jdbcType="TINYINT" />
+		<result column="case_weight" property="caseWeight" jdbcType="DOUBLE" />
+		<result column="car_weight" property="carWeight" jdbcType="DOUBLE" />
+		<result column="net_weight" property="netWeight" jdbcType="DOUBLE" />
+		<result column="total_weight" property="totalWeight" jdbcType="DOUBLE" />
 	</resultMap>
 	<resultMap id="BaseResultMap1" type="com.xs.wms.pojo.Delivery">
 		<id column="id" property="id" jdbcType="INTEGER" />
@@ -64,6 +68,10 @@
 		<result column="end_port" property="endPort" jdbcType="VARCHAR" />
 		<result column="memo" property="memo" jdbcType="VARCHAR" />
 		<result column="flag" property="flag" jdbcType="TINYINT" />
+		<result column="case_weight" property="caseWeight" jdbcType="DOUBLE" />
+		<result column="car_weight" property="carWeight" jdbcType="DOUBLE" />
+		<result column="net_weight" property="netWeight" jdbcType="DOUBLE" />
+		<result column="total_weight" property="totalWeight" jdbcType="DOUBLE" />
 		<association property="order" column="order_id"
 			javaType="com.xs.wms.pojo.Order">
 			<id property="id" column="id" />
@@ -93,7 +101,8 @@
 		arrival_time arrivalTime, attention,
 		sign_time signTime,
 		start_port
-		startPort, end_port endPort, memo, flag
+		startPort, end_port endPort, memo,
+		flag,case_weight,car_weight,net_weight,total_weight
 	</sql>
 	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
 		parameterType="java.lang.Integer">
@@ -145,12 +154,14 @@
 		d.attention,
 		d.sign_time, d.start_port,
 		d.end_port,
-		d.memo, d.flag, c.cname
+		d.memo, d.flag,d.case_weight,d.car_weight,d.net_weight,d.total_weight,
+		c.cname
 		from t_delivery
 		d left
 		join t_order o on
 		d.order_id=o.id left
-		join t_client c on
+		join
+		t_client c on
 		d.client_id=c.id
 		<where>
 			<if test="delivery.code!=null and delivery.code != ''">
@@ -194,7 +205,8 @@
 		attention,
 		sign_time,
 		start_port,
-		end_port, memo, flag
+		end_port, memo,
+		flag,case_weight,car_weight,net_weight,total_weight
 		)
 		values
 		(#{id,jdbcType=INTEGER},
@@ -221,7 +233,7 @@
 		#{startPort,jdbcType=VARCHAR},
 		#{endPort,jdbcType=VARCHAR},
 		#{memo,jdbcType=VARCHAR},
-		#{flag,jdbcType=TINYINT}
+		#{flag,jdbcType=TINYINT},#{caseWeight,jdbcType=DOUBLE},#{carWeight,jdbcType=DOUBLE},#{netWeight,jdbcType=DOUBLE},#{totalWeight,jdbcType=DOUBLE}
 		)
 	</insert>
 	<insert id="insertSelective" parameterType="com.xs.wms.pojo.Delivery">
@@ -317,6 +329,18 @@
 			<if test="flag != null">
 				flag,
 			</if>
+			<if test="caseWeight != null">
+				case_weight,
+			</if>
+			<if test="carWeight != null">
+				car_weight,
+			</if>
+			<if test="netWeight != null">
+				net_weight,
+			</if>
+			<if test="totalWeight != null">
+				total_weight,
+			</if>
 		</trim>
 		<trim prefix="values (" suffix=")" suffixOverrides=",">
 			<if test="id != null">
@@ -409,6 +433,18 @@
 			<if test="flag != null">
 				#{flag,jdbcType=TINYINT},
 			</if>
+			<if test="caseWeight != null">
+				#{caseWeight,jdbcType=DOUBLE},
+			</if>
+			<if test="carWeight != null">
+				#{carWeight,jdbcType=DOUBLE},
+			</if>
+			<if test="netWeight != null">
+				#{netWeight,jdbcType=DOUBLE},
+			</if>
+			<if test="totalWeight != null">
+				#{totalWeight,jdbcType=DOUBLE},
+			</if>
 		</trim>
 	</insert>
 	<update id="updateByPrimaryKeySelective" parameterType="com.xs.wms.pojo.Delivery">
@@ -498,6 +534,18 @@
 			<if test="flag != null">
 				flag = #{flag,jdbcType=TINYINT},
 			</if>
+			<if test="caseWeight != null">
+				case_weight=#{caseWeight,jdbcType=DOUBLE},
+			</if>
+			<if test="carWeight != null">
+				car_weight=#{carWeight,jdbcType=DOUBLE},
+			</if>
+			<if test="netWeight != null">
+				net_weight=#{netWeight,jdbcType=DOUBLE},
+			</if>
+			<if test="totalWeight != null">
+				total_weight=#{totalWeight,jdbcType=DOUBLE}
+			</if>
 		</set>
 		where id = #{id,jdbcType=INTEGER}
 	</update>
@@ -551,8 +599,13 @@
 		start_port =
 		#{startPort,jdbcType=VARCHAR},
 		end_port = #{endPort,jdbcType=VARCHAR},
-		memo = #{memo,jdbcType=VARCHAR}
-		where id = #{id,jdbcType=INTEGER} and
+		memo = #{memo,jdbcType=VARCHAR},
+		case_weight=#{caseWeight,jdbcType=DOUBLE},
+		car_weight=#{carWeight,jdbcType=DOUBLE},
+		net_weight=#{netWeight,jdbcType=DOUBLE},
+		total_weight=#{totalWeight,jdbcType=DOUBLE}
+		where id =
+		#{id,jdbcType=INTEGER} and
 		flag=0
 	</update>
 </mapper>

@@ -210,6 +210,12 @@
 	function goBack() {
 		location.href = '${path}/deliverys/list';
 	}
+	function calWeight() {
+		var netWeight = $('#e_totalWeight').numberbox('getValue')
+				- $('#e_caseWeight').numberbox('getValue')
+				- $('#e_carWeight').numberbox('getValue');
+		$('#e_netWeight').numberbox('setValue', netWeight);
+	}
 </script>
 </head>
 <body>
@@ -282,8 +288,8 @@
 					</tr>
 					<tr>
 						<td>目的地:</td>
-						<td><input class="easyui-textbox" type="text" id="e_destination"
-							name="destination" /></td>
+						<td><input class="easyui-textbox" type="text"
+							id="e_destination" name="destination" /></td>
 					</tr>
 					<tr>
 						<td>还柜点:</td>
@@ -330,13 +336,30 @@
 						<td><input class="easyui-textbox" type="text" id="e_contact"
 							name="contact" data-options="width:500" /></td>
 					</tr>
-					<!-- 
 					<tr>
-						<td>到厂时间:</td>
-						<td><input name="arrivalTime" id="e_arrivalTime" type="text"
-							class="easyui-datebox" /></td>
+						<td>吉柜重量:</td>
+						<td><input id="e_caseWeight" name="caseWeight" type="text"
+							class="easyui-numberbox" value="0"
+							data-options="min:0,precision:1,onChange:function(newValue,oldValue){calWeight();}"></td>
 					</tr>
-					 -->
+					<tr>
+						<td>车自重:</td>
+						<td><input id="e_carWeight" name="carWeight" type="text"
+							class="easyui-numberbox" value="0"
+							data-options="min:0,precision:1,onChange:function(newValue,oldValue){calWeight();}"></td>
+					</tr>
+					<tr>
+						<td>货重:</td>
+						<td><input id="e_netWeight" name="netWeight" type="text"
+							class="easyui-numberbox" value="0"
+							data-options="min:0,precision:1,onChange:function(newValue,oldValue){calWeight();}"></td>
+					</tr>
+					<tr>
+						<td>过磅总重量:</td>
+						<td><input id="e_totalWeight" name="totalWeight" type="text"
+							class="easyui-numberbox" value="0"
+							data-options="min:0,precision:1,onChange:function(newValue,oldValue){calWeight();}"></td>
+					</tr>
 					<tr>
 						<td>备注:</td>
 						<td><input class="easyui-textbox" type="text" id="e_memo"

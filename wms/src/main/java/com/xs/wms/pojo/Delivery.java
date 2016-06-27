@@ -71,6 +71,11 @@ public class Delivery {
 
 	private Integer flag;
 
+	Double totalWeight;
+	Double netWeight;
+	Double caseWeight;
+	Double carWeight;
+
 	public Delivery() {
 		id = 0;
 	}
@@ -79,7 +84,8 @@ public class Delivery {
 			String caseModel, String carNo, String driver, String driverPhone, String dport, String rport,
 			String consignee, String ddate, Date crDate, Integer op, String goodsName, String weigh, String caseNo,
 			String sealNo, String address, String contact, Date arrivalTime, String attention, Date signTime,
-			String startPort, String destination, String endPort, String memo, Integer flag) {
+			String startPort, String destination, String endPort, String memo, Integer flag, Double totalWeight,
+			Double netWeight, Double caseWeight, Double carWeight) {
 		this.id = id;
 		this.code = code;
 		this.clientCode = clientCode;
@@ -110,7 +116,10 @@ public class Delivery {
 		this.endPort = endPort;
 		this.memo = memo;
 		this.flag = flag;
-
+		this.totalWeight = totalWeight;
+		this.netWeight = netWeight;
+		this.caseWeight = caseWeight;
+		this.carWeight = carWeight;
 	}
 
 	public Integer getId() {
@@ -192,7 +201,7 @@ public class Delivery {
 	public void setDport(String dport) {
 		this.dport = dport == null ? null : dport.trim();
 	}
-	
+
 	public String getDestination() {
 		return destination;
 	}
@@ -367,5 +376,37 @@ public class Delivery {
 
 	public void setClient(Client client) {
 		this.client = client;
+	}
+	
+	public void setTotalWeight(Double totalWeight) {
+		this.totalWeight = totalWeight;
+	}
+
+	public Double getTotalWeight() {
+		return totalWeight;
+	}
+	
+	public void setNetWeight(Double netWeight) {
+		this.netWeight = netWeight;
+	}
+
+	public Double getNetWeight() {
+		return netWeight;
+	}
+	
+	public void setCaseWeight(Double caseWeight) {
+		this.caseWeight = caseWeight;
+	}
+
+	public Double getCaseWeight() {
+		return caseWeight;
+	}
+	
+	public void setCarWeight(Double carWeight) {
+		this.carWeight = carWeight;
+	}
+
+	public Double getCarWeight() {
+		return carWeight;
 	}
 }
