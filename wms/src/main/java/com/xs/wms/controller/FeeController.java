@@ -360,9 +360,9 @@ public class FeeController {
 			bt.setFname("总费用：");
 			bt.setAmount(total);
 			list.add(bt);
-			String[] header = { "单号", "箱型", "提柜点", "还柜点", "箱号", "费目", "金额" };
-			String[] fileNames = { "delivery.code", "delivery.caseModel",
-					"delivery.dport", "delivery.rport", "delivery.caseNo",
+			String[] header = { "日期","单号", "箱型", "提柜点", "运距", "还柜点", "箱号", "费目", "金额" };
+			String[] fileNames = { "delivery.ddate","delivery.code", "delivery.caseModel",
+					"delivery.dport","delivery.destination", "delivery.rport", "delivery.caseNo",
 					"fname", "amount" };
 			ExcelUtils.exportBill(response, header, fileNames, list,
 					"exportBill", "exportBill", fees.get(0).getClient()

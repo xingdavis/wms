@@ -48,6 +48,7 @@
 	</resultMap>
 	<resultMap id="DeliveryBillResultMap" type="com.xs.wms.pojo.Fee">
 		<id column="id" property="id" jdbcType="INTEGER" />
+		<result column="bill_id" property="billId" jdbcType="INTEGER" />
 		<result column="fname" property="fname" jdbcType="VARCHAR" />
 		<result column="amount" property="amount" jdbcType="DOUBLE" />
 		<result column="pay" property="pay" jdbcType="DOUBLE" />
@@ -65,7 +66,6 @@
 		</association>
 		<association property="delivery" column="bill_id"
 			javaType="com.xs.wms.pojo.Delivery">
-			<id property="id" column="id" />
 			<result column="code" property="code" jdbcType="VARCHAR" />
 			<result column="order_code" property="orderCode" jdbcType="VARCHAR" />
 			<result column="case_model" property="caseModel" jdbcType="VARCHAR" />
@@ -76,6 +76,8 @@
 			<result column="rport" property="rport" jdbcType="VARCHAR" />
 			<result column="case_no" property="caseNo" jdbcType="VARCHAR" />
 			<result column="seal_no" property="sealNo" jdbcType="VARCHAR" />
+			<result column="ddate" property="ddate" jdbcType="TIMESTAMP" />
+			<result column="destination" property="destination" jdbcType="VARCHAR" />
 		</association>
 	</resultMap>
 	<resultMap id="StockInBillResultMap" type="com.xs.wms.pojo.Fee">
@@ -135,12 +137,15 @@
 	</select>
 	<select id="getFeesByBillId" resultMap="DeliveryBillResultMap"
 		parameterType="java.lang.Integer">
-		select f.id, f.bill_id,f.fname,f.amount,f.pay,f.sdate, f.edate,
+		select f.id, f.bill_id,f.fname,f.amount,f.pay,f.sdate,
+		f.edate,
 		f.memo,f.op,f.cr_date,f.is_collect,f.is_pay,c.cname,d.code,d.order_code,d.case_model,
-		d.address,d.start_port,d.end_port,d.dport,d.rport,d.case_no,d.seal_no
+		d.address,d.start_port,d.end_port,d.dport,d.rport,d.case_no,d.seal_no,DATE_FORMAT(d.ddate,'%Y年%m月%d日') ddate,d.destination
 		from t_fee f INNER JOIN t_bill_detail bd on f.id=bd.fid
-		inner join t_client c on f.client_id=c.id
-		inner join t_delivery d on f.bill_id=d.id
+		inner join
+		t_client c on f.client_id=c.id
+		inner join t_delivery d on
+		f.bill_id=d.id
 		where bd.bid =
 		#{billId,jdbcType=INTEGER}
 	</select>
