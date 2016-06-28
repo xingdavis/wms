@@ -182,6 +182,17 @@
 			limit #{page.start},#{page.end}
 		</if>
 	</select>
+	<select id="backup" resultMap="BaseResultMap1">
+		select
+		d.ddate,c.cname,u.uname,d.memo,d.`code`,d.case_model,d.destination,d.case_no,d.seal_no,d.car_no,f.fee
+		from t_delivery d INNER JOIN t_client c on d.client_id=c.id INNER JOIN
+		t_user u on d.op=u.id
+		INNER JOIN (select
+		bill_id,group_concat(CONCAT_WS('：',IFNULL(fname,'未知'),cast(amount as
+		CHAR)) separator '\n') fee from t_fee where ftype=2 group by bill_id)
+		f on d.id=f.bill_id
+		where d.ddate BETWEEN #{sdate} and #{edate}
+	</select>
 	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
 		delete from
 		t_delivery
