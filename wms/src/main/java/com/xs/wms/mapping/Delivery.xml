@@ -82,6 +82,21 @@
 			<result column="cname" property="cname" jdbcType="VARCHAR" />
 		</association>
 	</resultMap>
+	<resultMap id="BackupResultMap" type="com.xs.wms.pojo.BackupData">
+	    <result column="ddate" property="ddate" jdbcType="TIMESTAMP" />
+	    <result column="cname" property="cname" jdbcType="VARCHAR" />
+	    <result column="uname" property="uname" jdbcType="VARCHAR" />
+	    <result column="memo" property="memo" jdbcType="VARCHAR" />
+	    <result column="code" property="code" jdbcType="VARCHAR" />
+	    <result column="case_model" property="caseModel" jdbcType="VARCHAR" />
+	    <result column="dport" property="dport" jdbcType="VARCHAR" />
+	    <result column="destination" property="destination" jdbcType="VARCHAR" />
+	    <result column="rport" property="rport" jdbcType="VARCHAR" />
+	    <result column="case_no" property="caseNo" jdbcType="VARCHAR" />
+		<result column="seal_no" property="sealNo" jdbcType="VARCHAR" />
+		<result column="car_no" property="carNo" jdbcType="VARCHAR" />
+		<result column="fee" property="fee" jdbcType="VARCHAR" />
+	</resultMap>
 	<sql id="Base_Column_List">
 		id, code, client_code, client_id, order_id orderId,
 		order_code
@@ -182,16 +197,16 @@
 			limit #{page.start},#{page.end}
 		</if>
 	</select>
-	<select id="backup" resultMap="BaseResultMap1">
+	<select id="backup" resultMap="BackupResultMap">
 		select
-		d.ddate,c.cname,u.uname,d.memo,d.`code`,d.case_model,d.destination,d.case_no,d.seal_no,d.car_no,f.fee
+		DATE_FORMAT(d.ddate,'%Y年%m月%d日') ddate,c.cname,u.uname,d.memo,d.`code`,d.case_model,d.dport,d.destination,d.rport,d.case_no,d.seal_no,d.car_no,f.fee
 		from t_delivery d INNER JOIN t_client c on d.client_id=c.id INNER JOIN
 		t_user u on d.op=u.id
 		INNER JOIN (select
 		bill_id,group_concat(CONCAT_WS('：',IFNULL(fname,'未知'),cast(amount as
 		CHAR)) separator '\n') fee from t_fee where ftype=2 group by bill_id)
 		f on d.id=f.bill_id
-		where d.ddate BETWEEN #{sdate} and #{edate}
+		where d.ddate BETWEEN #{sdate} and #{edate} order by d.ddate
 	</select>
 	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
 		delete from

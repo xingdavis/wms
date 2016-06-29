@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.xs.wms.common.ExcelUtils;
+import com.xs.wms.pojo.BackupData;
 import com.xs.wms.pojo.Delivery;
 import com.xs.wms.pojo.Order;
 import com.xs.wms.pojo.Stock_in;
@@ -165,4 +166,26 @@ public class DeliveryController {
 			e.printStackTrace();
 		}
 	}
+	
+	@RequestMapping(value = "/backuppage", method = RequestMethod.GET)
+	public String bakcupPage(Model model) {
+		return "delivery/backup";
+	}
+
+	@RequestMapping(value = "/backup/{sdate}/{edate}")
+	public void backup(HttpServletRequest request, HttpServletResponse response, @PathVariable String sdate,
+			@PathVariable String edate) {
+		try {
+			List<BackupData> list = this.deliveryService.backup(sdate, edate);
+			String[] header = { "日期", "公司", "业务", "备注", "单号", "柜型", "运距", "柜号", "封号", "车号", "费用" };
+			String[] fileNames = { "ddate", "cname", "uname", "memo", "code", "caseModel", "destination", "caseNo",
+					"sealNo", "carNo", "fee" };
+			ExcelUtils.backup(response, header, fileNames, list, String.format("备份%s至%s", sdate, edate),
+					String.format("备份%s至%s", sdate, edate), "广州信树物流");
+		} catch (Exception e) {
+			logger.error(e);
+			e.printStackTrace();
+		}
+	}
+
 }

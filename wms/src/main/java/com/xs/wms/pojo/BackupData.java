@@ -8,7 +8,9 @@ public class BackupData {
 	String memo;
 	String code;
 	String caseModel;
+	String dport;
 	String destination;
+	String rport;
 	String caseNo;
 	String sealNo;
 	String carNo;
@@ -26,6 +28,14 @@ public class BackupData {
 	public void setCname(String cname) {
 		this.cname = cname == null ? null : cname.trim();
 	}
+	
+	public String getUname() {
+		return uname;
+	}
+	public void setUname(String uname) {
+		this.uname = uname == null ? null : uname.trim();
+	}
+	
 	public String getCode() {
 		return code;
 	}
@@ -47,11 +57,25 @@ public class BackupData {
 		this.caseModel = caseModel == null ? null : caseModel.trim();
 	}
 	
+	public String getDport() {
+		return dport;
+	}
+	public void setDport(String dport) {
+		this.dport = dport == null ? null : dport.trim();
+	}
+	
 	public String getDestination() {
 		return destination;
 	}
 	public void setDestination(String destination) {
 		this.destination = destination == null ? null : destination.trim();
+	}
+	
+	public String getRport() {
+		return rport;
+	}
+	public void setRport(String dport) {
+		this.rport = rport == null ? null : rport.trim();
 	}
 	
 	public String getCaseNo() {

@@ -926,4 +926,158 @@ public class ExcelUtils {
 			}
 		}
 	}
+
+	@SuppressWarnings({ "unchecked", "rawtypes", "deprecation" })
+	public static <E> void backup(HttpServletResponse response,
+			String[] header, String[] fileNames, List<E> list,
+			String sheetName, String fileName, String title)
+			throws NoSuchFieldException {
+		// 创建工作簿
+		HSSFWorkbook wb = new HSSFWorkbook();
+		// 创建一个sheet
+		HSSFSheet sheet = wb.createSheet(sheetName);
+
+		HSSFRow titleRow = sheet.createRow(0);
+		HSSFRow headerRow = sheet.createRow(1);
+		HSSFRow contentRow = null;
+		HSSFRow bottomRow = null;
+
+		HSSFCellStyle cellStyle = wb.createCellStyle();
+		cellStyle.setWrapText(true);
+		cellStyle.setBorderLeft(HSSFCellStyle.BORDER_THIN);
+		cellStyle.setBorderRight(HSSFCellStyle.BORDER_THIN);
+		cellStyle.setBorderTop(HSSFCellStyle.BORDER_THIN);
+		cellStyle.setBorderBottom(HSSFCellStyle.BORDER_THIN);
+		cellStyle.setAlignment(HSSFCellStyle.ALIGN_CENTER);
+		cellStyle.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);
+		// 设置title
+		CellRangeAddress region = new CellRangeAddress(0, 0, 0,
+				fileNames.length - 1); // 参数都是从O开始
+		sheet.addMergedRegion(region);
+
+		HSSFCellStyle topCellStyle = wb.createCellStyle();
+		topCellStyle.setAlignment(HSSFCellStyle.ALIGN_CENTER);
+		topCellStyle.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);
+		Font topFont = wb.createFont();
+		topFont.setFontName("宋体");
+		topFont.setBoldweight(Font.BOLDWEIGHT_BOLD);
+		topFont.setFontHeightInPoints((short) 22); // 将字体大小设置为18px
+		topCellStyle.setFont(topFont);
+
+		HSSFCellStyle totalCellStyle = wb.createCellStyle();
+		totalCellStyle.setAlignment(HSSFCellStyle.ALIGN_CENTER);
+		totalCellStyle.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);
+		totalCellStyle.setBorderLeft(HSSFCellStyle.BORDER_THIN);
+		totalCellStyle.setBorderRight(HSSFCellStyle.BORDER_THIN);
+		totalCellStyle.setBorderTop(HSSFCellStyle.BORDER_THIN);
+		totalCellStyle.setBorderBottom(HSSFCellStyle.BORDER_THIN);
+		totalCellStyle.setAlignment(HSSFCellStyle.ALIGN_CENTER);
+		Font totalFont = wb.createFont();
+		totalFont.setFontName("宋体");
+		totalFont.setBoldweight(Font.BOLDWEIGHT_BOLD);
+		totalFont.setFontHeightInPoints((short) 18); // 将字体大小设置为18px
+		totalCellStyle.setFont(totalFont);
+
+		HSSFCell titleCell = titleRow.createCell(0);
+		titleCell.setCellStyle(topCellStyle);
+		titleCell.setCellValue(title);
+
+		HSSFCellStyle headerCellStyle = wb.createCellStyle();
+		headerCellStyle.setBorderLeft(HSSFCellStyle.BORDER_THIN);
+		headerCellStyle.setBorderRight(HSSFCellStyle.BORDER_THIN);
+		headerCellStyle.setBorderTop(HSSFCellStyle.BORDER_THIN);
+		headerCellStyle.setBorderBottom(HSSFCellStyle.BORDER_THIN);
+		headerCellStyle.setAlignment(HSSFCellStyle.ALIGN_CENTER);
+		headerCellStyle.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);
+		Font headerFont = wb.createFont();
+		headerFont.setFontName("宋体");
+		headerFont.setBoldweight(Font.BOLDWEIGHT_BOLD);
+		headerFont.setFontHeightInPoints((short) 14);
+		headerCellStyle.setFont(headerFont);
+
+		// 设置列标题
+		for (int i = 0; i < header.length; i++) {
+			HSSFCell headerCell = headerRow.createCell(i);
+			headerCell.setCellStyle(headerCellStyle);
+			headerCell.setCellValue(header[i]);
+			sheet.setColumnWidth(i, 20 * 256);
+		}
+		try {
+			for (int i = 0; i < list.size(); i++) {
+				contentRow = sheet.createRow(i + 2);
+				// 获取每一个对象
+				E o = list.get(i);
+				Class cls = o.getClass();
+
+				for (int j = 0; j < fileNames.length; j++) {
+					Object value = null;
+					if (fileNames[j].contains("."))
+					{
+						String subClsNm = fileNames[j].substring(0,
+								fileNames[j].indexOf("."));
+						String subField = fileNames[j].substring(fileNames[j]
+								.indexOf(".") + 1);
+						String fieldName = subClsNm.substring(0, 1)
+								.toUpperCase() + subClsNm.substring(1);
+						String subFieldNm = subField.substring(0, 1)
+								.toUpperCase() + subField.substring(1);
+						Method getMethod = cls.getMethod("get" + fieldName);
+						Object subObj = getMethod.invoke(o);
+						if (subObj != null) {
+							Method subMethod = subObj.getClass().getMethod(
+									"get" + subFieldNm);
+							value = subMethod.invoke(subObj);
+						}
+					} else {
+						String fieldName = fileNames[j].substring(0, 1)
+								.toUpperCase() + fileNames[j].substring(1);
+						Method getMethod = cls.getMethod("get" + fieldName);
+						value = getMethod.invoke(o);
+					}
+					if (value != null) {
+						HSSFCell cell = contentRow.createCell(j);
+						cell.setCellStyle(cellStyle);
+						cell.setCellValue(new HSSFRichTextString(value
+								.toString()));
+					}
+					else
+					{
+						HSSFCell cell = contentRow.createCell(j);
+						cell.setCellStyle(cellStyle);
+						cell.setCellValue("");
+					}
+				}
+			}
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		} catch (InvocationTargetException e) {
+			e.printStackTrace();
+		} catch (SecurityException e) {
+			e.printStackTrace();
+		} catch (NoSuchMethodException e) {
+			e.printStackTrace();
+		}
+
+		OutputStream os = null;
+		try {
+			response.reset();
+			response.addHeader("Content-Disposition", "attachment;filename="
+					+ fileName + ".xls");
+			response.setContentType("application/vnd.ms-excel;charset=utf-8");
+			os = response.getOutputStream();
+			wb.write(os);
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if (os != null) {
+				try {
+					os.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	}
 }

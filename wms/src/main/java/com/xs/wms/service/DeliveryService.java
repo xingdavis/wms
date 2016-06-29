@@ -4,9 +4,11 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Service;
 
 import com.xs.wms.dao.IDelivery;
+import com.xs.wms.pojo.BackupData;
 import com.xs.wms.pojo.Delivery;
 import com.xs.wms.pojo.Option;
 import com.xs.wms.pojo.easyui.PageHelper;
@@ -47,5 +49,15 @@ public class DeliveryService {
 		page.setStart((page.getPage() - 1) * page.getRows());
 		page.setEnd(page.getPage() * page.getRows());
 		return this.deliveryMapper.datagrid(page, obj);
+	}
+	
+	/**
+	 * 导出备份数据
+	 * @param sdate
+	 * @param edate
+	 * @return
+	 */
+	public List<BackupData> backup(String sdate,String edate){
+		return this.deliveryMapper.backup(sdate, edate);
 	}
 }
