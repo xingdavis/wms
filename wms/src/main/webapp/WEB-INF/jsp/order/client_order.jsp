@@ -243,6 +243,11 @@
 						<td><input class="easyui-textbox" name="contactTel"
 							id="e_contact_tel"></input></td>
 					</tr>
+					<tr>
+						<td>总货名:</td>
+						<td><input class="easyui-textbox" name="cargoName"
+							id="e_cargoName"></input></td>
+					</tr>
 				</table>
 
 				<table id="dg" class="easyui-datagrid" title="货物清单"

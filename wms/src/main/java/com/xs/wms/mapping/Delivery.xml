@@ -95,7 +95,8 @@
 	    <result column="case_no" property="caseNo" jdbcType="VARCHAR" />
 		<result column="seal_no" property="sealNo" jdbcType="VARCHAR" />
 		<result column="car_no" property="carNo" jdbcType="VARCHAR" />
-		<result column="fee" property="fee" jdbcType="VARCHAR" />
+		<result column="income" property="income" jdbcType="VARCHAR" />
+		<result column="pay" property="pay" jdbcType="VARCHAR" />
 	</resultMap>
 	<sql id="Base_Column_List">
 		id, code, client_code, client_id, order_id orderId,
@@ -204,7 +205,8 @@
 		t_user u on d.op=u.id
 		INNER JOIN (select
 		bill_id,group_concat(CONCAT_WS('：',IFNULL(fname,'未知'),cast(amount as
-		CHAR)) separator '\n') fee from t_fee where ftype=2 group by bill_id)
+		CHAR)) separator '\n') income,group_concat(CONCAT_WS('：',IFNULL(fname,'未知'),cast(pay as
+		CHAR)) separator '\n') pay from t_fee where ftype=2 group by bill_id)
 		f on d.id=f.bill_id
 		where d.ddate BETWEEN #{sdate} and #{edate} order by d.ddate
 	</select>

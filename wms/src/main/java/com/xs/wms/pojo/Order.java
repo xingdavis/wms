@@ -25,6 +25,7 @@ public class Order {
 
 	private Date orderDate;
 	private Integer flag;
+	String cargoName;
 	@JsonManagedReference
 	private List<Order_detail> order_details;
 
@@ -106,6 +107,14 @@ public class Order {
 
 	public void setOrder_details(List<Order_detail> details) {
 		this.order_details = details;
+	}
+	
+	public String getCargoName() {
+		return cargoName;
+	}
+
+	public void setCargoName(String cargoName) {
+		this.cargoName = cargoName == null ? null : cargoName.trim();
 	}
 	
 	public Client getClient() {

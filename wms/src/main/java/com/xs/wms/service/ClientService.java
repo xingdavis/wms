@@ -72,8 +72,8 @@ public class ClientService {
 	 * @param cname
 	 * @return
 	 */
-	public Boolean repeatClientName(String cname) {
-		return clientMapper.repeatClientNum(cname) > 0;
+	public Boolean repeatClientName(Client record) {
+		return clientMapper.repeatClientNum(record) > 0;
 	}
 	
 	/**
@@ -81,7 +81,7 @@ public class ClientService {
 	 * @param cname
 	 * @return
 	 */
-	public Boolean repeatClientName(String cname,Integer id) {
-		return clientMapper.checkForUpdate(cname, id) > 0;
+	public Boolean UpdateRepeatClientName(Client record) {
+		return clientMapper.checkForUpdate(record) > 0;
 	}
 }

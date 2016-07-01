@@ -14,7 +14,8 @@ public class BackupData {
 	String caseNo;
 	String sealNo;
 	String carNo;
-	String fee;
+	String income;
+	String pay;
 	public String getDdate() {
 		return ddate;
 	}
@@ -99,10 +100,17 @@ public class BackupData {
 		this.carNo = carNo == null ? null : carNo.trim();
 	}
 	
-	public String getFee() {
-		return fee;
+	public String getIncome() {
+		return income;
 	}
-	public void setFee(String fee) {
-		this.fee = fee == null ? null : fee.trim();
+	public void setIncome(String income) {
+		this.income = income == null ? null : income.trim();
+	}
+	
+	public String getPay() {
+		return pay;
+	}
+	public void setPay(String pay) {
+		this.pay = pay == null ? null : pay.trim();
 	}
 }

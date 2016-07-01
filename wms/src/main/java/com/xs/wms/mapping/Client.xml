@@ -31,12 +31,20 @@
 	<select id="repeatClientNum" resultType="java.lang.Integer">
 		select count(1) from
 		t_client
-		where cname = #{cname,jdbcType=VARCHAR} and flag=0
+		where (cname = #{cname,jdbcType=VARCHAR}
+		<if test="code!=null and code != ''">
+			or code = #{code,jdbcType=VARCHAR}
+		</if>
+		) and flag=0
 	</select>
 	<select id="checkForUpdate" resultType="java.lang.Integer">
 		select count(1) from
 		t_client
-		where cname = #{cname,jdbcType=VARCHAR} and
+		where (cname = #{cname,jdbcType=VARCHAR}
+		<if test="code!=null and code != ''">
+			or code = #{code,jdbcType=VARCHAR}
+		</if>
+		) and
 		id!=#{id,jdbcType=INTEGER} and flag=0
 	</select>
 	<select id="getDatagridTotal" resultType="long">
@@ -63,18 +71,14 @@
 	</select>
 	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
 		update
-		t_client set flag=1
+		t_client set
+		flag=1
 		where id = #{id,jdbcType=INTEGER}
 	</delete>
-	<!-- 
-	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-		delete from
-		t_client
-		where id = #{id,jdbcType=INTEGER} and id not in (select
-		client_id from t_order) and id not in (select client_id from
-		t_stock_in) and id not in (select client_id from t_fee)
-	</delete>
-	 -->
+	<!-- <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer"> 
+		delete from t_client where id = #{id,jdbcType=INTEGER} and id not in (select 
+		client_id from t_order) and id not in (select client_id from t_stock_in) 
+		and id not in (select client_id from t_fee) </delete> -->
 	<insert id="insert" parameterType="com.xs.wms.pojo.Client"
 		useGeneratedKeys="true" keyProperty="id">
 		insert into t_client ( code,cname,

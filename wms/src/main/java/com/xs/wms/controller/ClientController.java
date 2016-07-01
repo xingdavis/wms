@@ -69,13 +69,13 @@ public class ClientController {
 		Json j = new Json();
 		try {
 			if (client.getCname() != "") {
-				if (!clientService.repeatClientName(client.getCname())) {
+				if (!clientService.repeatClientName(client)) {
 					clientService.insert(client);
 					j.setSuccess(true);
 					j.setMsg("客户新增成功！");
 					j.setObj(client);
 				} else {
-					j.setMsg("客户名称重复，请改用其它！");
+					j.setMsg("客户名称或代码重复，请改用其它！");
 				}
 			} else {
 				j.setMsg("客户名称不允许空！");
@@ -99,13 +99,13 @@ public class ClientController {
 		boolean ok = false;
 		try {
 			if (client.getCname() != "") {
-				if (!clientService.repeatClientName(client.getCname(), id)) {
+				if (!clientService.UpdateRepeatClientName(client)) {
 					clientService.update(client);
 					ok = true;
 					j.setMsg("修改成功！");
 					j.setObj(client);
 				} else {
-					j.setMsg("客户名称重复，请改用其它！");
+					j.setMsg("客户名称或代码重复，请改用其它！");
 				}
 			} else {
 				j.setMsg("客户名称不允许空！");

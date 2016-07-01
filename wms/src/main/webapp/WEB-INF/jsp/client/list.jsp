@@ -198,7 +198,7 @@
 			buttons="#dlg-del-buttons">
 			<div class="ftitle">请谨慎操作</div>
 			<form id="fm" method="post" novalidate>
-				<label>确定删除用户吗？</label>
+				<label>确定删除该项吗？</label>
 			</form>
 		</div>
 

@@ -9,6 +9,7 @@
 		<result column="contact_tel" jdbcType="VARCHAR" property="contactTel" />
 		<result column="order_date" jdbcType="TIMESTAMP" property="orderDate" />
 		<result column="flag" property="flag" jdbcType="TINYINT" />
+		<result column="cargo_name" jdbcType="VARCHAR" property="cargoName" />
 		<association property="client" column="client_id"
 			javaType="com.xs.wms.pojo.Client">
 			<id property="id" column="id" />
@@ -21,7 +22,7 @@
 		o.id, o.code, o.client_id, o.contact_man,
 		o.contact_tel,
 		o.order_date,
-		o.flag,c.cname
+		o.flag,o.cargo_name,c.cname
 	</sql>
 	<select id="selectByPrimaryKey" parameterType="java.lang.Integer"
 		resultMap="BaseResultMap">
@@ -84,7 +85,8 @@
 	<select id="selfDatagridOrder" resultMap="BaseResultMap">
 		select
 		<include refid="Base_Column_List" />
-		from t_order  o,t_client c where o.client_id=c.id and o.flag>=0 and o.client_id=#{clientId} and o.code
+		from t_order o,t_client c where o.client_id=c.id and o.flag>=0 and
+		o.client_id=#{clientId} and o.code
 		=#{code}
 		<if test="page.sort != null and page.sort != ''">
 			order by #{page.sort} #{page.order}
@@ -101,7 +103,7 @@
 	<insert id="insert" parameterType="com.xs.wms.pojo.Order"
 		useGeneratedKeys="true" keyProperty="id">
 		insert into t_order ( code, client_id, contact_man, contact_tel,
-		order_date, flag ) values (
+		order_date, flag ,cargo_name) values (
 		<choose>
 			<when test="code != null and code != ''">
 				#{code,jdbcType=VARCHAR},
@@ -114,7 +116,7 @@
 		#{contactMan,jdbcType=VARCHAR},
 		#{contactTel,jdbcType=VARCHAR},
 		#{orderDate,jdbcType=TIMESTAMP},
-		0 )
+		0,#{cargoName,jdbcType=VARCHAR} )
 	</insert>
 	<update id="updateByPrimaryKeySelective" parameterType="com.xs.wms.pojo.Order">
 		update t_order
@@ -133,6 +135,9 @@
 			</if>
 			<if test="orderDate != null">
 				order_date = #{orderDate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="cargoName != null">
+				cargo_name = #{cargoName,jdbcType=VARCHAR},
 			</if>
 		</set>
 		where id = #{id,jdbcType=INTEGER}
