@@ -41,15 +41,18 @@
 		</association>
 	</resultMap>
 	<sql id="Base_Column_List">
-		s.id,s.uid, s.code,s.order_id,s.order_code, s.client_id, s.car_no,
-		s.in_date,s.out_date, s.cr_date, s.flag, c.code client_code, c.cname
+		s.id,s.uid, s.code,s.order_id,s.order_code, s.client_id,
+		s.car_no,
+		s.in_date,s.out_date, s.cr_date, s.flag, c.code client_code,
+		c.cname
 	</sql>
 	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
 		parameterType="java.lang.Integer">
 		select
 		<include refid="Base_Column_List" />
 		from t_stock_in s, t_client c
-		where s.client_id=c.id and s.id = #{id,jdbcType=INTEGER}
+		where s.client_id=c.id and s.id =
+		#{id,jdbcType=INTEGER}
 	</select>
 
 	<select id="getDatagridTotal" resultType="long">
@@ -66,7 +69,8 @@
 	</select>
 	<select id="getDatagrid" resultMap="BillResultMap">
 		select
-		s.id,s.uid,s.code,s.order_code,s.client_id, c.code client_code,c.cname,s.car_no,s.in_date,s.out_date,s.flag
+		s.id,s.uid,s.code,s.order_code,s.client_id, c.code
+		client_code,c.cname,s.car_no,s.in_date,s.out_date,s.flag
 		from
 		t_stock_in s,t_client c where s.client_id=c.id
 		and s.flag>=0
@@ -84,6 +88,15 @@
 		<if test="page.page > 0">
 			limit #{page.start},#{page.end}
 		</if>
+	</select>
+	<select id="getSum" resultMap="">
+		select
+		t.order_code,t.cargo_name,sum(t.num) total_num,sum(t.vol) total_vol
+		from (
+		select si.order_id,si.order_code,o.cargo_name,sid.num,sid.vol from
+		t_stock_in_detail sid INNER JOIN t_stock_in si on sid.bill_id=si.id
+		INNER JOIN t_order o on si.order_id=o.id) t GROUP BY t.order_code
+
 	</select>
 	<select id="updateBill" resultType="String">
 		SELECT
