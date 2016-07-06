@@ -30,7 +30,16 @@ public class Stock_in {
 
 	private Integer uid;
 	private Date outDate;
+	Double rental;
 	
+	public Double getRental() {
+		return rental;
+	}
+
+	public void setRental(Double rental) {
+		this.rental = rental;
+	}
+
 	public Stock_in() {
 		id = 0;
 	}

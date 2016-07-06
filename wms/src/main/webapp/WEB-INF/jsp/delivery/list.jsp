@@ -49,8 +49,16 @@
 
 	function edit() {
 		var r = $('#dg').datagrid('getSelected');
-		if (r)
-			location.href = '${path}/deliverys/page/' + r.id;
+		showEditPage(r);
+	}
+
+	function showEditPage(row) {
+		if (row)
+			_AddTab('[提货单详情-' + row.id + ']', '${path}/deliverys/page/' + row.id);
+	}
+
+	function dgDblClick(index, row) {
+		showEditPage(row);
 	}
 
 	function addFee(type) {
@@ -80,7 +88,7 @@
 				strUrl = strUrl + '&clientId=' + clientId;
 			}
 			strTitle = strTitle + ']';
-			_AddTab(strTitle,strUrl);
+			_AddTab(strTitle, strUrl);
 		}
 	}
 
@@ -128,9 +136,7 @@
 				data-options="iconCls:'icon-add'">东方派车单</a>
 		</div>
 		<table id="dg" class="easyui-datagrid" fit="true"
-			url="${path}/deliverys/datagrid" method="GET" toolbar="#toolbar"
-			pagination="true" fitColumns="true" singleSelect="true"
-			rownumbers="true" striped="true" border="false" nowrap="false">
+			data-options="url:'${path}/deliverys/datagrid',toolbar:'#toolbar',method:'get',fitColumns:true,singleSelect:true,pagination:true,rownumbers:true,onDblClickRow:dgDblClick">
 			<thead>
 				<tr>
 					<th field="ddate" width="100">装货时间</th>

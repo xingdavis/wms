@@ -119,7 +119,7 @@
 				} else {
 					alert(result.msg);
 				}
-				location.href = '${path}/stock_ins/billpage';
+				//location.href = '${path}/stock_ins/billpage';
 			}
 		});
 	}
@@ -338,8 +338,8 @@
 								data-options="field:'vol',width:80,align:'right',editor:{type:'numberbox',options:{precision:2}}">体积</th>
 							<th
 								data-options="field:'weight',width:80,editor:{type:'numberbox',options:{precision:2}}">重量</th>
-							<th
-								data-options="field:'yard',width:100,editor:{type:'validatebox',options:{required:true}}">堆位</th>
+							<th data-options="field:'yard',width:100,editor:'text'">堆位</th>
+							<th data-options="field:'memo',width:100,editor:'text'">备注</th>
 						</tr>
 					</thead>
 				</table>
@@ -361,7 +361,8 @@
 			<div style="text-align: center; padding: 5px">
 				<a href="javascript:void(0)" class="easyui-linkbutton"
 					onclick="submitForm(0)">保存</a> <a href="javascript:void(0)"
-					class="easyui-linkbutton" onclick="submitForm(1)" id="btn_save_and_verify">保存并审批</a>
+					class="easyui-linkbutton" onclick="submitForm(1)"
+					id="btn_save_and_verify">保存并审批</a>
 			</div>
 		</div>
 	</div>

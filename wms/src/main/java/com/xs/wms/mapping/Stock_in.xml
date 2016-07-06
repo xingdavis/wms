@@ -13,6 +13,7 @@
 		<result column="cr_date" property="crDate" jdbcType="TIMESTAMP" />
 		<result column="out_date" property="outDate" jdbcType="TIMESTAMP" />
 		<result column="flag" property="flag" jdbcType="TINYINT" />
+		<result column="rental" property="rental" jdbcType="DOUBLE" />
 		<association property="client" column="client_id"
 			javaType="com.xs.wms.pojo.Client">
 			<id property="id" column="id" />
@@ -33,6 +34,7 @@
 		<result column="cr_date" property="crDate" jdbcType="TIMESTAMP" />
 		<result column="out_date" property="outDate" jdbcType="TIMESTAMP" />
 		<result column="flag" property="flag" jdbcType="TINYINT" />
+		<result column="rental" property="rental" jdbcType="DOUBLE" />
 		<association property="client" column="client_id"
 			javaType="com.xs.wms.pojo.Client">
 			<id property="id" column="id" />
@@ -40,10 +42,23 @@
 			<result column="cname" property="cname" jdbcType="INTEGER" />
 		</association>
 	</resultMap>
+	<resultMap id="SumStockResultMap" type="com.xs.wms.pojo.SumStock">
+		<result column="order_id" property="orderId" jdbcType="INTEGER" />
+		<result column="client_code" property="clientCode" jdbcType="VARCHAR" />
+		<result column="client_name" property="clientName" jdbcType="VARCHAR" />
+		<result column="order_code" property="orderCode" jdbcType="VARCHAR" />
+		<result column="cargo_name" property="cargoName" jdbcType="VARCHAR" />
+		<result column="total_num" property="totalNum" jdbcType="INTEGER" />
+		<result column="total_vol" property="totalVol" jdbcType="DOUBLE" />
+		<result column="income" property="income" jdbcType="DOUBLE" />
+		<result column="pay" property="pay" jdbcType="DOUBLE" />
+		<result column="total_rental" property="totalRental" jdbcType="DOUBLE" />
+	</resultMap>
 	<sql id="Base_Column_List">
 		s.id,s.uid, s.code,s.order_id,s.order_code, s.client_id,
 		s.car_no,
-		s.in_date,s.out_date, s.cr_date, s.flag, c.code client_code,
+		s.in_date,s.out_date, s.cr_date, s.flag,s.rental, c.code
+		client_code,
 		c.cname
 	</sql>
 	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
@@ -70,7 +85,7 @@
 	<select id="getDatagrid" resultMap="BillResultMap">
 		select
 		s.id,s.uid,s.code,s.order_code,s.client_id, c.code
-		client_code,c.cname,s.car_no,s.in_date,s.out_date,s.flag
+		client_code,c.cname,s.car_no,s.in_date,s.out_date,s.flag,s.rental
 		from
 		t_stock_in s,t_client c where s.client_id=c.id
 		and s.flag>=0
@@ -89,14 +104,71 @@
 			limit #{page.start},#{page.end}
 		</if>
 	</select>
-	<select id="getSum" resultMap="">
+	<select id="getListByOrder" resultMap="BillResultMap">
 		select
-		t.order_code,t.cargo_name,sum(t.num) total_num,sum(t.vol) total_vol
-		from (
-		select si.order_id,si.order_code,o.cargo_name,sid.num,sid.vol from
-		t_stock_in_detail sid INNER JOIN t_stock_in si on sid.bill_id=si.id
-		INNER JOIN t_order o on si.order_id=o.id) t GROUP BY t.order_code
-
+		s.id,s.uid,s.code,s.order_code,s.client_id, c.code
+		client_code,c.cname,s.car_no,s.in_date,s.out_date,s.flag,s.rental
+		from
+		t_stock_in s,t_client c where s.client_id=c.id
+		and s.flag>=0
+		<if test="orderId>-1">
+			and s.order_id=#{orderId,jdbcType=INTEGER}
+		</if>
+	</select>
+	<select id="getSumStockTotal" resultType="long">
+		select count(1) from (select t.order_code from (select
+		si.id,si.order_id,si.order_code,c.code client_code,c.cname
+		client_name,o.cargo_name,sid.num,sid.vol,si.income,si.pay
+		from
+		t_stock_in_detail sid INNER JOIN (select
+		a.id,a.order_id,a.order_code,b.income,b.pay from t_stock_in a LEFT
+		JOIN (select bill_id,sum(amount) income,sum(pay) pay from t_fee where
+		ftype=1 GROUP BY bill_id) b on a.id=b.bill_id where a.flag>=0) si on sid.bill_id=si.id
+		INNER JOIN t_order o on si.order_id=o.id INNER JOIN t_client c on
+		o.client_id=c.id) t
+		<where>
+			<if test="key!=null and key!=''">
+				t.order_code like concat('%',#{key},'%') or t.client_code
+				like concat('%',#{key},'%')
+				or t.client_name like
+				concat('%',#{key},'%')
+			</if>
+		</where>
+		GROUP BY t.order_code
+		) tt
+	</select>
+	<select id="getSumStock" resultMap="SumStockResultMap">
+		select
+		t.order_id,t.order_code,t.client_code,t.client_name,t.cargo_name,IFNULL(sum(t.num),0)
+		total_num,IFNULL(sum(t.vol),0) total_vol,sum(t.rental)
+		total_rental,IFNULL(t.income,0)
+		income,IFNULL(t.pay,0) pay from (select
+		si.id,si.order_id,si.order_code,si.rental,c.code client_code,c.cname
+		client_name,o.cargo_name,sid.num,sid.vol,si.income,si.pay
+		from
+		t_stock_in_detail sid INNER JOIN (select
+		a.id,a.order_id,a.order_code,a.rental,b.income,b.pay from t_stock_in a
+		LEFT
+		JOIN (select bill_id,sum(amount) income,sum(pay) pay from t_fee
+		where
+		ftype=1 GROUP BY bill_id) b on a.id=b.bill_id where a.flag>=0) si on
+		sid.bill_id=si.id
+		INNER JOIN t_order o on si.order_id=o.id INNER JOIN
+		t_client c on
+		o.client_id=c.id) t
+		<where>
+			<if test="key!=null and key!=''">
+				t.order_code like concat('%',#{key},'%') or t.client_code
+				like concat('%',#{key},'%')
+				or t.client_name like
+				concat('%',#{key},'%')
+			</if>
+		</where>
+		GROUP BY t.order_code
+		order by t.order_id desc
+		<if test="page.page > 0">
+			limit #{page.start},#{page.end}
+		</if>
 	</select>
 	<select id="updateBill" resultType="String">
 		SELECT
@@ -179,9 +251,6 @@
 			<if test="inDate != null">
 				in_date = #{inDate,jdbcType=TIMESTAMP},
 			</if>
-			<if test="crDate != null">
-				cr_date = #{crDate,jdbcType=TIMESTAMP},
-			</if>
 			<if test="flag != null">
 				flag = #{flag,jdbcType=TINYINT},
 			</if>
@@ -197,7 +266,8 @@
 		car_no = #{carNo,jdbcType=VARCHAR},
 		in_date =
 		#{inDate,jdbcType=TIMESTAMP}
-		where id =
+		where id
+		=
 		#{id,jdbcType=INTEGER}
 	</update>
 </mapper>

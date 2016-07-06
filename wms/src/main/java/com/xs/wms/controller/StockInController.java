@@ -20,6 +20,7 @@ import com.xs.wms.common.ExcelUtils;
 import com.xs.wms.pojo.Delivery;
 import com.xs.wms.pojo.Stock_in;
 import com.xs.wms.pojo.Stock_in_detail;
+import com.xs.wms.pojo.SumStock;
 import com.xs.wms.pojo.User;
 import com.xs.wms.pojo.easyui.DataGrid;
 import com.xs.wms.pojo.easyui.Json;
@@ -42,17 +43,18 @@ public class StockInController {
 	 * 
 	 * @return
 	 */
-	@RequestMapping(value = "/billpage", method = RequestMethod.GET)
-	public String list(Model model) {
+	@RequestMapping(value = "/billpage/{orderId}", method = RequestMethod.GET)
+	public String list(Model model,@PathVariable Integer orderId) {
+		model.addAttribute("order_id", orderId);
 		return "stock/query_bill";
 	}
 
 	@ResponseBody
-	@RequestMapping(value = "/bills", method = RequestMethod.GET)
-	public DataGrid datagrid(PageHelper page, String key, String sdate, String edate) {
+	@RequestMapping(value = "/bills/{orderId}", method = RequestMethod.GET)
+	public DataGrid datagrid(PageHelper page,@PathVariable Integer orderId) {
 		DataGrid dg = new DataGrid();
-		dg.setTotal(stockInService.getDatagridTotal(key, sdate, edate));
-		List<Stock_in> list = stockInService.getDatagrid(page, key, sdate, edate);
+		List<Stock_in> list = stockInService.getListByOrder(orderId);
+		dg.setTotal(Long.getLong(String.valueOf(list.size())));
 		dg.setRows(list);
 		return dg;
 	}
@@ -189,8 +191,7 @@ public class StockInController {
 				} else {
 					j.setMsg("请添加货品明细！");
 				}
-			}
-			else
+			} else
 				j.setMsg("修改失败，请确保单据在未审批状态！");
 
 		} catch (Exception e) {
@@ -217,7 +218,7 @@ public class StockInController {
 		j.setSuccess(ok);
 		return j;
 	}
-	
+
 	@RequestMapping(value = "/report/{id}")
 	public void ExportBill(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer id) {
 		try {
@@ -227,5 +228,20 @@ public class StockInController {
 			logger.error(e);
 			e.printStackTrace();
 		}
+	}
+
+	@RequestMapping(value = "/sumstockpage", method = RequestMethod.GET)
+	public String sumStockPage(Model model) {
+		return "stock/sum_list";
+	}
+
+	@ResponseBody
+	@RequestMapping(value = "/sumstock", method = RequestMethod.GET)
+	public DataGrid getSumStock(PageHelper page, String key) {
+		DataGrid dg = new DataGrid();
+		dg.setTotal(stockInService.getSumStockTotal(key));
+		List<SumStock> list = stockInService.getSumStock(page, key);
+		dg.setRows(list);
+		return dg;
 	}
 }

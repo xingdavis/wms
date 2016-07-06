@@ -243,7 +243,7 @@
 			<form id="fm" method="post">
 				<input type="hidden" name="items" id="e_items" /> <input
 					type="hidden" name="crDate" /> <input type="hidden" name="flag" />
-					 <input type="hidden" name="orderCode" id="e_orderCode" />
+				<input type="hidden" name="orderCode" id="e_orderCode" />
 				<table cellpadding="5">
 					<tr>
 						<td>公司:</td>
@@ -258,8 +258,8 @@
 					</tr>
 					<tr>
 						<td>车牌号:</td>
-						<td><input class="easyui-textbox" type="text"
-							id="e_carNo" name="carNo" /></td>
+						<td><input class="easyui-textbox" type="text" id="e_carNo"
+							name="carNo" /></td>
 					</tr>
 					<tr>
 						<td>进仓日期:</td>
@@ -289,8 +289,8 @@
 								data-options="field:'vol',width:80,align:'right',editor:{type:'numberbox',options:{precision:2}}">体积</th>
 							<th
 								data-options="field:'weight',width:80,editor:{type:'numberbox',options:{precision:2}}">重量</th>
-							<th
-								data-options="field:'yard',width:100,editor:{type:'validatebox',options:{required:true}}">堆位</th>
+							<th data-options="field:'yard',width:100,editor:'text'">堆位</th>
+							<th data-options="field:'memo',width:100,editor:'text'">备注</th>
 						</tr>
 					</thead>
 				</table>

@@ -3,7 +3,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<title>查单</title>
+<title>查入仓单</title>
 <%@include file="/WEB-INF/jsp/include/easyui_core.jsp"%>
 
 <script type="text/javascript">
@@ -63,8 +63,17 @@
 
 	function edit() {
 		var r = $('#dg').datagrid('getSelected');
-		if (r)
-			location.href = '${path}/stock_ins/page/' + r.id;
+		showEditPage(r);
+	}
+
+	function showEditPage(row) {
+		if (row)
+			_AddTab('[入仓单详情-' + row.id + ']', '${path}/stock_ins/page/'
+					+ row.id);
+	}
+
+	function dgDblClick(index, row) {
+		showEditPage(row);
 	}
 
 	function verify(flag) {
@@ -117,14 +126,15 @@
 			return value;
 		}
 	}
-	
+
 	function editFee() {
 		var r = $('#dg').datagrid('getSelected');
 		if (r) {
-			var strTitle = '费用管理-[' + r.code + ' | ' + r.id + ' | ' + r.clientId + ']';
+			var strTitle = '费用管理-[' + r.code + ' | ' + r.id + ' | '
+					+ r.clientId + ']';
 			var strUrl = '${path}/fees/list?key=' + r.code + '&ftype=1&billId='
 					+ r.id + '&clientId=' + r.clientId;
-			_AddTab(strTitle,strUrl);
+			_AddTab(strTitle, strUrl);
 		}
 	}
 </script>
@@ -155,17 +165,16 @@
 				data-options="iconCls:'icon-edit'">打印单据</a>
 		</div>
 		<table id="dg" class="easyui-datagrid" fit="true"
-			url="${path}/stock_ins/bills" method="GET" toolbar="#toolbar"
-			pagination="true" fitColumns="true" singleSelect="true"
-			rownumbers="true" striped="true" border="false" nowrap="false">
+			data-options="url:'${path}/stock_ins/bills/${order_id}',toolbar:'#toolbar',method:'get',fitColumns:true,singleSelect:true,pagination:false,rownumbers:true,onDblClickRow:dgDblClick">
 			<thead>
 				<tr>
-					<th field="code" width="100">单号</th>
+					<th field="id" width="50">流水号</th>
 					<th field="orderCode" width="100">订单号</th>
 					<th data-options="field:'client',width:100,formatter:formatClient">客户</th>
 					<th field="carNo" width="100">车牌号</th>
 					<th data-options="field:'inDate',width:100,formatter:formatDate">进仓日期</th>
 					<th data-options="field:'outDate',width:100,formatter:formatDate">出仓日期</th>
+					<th field="rental" width="100">仓租</th>
 					<th data-options="field:'flag',width:100,formatter:formatStatus">当前状态</th>
 				</tr>
 			</thead>
