@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.xs.wms.common.ExcelUtils;
@@ -44,14 +45,14 @@ public class StockInController {
 	 * @return
 	 */
 	@RequestMapping(value = "/billpage/{orderId}", method = RequestMethod.GET)
-	public String list(Model model,@PathVariable Integer orderId) {
+	public String list(Model model, @PathVariable Integer orderId) {
 		model.addAttribute("order_id", orderId);
 		return "stock/query_bill";
 	}
 
 	@ResponseBody
 	@RequestMapping(value = "/bills/{orderId}", method = RequestMethod.GET)
-	public DataGrid datagrid(PageHelper page,@PathVariable Integer orderId) {
+	public DataGrid datagrid(PageHelper page, @PathVariable Integer orderId) {
 		DataGrid dg = new DataGrid();
 		List<Stock_in> list = stockInService.getListByOrder(orderId);
 		dg.setTotal(Long.getLong(String.valueOf(list.size())));
@@ -65,7 +66,9 @@ public class StockInController {
 	 * @return
 	 */
 	@RequestMapping(value = "/page", method = RequestMethod.GET)
-	public String addPage(Model model) {
+	public String addPage(HttpServletRequest request, Model model) {
+		String orderId = request.getParameter("orderId");
+		model.addAttribute("order_id", orderId);
 		return "stock/stock_in";
 	}
 
@@ -122,7 +125,8 @@ public class StockInController {
 			List<Stock_in_detail> items = obj.getItems();
 			if (items != null & items.size() > 0) {
 				obj.setCrDate(new Date());
-				obj.setUid(((User) request.getSession().getAttribute("USER")).getId());
+				obj.setUid(((User) request.getSession().getAttribute("USER"))
+						.getId());
 				obj.setFlag(0);
 				stockInService.insert(obj);
 				int billId = obj.getId();
@@ -135,7 +139,8 @@ public class StockInController {
 					}
 					String result = "";
 					if (flag == 1)
-						result = stockInService.updateBill(billId, "verify", flag);
+						result = stockInService.updateBill(billId, "verify",
+								flag);
 					if (result.equals("")) {
 						ok = true;
 						j.setMsg("新增成功！");
@@ -160,14 +165,16 @@ public class StockInController {
 
 	@ResponseBody
 	@RequestMapping(value = "/bills/{id}", method = RequestMethod.PUT, consumes = "application/json")
-	public Json edit(HttpServletRequest request, @PathVariable Integer id, @RequestBody Stock_in obj) {
+	public Json edit(HttpServletRequest request, @PathVariable Integer id,
+			@RequestBody Stock_in obj) {
 		Json j = new Json();
 		boolean ok = false;
 		try {
 			Stock_in oObj = stockInService.get(id);
 			if (oObj.getFlag() < 1) {
 				int orderId = obj.getOrderId();
-				obj.setUid(((User) request.getSession().getAttribute("USER")).getId());
+				obj.setUid(((User) request.getSession().getAttribute("USER"))
+						.getId());
 				List<Stock_in_detail> items = obj.getItems();
 				if (items != null & items.size() > 0) {
 					stockInService.update(obj);
@@ -220,10 +227,12 @@ public class StockInController {
 	}
 
 	@RequestMapping(value = "/report/{id}")
-	public void ExportBill(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer id) {
+	public void ExportBill(HttpServletRequest request,
+			HttpServletResponse response, @PathVariable Integer id) {
 		try {
 			Stock_in stock_in = stockInService.get(id);
-			ExcelUtils.exportStockInBill(request, response, stock_in, "sheetName", "fileName");
+			ExcelUtils.exportStockInBill(request, response, stock_in,
+					"sheetName", "fileName");
 		} catch (Exception e) {
 			logger.error(e);
 			e.printStackTrace();

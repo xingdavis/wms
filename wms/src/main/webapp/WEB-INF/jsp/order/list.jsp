@@ -85,23 +85,27 @@
 		else
 			return value;
 	}
+
+	function dgDblClick(index, row) {
+		if (row)
+			_AddTab('[新增入仓-' + row.id + ']', '${path}/stock_ins/page?orderId=' + row.id);
+	}
 </script>
 
 </head>
 <body class="easyui-layout" fit="true">
 	<div region="center" border="false" style="overflow: hidden;">
 		<div id="toolbar">
-		<input class="easyui-textbox" type="text" id="q_client" />
-			<input class="easyui-textbox" type="text" name="code" id="q_code"
-				data-options="prompt:'输入客户名称或单号查询'" /> <a href="javascript:search()"
-				class="easyui-linkbutton" data-options="iconCls:'icon-search'">查询</a>
-			<a href="${path}/orders/new" class="easyui-linkbutton"
+			<input class="easyui-textbox" type="text" id="q_client" /> <input
+				class="easyui-textbox" type="text" name="code" id="q_code"
+				data-options="prompt:'输入客户名称或单号查询'" /> <a
+				href="javascript:search()" class="easyui-linkbutton"
+				data-options="iconCls:'icon-search'">查询</a> <a
+				href="${path}/orders/new" class="easyui-linkbutton"
 				data-options="iconCls:'icon-add'">新增</a>
 		</div>
 		<table id="dg" class="easyui-datagrid" fit="true"
-			url="${path}/orders" method="GET" toolbar="#toolbar"
-			pagination="true" fitColumns="true" singleSelect="true"
-			rownumbers="true" striped="true" border="false" nowrap="false">
+			data-options="url:'${path}/orders',toolbar:'#toolbar',method:'get',fitColumns:true,singleSelect:true,pagination:true,rownumbers:true,onDblClickRow:dgDblClick">
 			<thead>
 				<tr>
 					<th field="code" width="100">单号</th>

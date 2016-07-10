@@ -251,6 +251,14 @@
 				getOrder(row.id);
 			}
 		});
+		
+		if ($('#d_orderId').val() != '') {
+			var orderId = $('#d_orderId').val();
+			if (orderId>0){
+			$('#e_orderId').combogrid("setValue", orderId);
+			getOrder(orderId);
+			}
+		}
 	});
 
 	function getOrder(id) {
@@ -273,6 +281,7 @@
 							cname : obj.cname,
 							num : obj.num,
 							vol : obj.vol,
+							price:obj.price,
 							weight : obj.weight,
 							yard : ''
 						});
@@ -292,9 +301,9 @@
 		<div style="padding: 10px 60px 20px 60px">
 			<form id="fm" method="post">
 				<input type="hidden" name="id" id="e_id" value="${stock_in_id}" />
-				<input type="hidden" name="crDate" /> <input type="hidden"
-					name="flag" /> <input type="hidden" name="orderCode"
-					id="e_orderCode" />
+				<input type="hidden" id="d_orderId" value="${order_id}" /> <input
+					type="hidden" name="crDate" /> <input type="hidden" name="flag" />
+				<input type="hidden" name="orderCode" id="e_orderCode" />
 				<table cellpadding="5">
 					<tr>
 						<td>公司:</td>
@@ -338,6 +347,8 @@
 								data-options="field:'vol',width:80,align:'right',editor:{type:'numberbox',options:{precision:2}}">体积</th>
 							<th
 								data-options="field:'weight',width:80,editor:{type:'numberbox',options:{precision:2}}">重量</th>
+							<th
+								data-options="field:'price',width:80,align:'right',editor:{type:'numberbox',options:{required:true,min:0,value:1,precision:2}}">单价</th>
 							<th data-options="field:'yard',width:100,editor:'text'">堆位</th>
 							<th data-options="field:'memo',width:100,editor:'text'">备注</th>
 						</tr>

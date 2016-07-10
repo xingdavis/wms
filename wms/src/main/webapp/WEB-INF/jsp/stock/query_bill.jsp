@@ -61,6 +61,10 @@
 		}
 	}
 
+	function add(){
+		_AddTab('[新增入仓单]', '${path}/stock_ins/page/');
+	}
+	
 	function edit() {
 		var r = $('#dg').datagrid('getSelected');
 		showEditPage(r);
@@ -148,7 +152,7 @@
 				type="text" class="easyui-datebox" /> 到：<input id="q_edate"
 				type="text" class="easyui-datebox" /> <a href="javascript:search()"
 				class="easyui-linkbutton" data-options="iconCls:'icon-search'">查询</a>
-			<a href="${path}/stock_ins/page" class="easyui-linkbutton"
+			<a href="javascript:add()" class="easyui-linkbutton"
 				data-options="iconCls:'icon-add'">入仓</a> <a href="javascript:del()"
 				class="easyui-linkbutton" data-options="iconCls:'icon-remove'">删除</a>
 			<a href="javascript:edit()" class="easyui-linkbutton"
