@@ -105,12 +105,11 @@
 		</if>
 	</select>
 	<select id="getListByOrder" resultMap="BillResultMap">
-		select
-		s.id,s.uid,s.code,s.order_code,s.client_id, c.code
-		client_code,c.cname,s.car_no,s.in_date,s.out_date,s.flag,s.rental
-		from
-		t_stock_in s,t_client c where s.client_id=c.id
-		and s.flag>=0
+		select s.id,s.uid,s.code,s.order_code,s.client_id, c.code
+		client_code,c.cname,s.car_no,s.in_date,s.out_date,s.flag,ifnull(sid.rental,0)
+		rental from t_stock_in s inner join t_client c on s.client_id=c.id
+		left join (select bill_id,sum(rental) rental from t_stock_in_detail
+		GROUP BY bill_id) sid on s.id=sid.bill_id where s.flag>=0
 		<if test="orderId>-1">
 			and s.order_id=#{orderId,jdbcType=INTEGER}
 		</if>
@@ -123,8 +122,10 @@
 		t_stock_in_detail sid INNER JOIN (select
 		a.id,a.order_id,a.order_code,b.income,b.pay from t_stock_in a LEFT
 		JOIN (select bill_id,sum(amount) income,sum(pay) pay from t_fee where
-		ftype=1 GROUP BY bill_id) b on a.id=b.bill_id where a.flag>=0) si on sid.bill_id=si.id
-		INNER JOIN t_order o on si.order_id=o.id INNER JOIN t_client c on
+		ftype=1 GROUP BY bill_id) b on a.id=b.bill_id where a.flag>=0) si on
+		sid.bill_id=si.id
+		INNER JOIN t_order o on si.order_id=o.id INNER JOIN
+		t_client c on
 		o.client_id=c.id) t
 		<where>
 			<if test="key!=null and key!=''">
@@ -143,7 +144,7 @@
 		total_num,IFNULL(sum(t.vol),0) total_vol,sum(t.rental)
 		total_rental,IFNULL(t.income,0)
 		income,IFNULL(t.pay,0) pay from (select
-		si.id,si.order_id,si.order_code,si.rental,c.code client_code,c.cname
+		si.id,si.order_id,si.order_code,sid.rental,c.code client_code,c.cname
 		client_name,o.cargo_name,sid.num,sid.vol,si.income,si.pay
 		from
 		t_stock_in_detail sid INNER JOIN (select
@@ -151,7 +152,8 @@
 		LEFT
 		JOIN (select bill_id,sum(amount) income,sum(pay) pay from t_fee
 		where
-		ftype=1 GROUP BY bill_id) b on a.id=b.bill_id where a.flag>=0) si on
+		ftype=1 GROUP BY bill_id) b on a.id=b.bill_id where a.flag>=0) si
+		on
 		sid.bill_id=si.id
 		INNER JOIN t_order o on si.order_id=o.id INNER JOIN
 		t_client c on

@@ -115,7 +115,8 @@
 			success : function(result) {
 				//var result = eval('(' + result + ')');
 				if (result.success) {
-					alert('已保存!');					
+					alert('已保存!');
+					location.href = '${path}/stock_ins/billpage/' + $('#e_orderId').combogrid("getValue");
 				} else {
 					alert(result.msg);
 				}
@@ -281,7 +282,7 @@
 							cname : obj.cname,
 							num : obj.num,
 							vol : obj.vol,
-							price:obj.price,
+							price : 1,
 							weight : obj.weight,
 							yard : ''
 						});
@@ -346,7 +347,7 @@
 							<th
 								data-options="field:'vol',width:80,align:'right',editor:{type:'numberbox',options:{precision:2}}">体积</th>
 							<th
-								data-options="field:'weight',width:80,editor:{type:'numberbox',options:{precision:2}}">重量</th>
+								data-options="field:'weight',width:80,align:'right',editor:{type:'numberbox',options:{precision:2}}">重量</th>
 							<th
 								data-options="field:'price',width:80,align:'right',editor:{type:'numberbox',options:{required:true,min:0,value:1,precision:2}}">单价</th>
 							<th data-options="field:'yard',width:100,editor:'text'">堆位</th>

@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.xs.wms.common.ExcelUtils;
 import com.xs.wms.pojo.Delivery;
+import com.xs.wms.pojo.Order;
 import com.xs.wms.pojo.Stock_in;
 import com.xs.wms.pojo.Stock_in_detail;
 import com.xs.wms.pojo.SumStock;
@@ -26,6 +27,7 @@ import com.xs.wms.pojo.User;
 import com.xs.wms.pojo.easyui.DataGrid;
 import com.xs.wms.pojo.easyui.Json;
 import com.xs.wms.pojo.easyui.PageHelper;
+import com.xs.wms.service.OrderService;
 import com.xs.wms.service.StockInDetailService;
 import com.xs.wms.service.StockInService;
 
@@ -38,6 +40,8 @@ public class StockInController {
 
 	@Resource
 	private StockInDetailService stockInDetailService;
+	@Resource
+	OrderService orderService;
 
 	/**
 	 * 查单页面
@@ -125,9 +129,12 @@ public class StockInController {
 			List<Stock_in_detail> items = obj.getItems();
 			if (items != null & items.size() > 0) {
 				obj.setCrDate(new Date());
-				obj.setUid(((User) request.getSession().getAttribute("USER"))
-						.getId());
+				obj.setUid(((User) request.getSession().getAttribute("USER")).getId());
 				obj.setFlag(0);
+				if (orderId > 0) {//写死绑定的OrderCode
+					Order order = this.orderService.get(orderId);
+					obj.setOrderCode(order.getCode());
+				}
 				stockInService.insert(obj);
 				int billId = obj.getId();
 				if (orderId > 0) {
@@ -139,8 +146,7 @@ public class StockInController {
 					}
 					String result = "";
 					if (flag == 1)
-						result = stockInService.updateBill(billId, "verify",
-								flag);
+						result = stockInService.updateBill(billId, "verify", flag);
 					if (result.equals("")) {
 						ok = true;
 						j.setMsg("新增成功！");
@@ -165,16 +171,14 @@ public class StockInController {
 
 	@ResponseBody
 	@RequestMapping(value = "/bills/{id}", method = RequestMethod.PUT, consumes = "application/json")
-	public Json edit(HttpServletRequest request, @PathVariable Integer id,
-			@RequestBody Stock_in obj) {
+	public Json edit(HttpServletRequest request, @PathVariable Integer id, @RequestBody Stock_in obj) {
 		Json j = new Json();
 		boolean ok = false;
 		try {
 			Stock_in oObj = stockInService.get(id);
 			if (oObj.getFlag() < 1) {
 				int orderId = obj.getOrderId();
-				obj.setUid(((User) request.getSession().getAttribute("USER"))
-						.getId());
+				obj.setUid(((User) request.getSession().getAttribute("USER")).getId());
 				List<Stock_in_detail> items = obj.getItems();
 				if (items != null & items.size() > 0) {
 					stockInService.update(obj);
@@ -227,12 +231,10 @@ public class StockInController {
 	}
 
 	@RequestMapping(value = "/report/{id}")
-	public void ExportBill(HttpServletRequest request,
-			HttpServletResponse response, @PathVariable Integer id) {
+	public void ExportBill(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer id) {
 		try {
 			Stock_in stock_in = stockInService.get(id);
-			ExcelUtils.exportStockInBill(request, response, stock_in,
-					"sheetName", "fileName");
+			ExcelUtils.exportStockInBill(request, response, stock_in, "sheetName", "fileName");
 		} catch (Exception e) {
 			logger.error(e);
 			e.printStackTrace();

@@ -58,6 +58,7 @@
 					<th field="cargoName" width="100">总货名</th>
 					<th field="totalNum" width="100">总件数</th>
 					<th field="totalVol" width="100">总方数</th>
+					<th field="totalRental" width="100">总仓租</th>
 					<th field="income" width="100">应收</th>
 					<th field="pay" width="100">应付</th>
 				</tr>
