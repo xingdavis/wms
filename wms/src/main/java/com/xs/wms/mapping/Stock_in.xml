@@ -14,6 +14,7 @@
 		<result column="out_date" property="outDate" jdbcType="TIMESTAMP" />
 		<result column="flag" property="flag" jdbcType="TINYINT" />
 		<result column="rental" property="rental" jdbcType="DOUBLE" />
+		<result column="source_id" property="sourceId" jdbcType="INTEGER" />
 		<association property="client" column="client_id"
 			javaType="com.xs.wms.pojo.Client">
 			<id property="id" column="id" />
@@ -35,6 +36,7 @@
 		<result column="out_date" property="outDate" jdbcType="TIMESTAMP" />
 		<result column="flag" property="flag" jdbcType="TINYINT" />
 		<result column="rental" property="rental" jdbcType="DOUBLE" />
+		<result column="source_id" property="sourceId" jdbcType="INTEGER" />
 		<association property="client" column="client_id"
 			javaType="com.xs.wms.pojo.Client">
 			<id property="id" column="id" />
@@ -57,7 +59,7 @@
 	<sql id="Base_Column_List">
 		s.id,s.uid, s.code,s.order_id,s.order_code, s.client_id,
 		s.car_no,
-		s.in_date,s.out_date, s.cr_date, s.flag,s.rental, c.code
+		s.in_date,s.out_date, s.cr_date, s.flag,s.rental,s.source_id, c.code
 		client_code,
 		c.cname
 	</sql>
@@ -85,7 +87,7 @@
 	<select id="getDatagrid" resultMap="BillResultMap">
 		select
 		s.id,s.uid,s.code,s.order_code,s.client_id, c.code
-		client_code,c.cname,s.car_no,s.in_date,s.out_date,s.flag,s.rental
+		client_code,c.cname,s.car_no,s.in_date,s.out_date,s.flag,s.rental,s.source_id
 		from
 		t_stock_in s,t_client c where s.client_id=c.id
 		and s.flag>=0
@@ -107,7 +109,7 @@
 	<select id="getListByOrder" resultMap="BillResultMap">
 		select s.id,s.uid,s.code,s.order_code,s.client_id, c.code
 		client_code,c.cname,s.car_no,s.in_date,s.out_date,s.flag,ifnull(sid.rental,0)
-		rental from t_stock_in s inner join t_client c on s.client_id=c.id
+		rental,s.source_id from t_stock_in s inner join t_client c on s.client_id=c.id
 		left join (select bill_id,sum(rental) rental from t_stock_in_detail
 		GROUP BY bill_id) sid on s.id=sid.bill_id where s.flag>=0
 		<if test="orderId>-1">
@@ -272,4 +274,8 @@
 		=
 		#{id,jdbcType=INTEGER}
 	</update>
+	<select id="CloneBill" resultType="java.lang.Integer">
+		call
+		p_CloneStockIn(#{orderId,jdbcType=INTEGER,mode=IN})
+	</select>
 </mapper>

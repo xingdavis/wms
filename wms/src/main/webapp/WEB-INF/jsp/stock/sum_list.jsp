@@ -34,6 +34,32 @@
 		if (r)
 			location.href = '${path}/stock_ins/page/' + r.id;
 	}
+	
+	function clone(){
+		var r = $('#dg').datagrid('getSelected');
+		if (r){
+			$.ajax({
+				url : '${path}//stock_ins/bill/copy/' + r.orderId,
+				async : false,
+				type : 'GET',
+				contentType : 'application/json',
+				dataType : 'json',
+				error : function(data) {
+					alert("error:" + data.responseText);
+				},
+				success : function(result) {
+					if (result.success) {
+						reload();
+						_AddTab('[订单-'+ r.orderId + '的入仓记录]',
+								'${path}/stock_ins/billpage/' + r.orderId + '/');
+					} else {
+						alert(result.msg);
+					}
+
+				}
+			});
+		}
+	}
 </script>
 
 </head>
@@ -43,7 +69,9 @@
 			<input class="easyui-textbox" type="text" id="q_key"
 				data-options="prompt:'输入客户名称或订单号查询'" /> <a
 				href="javascript:search()" class="easyui-linkbutton"
-				data-options="iconCls:'icon-search'">查询</a>
+				data-options="iconCls:'icon-search'">查询</a><a
+				href="javascript:clone()" class="easyui-linkbutton"
+				data-options="iconCls:'icon-edit'">复制已出仓单据</a>
 		</div>
 		<table id="dg" class="easyui-datagrid" fit="true"
 			data-options="url:'${path}/stock_ins/sumstock',toolbar:'#toolbar',method:'get',fitColumns:true,singleSelect:true,pagination:true,rownumbers:true,onDblClickRow:dgDblClick">

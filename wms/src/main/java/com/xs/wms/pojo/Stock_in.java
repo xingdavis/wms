@@ -31,7 +31,16 @@ public class Stock_in {
 	private Integer uid;
 	private Date outDate;
 	Double rental;
+	Integer sourceId;
 	
+	public Integer getSourceId() {
+		return sourceId;
+	}
+
+	public void setSourceId(Integer sourceId) {
+		this.sourceId = sourceId;
+	}
+
 	public Double getRental() {
 		return rental;
 	}

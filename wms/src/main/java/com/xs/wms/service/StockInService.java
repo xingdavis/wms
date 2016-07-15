@@ -80,4 +80,8 @@ public class StockInService {
 		page.setEnd(page.getPage() * page.getRows());
 		return stockInMapper.getSumStock(page, key);
 	}
+	
+	public int CloneBill(Integer orderId){
+		return stockInMapper.CloneBill(orderId);
+	}
 }

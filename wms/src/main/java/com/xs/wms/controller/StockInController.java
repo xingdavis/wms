@@ -131,7 +131,7 @@ public class StockInController {
 				obj.setCrDate(new Date());
 				obj.setUid(((User) request.getSession().getAttribute("USER")).getId());
 				obj.setFlag(0);
-				if (orderId > 0) {//写死绑定的OrderCode
+				if (orderId > 0) {// 写死绑定的OrderCode
 					Order order = this.orderService.get(orderId);
 					obj.setOrderCode(order.getCode());
 				}
@@ -254,5 +254,24 @@ public class StockInController {
 		List<SumStock> list = stockInService.getSumStock(page, key);
 		dg.setRows(list);
 		return dg;
+	}
+
+	@ResponseBody
+	@RequestMapping(value = "/bill/copy/{orderId}", method = RequestMethod.GET, consumes = "application/json")
+	public Json CloneBill(HttpServletRequest request, @PathVariable int orderId) {
+		Json j = new Json();
+		boolean ok = false;
+		try {
+			int rtn = stockInService.CloneBill(orderId);
+			if (rtn == 0) {
+				ok = true;
+				j.setMsg("复制成功！");
+			} else
+				j.setMsg("复制失败！");
+		} catch (Exception e) {
+			j.setMsg(e.getMessage());
+		}
+		j.setSuccess(ok);
+		return j;
 	}
 }

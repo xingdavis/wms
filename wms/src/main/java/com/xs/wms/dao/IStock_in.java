@@ -32,4 +32,6 @@ public interface IStock_in {
 	Long getSumStockTotal(@Param("key") String key);
 
 	List<SumStock> getSumStock(@Param("page") PageHelper page, @Param("key") String key);
+	
+	int CloneBill(@Param("orderId") Integer orderId);
 }

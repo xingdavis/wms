@@ -180,6 +180,7 @@
 					<th data-options="field:'outDate',width:100,formatter:formatDate">出仓日期</th>
 					<th field="rental" width="100">仓租</th>
 					<th data-options="field:'flag',width:100,formatter:formatStatus">当前状态</th>
+					<th field="sourceId" width="50">复制单</th>
 				</tr>
 			</thead>
 		</table>
