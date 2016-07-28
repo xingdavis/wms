@@ -188,4 +188,22 @@ public class DeliveryController {
 		}
 	}
 
+	@ResponseBody
+	@RequestMapping(value = "/copy/{dId}", method = RequestMethod.GET, consumes = "application/json")
+	public Json CloneBill(HttpServletRequest request, @PathVariable int dId) {
+		Json j = new Json();
+		boolean ok = false;
+		try {
+			int rtn = deliveryService.CloneDelivery(dId);
+			if (rtn == 0) {
+				ok = true;
+				j.setMsg("复制成功！");
+			} else
+				j.setMsg("复制失败！");
+		} catch (Exception e) {
+			j.setMsg(e.getMessage());
+		}
+		j.setSuccess(ok);
+		return j;
+	}
 }

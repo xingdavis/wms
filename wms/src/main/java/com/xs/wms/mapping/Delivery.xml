@@ -636,4 +636,8 @@
 		#{id,jdbcType=INTEGER} and
 		flag=0
 	</update>
+	<select id="CloneDelivery" resultType="java.lang.Integer">
+		call
+		p_CloneDelivery(#{dId,jdbcType=INTEGER,mode=IN})
+	</select>
 </mapper>

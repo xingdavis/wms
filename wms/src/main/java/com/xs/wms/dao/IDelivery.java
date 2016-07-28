@@ -27,4 +27,6 @@ public interface IDelivery {
 	List<Delivery> datagrid(@Param("page") PageHelper page, @Param("delivery") Delivery delivery);
 	
 	List<BackupData> backup(@Param("sdate") String sdate,@Param("edate") String edate);
+	
+	int CloneDelivery(@Param("dId") Integer dId);
 }

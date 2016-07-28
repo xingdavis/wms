@@ -60,4 +60,13 @@ public class DeliveryService {
 	public List<BackupData> backup(String sdate,String edate){
 		return this.deliveryMapper.backup(sdate, edate);
 	}
+	
+	/**
+	 * 克隆提货单
+	 * @param dId
+	 * @return
+	 */
+	public int CloneDelivery(Integer dId){
+		return deliveryMapper.CloneDelivery(dId);
+	}
 }

@@ -54,7 +54,8 @@
 
 	function showEditPage(row) {
 		if (row)
-			_AddTab('[提货单详情-' + row.id + ']', '${path}/deliverys/page/' + row.id);
+			_AddTab('[提货单详情-' + row.id + ']', '${path}/deliverys/page/'
+					+ row.id);
 	}
 
 	function dgDblClick(index, row) {
@@ -113,6 +114,30 @@
 			return value;
 		}
 	}
+
+	function clone() {
+		var r = $('#dg').datagrid('getSelected');
+		if (r) {
+			$.ajax({
+				url : '${path}/deliverys/copy/' + r.id,
+				async : false,
+				type : 'GET',
+				contentType : 'application/json',
+				dataType : 'json',
+				error : function(data) {
+					alert("error:" + data.responseText);
+				},
+				success : function(result) {
+					if (result.success) {
+						reload();
+					} else {
+						alert(result.msg);
+					}
+
+				}
+			});
+		}
+	}
 </script>
 
 </head>
@@ -133,12 +158,15 @@
 				href="javascript:exportBill(1)" class="easyui-linkbutton"
 				data-options="iconCls:'icon-add'">信树派车单</a> <a
 				href="javascript:exportBill(2)" class="easyui-linkbutton"
-				data-options="iconCls:'icon-add'">东方派车单</a>
+				data-options="iconCls:'icon-add'">东方派车单</a> <a
+				href="javascript:clone()" class="easyui-linkbutton"
+				data-options="iconCls:'icon-edit'">复制</a>
 		</div>
 		<table id="dg" class="easyui-datagrid" fit="true"
 			data-options="url:'${path}/deliverys/datagrid',toolbar:'#toolbar',method:'get',fitColumns:true,singleSelect:true,pagination:true,rownumbers:true,onDblClickRow:dgDblClick">
 			<thead>
 				<tr>
+					<th field="id" width="50">流水号</th>
 					<th field="ddate" width="100">装货时间</th>
 					<th data-options="field:'client',width:100,formatter:formatClient">客户</th>
 					<th field="orderCode" width="120">入仓订单号</th>

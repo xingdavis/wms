@@ -39,7 +39,7 @@
 		var r = $('#dg').datagrid('getSelected');
 		if (r){
 			$.ajax({
-				url : '${path}//stock_ins/bill/copy/' + r.orderId,
+				url : '${path}/stock_ins/bill/copy/' + r.orderId,
 				async : false,
 				type : 'GET',
 				contentType : 'application/json',

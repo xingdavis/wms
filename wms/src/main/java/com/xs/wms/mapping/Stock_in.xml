@@ -43,6 +43,8 @@
 			<result column="client_code" property="code" jdbcType="VARCHAR" />
 			<result column="cname" property="cname" jdbcType="INTEGER" />
 		</association>
+		<collection property="items" column="id" javaType="ArrayList"
+			select="com.xs.wms.dao.IStock_in_detail.getDetailsByBillId" />
 	</resultMap>
 	<resultMap id="SumStockResultMap" type="com.xs.wms.pojo.SumStock">
 		<result column="order_id" property="orderId" jdbcType="INTEGER" />
