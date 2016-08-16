@@ -1,9 +1,10 @@
 package com.xs.wms.service;
 
+import java.util.List;
+
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
-
 
 import com.xs.wms.dao.IStock_in_detail;
 
@@ -19,8 +20,16 @@ public class StockInDetailService {
 
 		return stockInDetailMapper.insert(item);
 	}
-	
-	public int deleteAllByBillId(Integer id){
+
+	public int deleteAllByBillId(Integer id) {
 		return stockInDetailMapper.deleteByBillId(id);
+	}
+
+	/**根据单id获取明细
+	 * @param id
+	 * @return
+	 */
+	public List<Stock_in_detail> getDetailsByBillId(int id) {
+		return stockInDetailMapper.getDetailsByBillId(id);
 	}
 }

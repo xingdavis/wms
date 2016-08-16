@@ -83,12 +83,18 @@
 
 	function showEditPage(row) {
 		if (row)
-			_AddTab('[入仓单详情-' + row.id + ']', '${path}/stock_ins/page/'
+			_AddTab('[编辑入仓单-' + row.id + ']', '${path}/stock_ins/page/'
+					+ row.id);
+	}
+	
+	function showViewPage(row) {
+		if (row)
+			_AddTab('[入仓单详情-' + row.id + ']', '${path}/stock_ins/detailpage/'
 					+ row.id);
 	}
 
 	function dgDblClick(index, row) {
-		showEditPage(row);
+		showViewPage(row);
 	}
 
 	function verify(flag) {

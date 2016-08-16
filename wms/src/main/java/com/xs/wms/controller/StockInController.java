@@ -63,6 +63,28 @@ public class StockInController {
 		dg.setRows(list);
 		return dg;
 	}
+	
+	@RequestMapping(value = "/detailpage/{billId}", method = RequestMethod.GET)
+	public String detailPage(Model model, @PathVariable Integer billId) {
+		model.addAttribute("bill_id", billId);
+		return "stock/view_detail";
+	}
+	
+	/**
+	 * 查看单明细
+	 * @param page
+	 * @param orderId
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/details/{billId}", method = RequestMethod.GET)
+	public DataGrid details_datagrid(PageHelper page, @PathVariable Integer billId) {
+		DataGrid dg = new DataGrid();
+		List<Stock_in_detail> list = stockInDetailService.getDetailsByBillId(billId);
+		dg.setTotal(Long.getLong(String.valueOf(list.size())));
+		dg.setRows(list);
+		return dg;
+	}
 
 	/**
 	 * 新增入仓单页面
