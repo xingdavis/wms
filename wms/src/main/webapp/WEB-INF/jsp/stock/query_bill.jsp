@@ -8,14 +8,15 @@
 <script type="text/javascript"
 	src="${path}/js/easyui/datagrid-detailview.js"></script>
 <style type="text/css">
-	.dv-table td{
-		border:5px;
-	}
-	.dv-label{
-		font-weight:bold;
-		color:#15428B;
-		width:60px;
-	}
+.dv-table td {
+	border: 5px;
+}
+
+.dv-label {
+	font-weight: bold;
+	color: #15428B;
+	width: 60px;
+}
 </style>
 <script type="text/javascript">
 	//DOM加载完毕执行
@@ -86,7 +87,7 @@
 			_AddTab('[编辑入仓单-' + row.id + ']', '${path}/stock_ins/page/'
 					+ row.id);
 	}
-	
+
 	function showViewPage(row) {
 		if (row)
 			_AddTab('[入仓单详情-' + row.id + ']', '${path}/stock_ins/detailpage/'
@@ -158,17 +159,22 @@
 			_AddTab(strTitle, strUrl);
 		}
 	}
-	
+
 	function detailFormatter(rowIndex, rowData) {
 		var html = '<table class="dv-table" border="0" style="width:100%;">';
 		if (rowData.items) {
 			for (var i = 0; i < rowData.items.length; i++) {
 				html += '<tr><td class="dv-label">货名:</td><td>'
-						+ rowData.items[i].cname + '</td><td class="dv-label">数量:</td><td>'
-						+ rowData.items[i].num + '</td><td class="dv-label">体积: </td><td>'
-						+ rowData.items[i].vol + '</td><td class="dv-label">重量:</td><td>'
-						+ rowData.items[i].weight + '</td><td class="dv-label">堆位: </td><td>'
-						+ rowData.items[i].yard + '</td><td class="dv-label">备注:</td><td>'
+						+ rowData.items[i].cname
+						+ '</td><td class="dv-label">数量:</td><td>'
+						+ rowData.items[i].num
+						+ '</td><td class="dv-label">体积: </td><td>'
+						+ rowData.items[i].vol
+						+ '</td><td class="dv-label">重量:</td><td>'
+						+ rowData.items[i].weight
+						+ '</td><td class="dv-label">堆位: </td><td>'
+						+ rowData.items[i].yard
+						+ '</td><td class="dv-label">备注:</td><td>'
 						+ rowData.items[i].memo + '</td></tr>';
 			}
 		}
@@ -223,8 +229,11 @@
 				href="javascript:exportBill()" class="easyui-linkbutton"
 				data-options="iconCls:'icon-edit'">打印单据</a>
 		</div>
+		<!-- <table id="dg" class="easyui-datagrid" fit="true"
+			data-options="view:detailview,onLoadSuccess:onLoadDataSuccess,onExpandRow:onExpandRow,detailFormatter:detailFormatter,url:'${path}/stock_ins/bills/${order_id}',toolbar:'#toolbar',method:'get',fitColumns:true,singleSelect:true,pagination:false,rownumbers:true,onDblClickRow:dgDblClick"> 
+			-->
 		<table id="dg" class="easyui-datagrid" fit="true"
-			data-options="view:detailview,onLoadSuccess:onLoadDataSuccess,onExpandRow:onExpandRow,detailFormatter:detailFormatter,url:'${path}/stock_ins/bills/${order_id}',toolbar:'#toolbar',method:'get',fitColumns:true,singleSelect:true,pagination:false,rownumbers:true,onDblClickRow:dgDblClick">
+			data-options="url:'${path}/stock_ins/bills/${order_id}',toolbar:'#toolbar',method:'get',fitColumns:true,singleSelect:true,pagination:false,rownumbers:true,onDblClickRow:dgDblClick">
 			<thead>
 				<tr>
 					<th field="id" width="50">流水号</th>

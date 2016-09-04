@@ -86,8 +86,8 @@
 			bill_id = '';
 		}
 
-		initBill('e_billId1', path + '/stock_ins/bills/', 'code', {
-			code : $('#e_billId').val()
+		initBill('e_billId1', path + '/stock_ins/list/', 'code', {
+			code : $('#q_billId').val()
 		}, [ [ {
 			field : 'id',
 			title : 'id',
@@ -103,7 +103,7 @@
 		} ] ], bill_id);
 
 		initBill('e_billId2', path + '/deliverys/datagrid/', 'code', {
-			code : $('#e_billId').val()
+			code : $('#q_billId').val()
 		}, [ [ {
 			field : 'id',
 			title : 'id',
@@ -390,11 +390,11 @@
 						},
 						query : function(q) {
 							//动态搜索
-							$('#e_billId').combogrid("grid").datagrid("reload",
+							$('#' + objid).combogrid("grid").datagrid("reload",
 									{
 										'code' : q
 									});
-							$('#e_billId').combogrid("setValue", q);
+							$('#' + objid).combogrid("setValue", q);
 						}
 					},
 					onChange : function(newValue, oldValue) {

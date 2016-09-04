@@ -24,6 +24,7 @@ import com.xs.wms.pojo.Stock_in;
 import com.xs.wms.pojo.Stock_in_detail;
 import com.xs.wms.pojo.SumStock;
 import com.xs.wms.pojo.User;
+import com.xs.wms.pojo.View_stock_in_detail;
 import com.xs.wms.pojo.easyui.DataGrid;
 import com.xs.wms.pojo.easyui.Json;
 import com.xs.wms.pojo.easyui.PageHelper;
@@ -55,6 +56,16 @@ public class StockInController {
 	}
 
 	@ResponseBody
+	@RequestMapping(value = "/list", method = RequestMethod.GET)
+	public DataGrid getList(PageHelper page,Stock_in obj) {
+		DataGrid dg = new DataGrid();
+		List<Stock_in> list = stockInService.getDatagrid(page, obj.getCode(), "", "");
+		dg.setTotal(Long.getLong(String.valueOf(list.size())));
+		dg.setRows(list);
+		return dg;
+	}
+	
+	@ResponseBody
 	@RequestMapping(value = "/bills/{orderId}", method = RequestMethod.GET)
 	public DataGrid datagrid(PageHelper page, @PathVariable Integer orderId) {
 		DataGrid dg = new DataGrid();
@@ -67,6 +78,8 @@ public class StockInController {
 	@RequestMapping(value = "/detailpage/{billId}", method = RequestMethod.GET)
 	public String detailPage(Model model, @PathVariable Integer billId) {
 		model.addAttribute("bill_id", billId);
+		Stock_in obj = this.stockInService.get(billId);
+	    model.addAttribute("bill_model", obj);
 		return "stock/view_detail";
 	}
 	
@@ -80,7 +93,8 @@ public class StockInController {
 	@RequestMapping(value = "/details/{billId}", method = RequestMethod.GET)
 	public DataGrid details_datagrid(PageHelper page, @PathVariable Integer billId) {
 		DataGrid dg = new DataGrid();
-		List<Stock_in_detail> list = stockInDetailService.getDetailsByBillId(billId);
+		//List<Stock_in_detail> list = stockInDetailService.getDetailsByBillId(billId);
+		List<View_stock_in_detail> list = this.stockInDetailService.getDetailView(billId.intValue());
 		dg.setTotal(Long.getLong(String.valueOf(list.size())));
 		dg.setRows(list);
 		return dg;

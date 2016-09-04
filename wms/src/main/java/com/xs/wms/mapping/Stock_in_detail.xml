@@ -15,8 +15,23 @@
 		<association property="stock_in" column="bill_id"
 			select="com.xs.wms.dao.IStock_in.selectByPrimaryKey" />
 	</resultMap>
+	<resultMap id="DetailViewResultMap" type="com.xs.wms.pojo.View_stock_in_detail">
+		<result column="order_code" property="orderCode" jdbcType="VARCHAR" />
+		<result column="car_no" property="carNo" jdbcType="VARCHAR" />
+		<result column="in_date" property="inDate" jdbcType="TIMESTAMP" />
+		<result column="out_date" property="outDate" jdbcType="TIMESTAMP" />
+		<result column="cname" property="cname" jdbcType="VARCHAR" />
+		<result column="num" property="num" jdbcType="INTEGER" />
+		<result column="vol" property="vol" jdbcType="DECIMAL" />
+		<result column="weight" property="weight" jdbcType="DECIMAL" />
+		<result column="yard" property="yard" jdbcType="VARCHAR" />
+		<result column="rental" property="rental" jdbcType="DOUBLE" />
+		<result column="price" property="price" jdbcType="DOUBLE" />
+		<result column="memo" property="memo" jdbcType="VARCHAR" />
+	</resultMap>
 	<sql id="Base_Column_List">
-		id, bill_id, cname, num, vol, weight, yard, rental, price, memo
+		id, bill_id, cname, num, vol, weight, yard, rental, price,
+		memo
 	</sql>
 	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
 		parameterType="java.lang.Integer">
@@ -32,17 +47,30 @@
 		from t_stock_in_detail
 		where bill_id = #{id,jdbcType=INTEGER}
 	</select>
+	<select id="getDetailView" resultMap="DetailViewResultMap"
+		parameterType="java.lang.Integer">
+		select s.order_code,s.car_no,s.in_date,s.out_date,
+		sd.cname, sd.num, sd.vol, sd.weight, sd.yard, sd.rental, sd.memo
+		FROM
+		t_stock_in_detail sd inner join t_stock_in s on s.id=sd.bill_id
+		WHERE
+		s.id = #{id,jdbcType=INTEGER}
+	</select>
 	<delete id="deleteByBillId" parameterType="java.lang.Integer">
-		delete from t_stock_in_detail
+		delete from
+		t_stock_in_detail
 		where bill_id = #{id,jdbcType=INTEGER}
 	</delete>
 	<insert id="insert" parameterType="com.xs.wms.pojo.Stock_in_detail">
-		insert into t_stock_in_detail (id, bill_id, cname,
+		insert into t_stock_in_detail
+		(id, bill_id, cname,
 		num, vol, weight, yard, price, memo
 		)
-		values (#{id,jdbcType=INTEGER}, #{billId,jdbcType=INTEGER},
+		values
+		(#{id,jdbcType=INTEGER}, #{billId,jdbcType=INTEGER},
 		#{cname,jdbcType=VARCHAR},
-		#{num,jdbcType=INTEGER}, #{vol,jdbcType=DECIMAL}, #{weight,jdbcType=DECIMAL},
+		#{num,jdbcType=INTEGER},
+		#{vol,jdbcType=DECIMAL}, #{weight,jdbcType=DECIMAL},
 		#{yard,jdbcType=VARCHAR},#{price,jdbcType=DOUBLE},#{memo,jdbcType=VARCHAR}
 		)
 	</insert>
@@ -138,13 +166,18 @@
 		where id = #{id,jdbcType=INTEGER}
 	</update>
 	<update id="updateByPrimaryKey" parameterType="com.xs.wms.pojo.Stock_in_detail">
-		update t_stock_in_detail
+		update
+		t_stock_in_detail
 		set bill_id = #{billId,jdbcType=INTEGER},
-		cname = #{cname,jdbcType=VARCHAR},
+		cname =
+		#{cname,jdbcType=VARCHAR},
 		num = #{num,jdbcType=INTEGER},
-		vol = #{vol,jdbcType=DECIMAL},
+		vol =
+		#{vol,jdbcType=DECIMAL},
 		weight = #{weight,jdbcType=DECIMAL},
-		yard = #{yard,jdbcType=VARCHAR},price = #{price,jdbcType=DOUBLE},memo = #{memo,jdbcType=VARCHAR}
+		yard =
+		#{yard,jdbcType=VARCHAR},price = #{price,jdbcType=DOUBLE},memo =
+		#{memo,jdbcType=VARCHAR}
 		where id = #{id,jdbcType=INTEGER}
 	</update>
 </mapper>
