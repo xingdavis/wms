@@ -4,7 +4,14 @@ public class BackupData {
 //d.ddate,c.cname,u.uname,d.memo,d.`code`,d.case_model,d.destination,d.case_no,d.seal_no,d.car_no,f.fee
 	String ddate;
 	String cname;
-	String uname;
+	String contact;
+	String clientCode;
+	public String getClientCode() {
+		return clientCode;
+	}
+	public void setClientCode(String clientCode) {
+		this.clientCode = clientCode;
+	}
 	String memo;
 	String code;
 	String caseModel;
@@ -30,11 +37,11 @@ public class BackupData {
 		this.cname = cname == null ? null : cname.trim();
 	}
 	
-	public String getUname() {
-		return uname;
+	public String getContact() {
+		return contact;
 	}
-	public void setUname(String uname) {
-		this.uname = uname == null ? null : uname.trim();
+	public void setContact(String contact) {
+		this.contact = contact == null ? null : contact.trim();
 	}
 	
 	public String getCode() {

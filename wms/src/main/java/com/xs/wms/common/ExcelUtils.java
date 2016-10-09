@@ -756,8 +756,13 @@ public class ExcelUtils {
 		cell = row.getCell(4);
 		cell.setCellValue(delivery.getDriver());
 		cell = row.getCell(6);
-		cell.setCellValue(new SimpleDateFormat("yyyy年MM月dd日")
-				.format(new Date()));
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+		try {
+			cell.setCellValue(format.format(format.parse(delivery.getDdate())));
+		} catch (ParseException e2) {
+			// TODO Auto-generated catch block
+			e2.printStackTrace();
+		}
 		row = sheet.getRow(6);
 		cell = row.getCell(1);
 		cell.setCellValue(delivery.getCode());
@@ -769,7 +774,7 @@ public class ExcelUtils {
 			cell.setCellValue("√");
 		}
 		cell = row.getCell(7);
-		cell.setCellValue(delivery.getWeigh() + "过磅");
+		cell.setCellValue(delivery.getWeigh());
 
 		row = sheet.getRow(7);
 		cell = row.getCell(1);
@@ -803,9 +808,11 @@ public class ExcelUtils {
 
 		row = sheet.getRow(14);
 		cell = row.getCell(1);
-		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+		format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		try {
-			cell.setCellValue(format.format(format.parse(delivery.getDdate())));
+			Date d = format.parse(delivery.getDdate().replace(".0", ""));
+			format = new SimpleDateFormat("HH:mm");
+			cell.setCellValue(format.format(d));
 		} catch (ParseException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();

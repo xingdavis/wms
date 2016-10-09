@@ -85,7 +85,8 @@
 	<resultMap id="BackupResultMap" type="com.xs.wms.pojo.BackupData">
 	    <result column="ddate" property="ddate" jdbcType="TIMESTAMP" />
 	    <result column="cname" property="cname" jdbcType="VARCHAR" />
-	    <result column="uname" property="uname" jdbcType="VARCHAR" />
+	    <result column="contact" property="contact" jdbcType="VARCHAR" />
+	    <result column="client_code" property="clientCode" jdbcType="VARCHAR" />
 	    <result column="memo" property="memo" jdbcType="VARCHAR" />
 	    <result column="code" property="code" jdbcType="VARCHAR" />
 	    <result column="case_model" property="caseModel" jdbcType="VARCHAR" />
@@ -193,17 +194,17 @@
 				concat('%',#{delivery.code,jdbcType=VARCHAR},'%')
 			</if>
 		</where>
-		order by d.ddate
+		order by d.ddate desc
 		<if test="page.page > 0">
 			limit #{page.start},#{page.end}
 		</if>
 	</select>
 	<select id="backup" resultMap="BackupResultMap">
 		select
-		DATE_FORMAT(d.ddate,'%Y年%m月%d日') ddate,c.cname,u.uname,d.memo,d.`code`,d.case_model,d.dport,d.destination,d.rport,d.case_no,d.seal_no,d.car_no,f.fee
+		DATE_FORMAT(d.ddate,'%Y年%m月%d日') ddate,c.cname,d.contact,d.client_code,d.memo,d.`code`,d.case_model,d.dport,d.destination,d.rport,d.case_no,d.seal_no,d.car_no,f.income,f.pay
 		from t_delivery d INNER JOIN t_client c on d.client_id=c.id INNER JOIN
 		t_user u on d.op=u.id
-		INNER JOIN (select
+		left JOIN (select
 		bill_id,group_concat(CONCAT_WS('：',IFNULL(fname,'未知'),cast(amount as
 		CHAR)) separator '\n') income,group_concat(CONCAT_WS('：',IFNULL(fname,'未知'),cast(pay as
 		CHAR)) separator '\n') pay from t_fee where ftype=2 group by bill_id)

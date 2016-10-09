@@ -37,7 +37,7 @@
 				//var result = eval('(' + result + ')');
 				if (result.success) {
 					alert('已保存!');
-					location.href = '${path}/deliverys/list';
+					//location.href = '${path}/deliverys/list';
 				} else {
 					alert(result.msg);
 				}

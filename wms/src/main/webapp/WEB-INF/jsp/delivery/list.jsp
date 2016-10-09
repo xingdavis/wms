@@ -47,6 +47,10 @@
 		}
 	}
 
+	function add() {
+		_AddTab('[新增提货单]', '${path}/deliverys/page/');
+	}
+
 	function edit() {
 		var r = $('#dg').datagrid('getSelected');
 		showEditPage(r);
@@ -148,7 +152,7 @@
 				data-options="prompt:'输入订舱号/生产编号/客户名称/入仓单号查询'" /> <a
 				href="javascript:search()" class="easyui-linkbutton"
 				data-options="iconCls:'icon-search'">查询</a> <a
-				href="${path}/deliverys/page" class="easyui-linkbutton"
+				href="javascript:add()" class="easyui-linkbutton"
 				data-options="iconCls:'icon-add'">新增</a><a href="javascript:del()"
 				class="easyui-linkbutton" data-options="iconCls:'icon-remove'">删除</a>
 			<a href="javascript:edit()" class="easyui-linkbutton"

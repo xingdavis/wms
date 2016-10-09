@@ -177,11 +177,11 @@ public class DeliveryController {
 			@PathVariable String edate) {
 		try {
 			List<BackupData> list = this.deliveryService.backup(sdate, edate);
-			String[] header = { "日期", "公司", "业务", "备注", "单号", "柜型", "运距", "柜号", "封号", "车号", "收入", "支出" };
-			String[] fileNames = { "ddate", "cname", "uname", "memo", "code", "caseModel", "destination", "caseNo",
+			String[] header = { "日期", "公司", "业务", "编号", "备注", "单号", "柜型", "运距", "柜号", "封号", "车号", "收入", "支出" };
+			String[] fileNames = { "ddate", "cname", "contact", "clientCode", "memo", "code", "caseModel", "destination", "caseNo",
 					"sealNo", "carNo", "income", "pay" };
 			ExcelUtils.backup(response, header, fileNames, list, String.format("备份%s至%s", sdate, edate),
-					String.format("备份%s至%s", sdate, edate), "广州信树物流");
+					String.format("备份%s至%s", sdate, edate), "广州信树物流有限公司");
 		} catch (Exception e) {
 			logger.error(e);
 			e.printStackTrace();
