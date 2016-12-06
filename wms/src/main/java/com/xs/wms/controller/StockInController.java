@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.mysql.jdbc.StringUtils;
 import com.xs.wms.common.ExcelUtils;
 import com.xs.wms.pojo.Delivery;
 import com.xs.wms.pojo.Order;
@@ -108,6 +109,9 @@ public class StockInController {
 	@RequestMapping(value = "/page", method = RequestMethod.GET)
 	public String addPage(HttpServletRequest request, Model model) {
 		String orderId = request.getParameter("orderId");
+//		String flag = request.getParameter("flag");
+//		if (!StringUtils.isNullOrEmpty(flag))//追加标记
+//			model.addAttribute("flag", flag);
 		model.addAttribute("order_id", orderId);
 		return "stock/stock_in";
 	}

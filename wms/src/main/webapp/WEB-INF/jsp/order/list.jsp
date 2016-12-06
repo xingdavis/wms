@@ -90,6 +90,12 @@
 		if (row)
 			_AddTab('[新增入仓-' + row.id + ']', '${path}/stock_ins/page?orderId=' + row.id);
 	}
+	
+	function appendStockIn() {
+		var r = $('#dg').datagrid('getSelected');
+		if (row)
+			_AddTab('[新增入仓-' + row.id + ']', '${path}/stock_ins/page?orderId=' + row.id);
+	}
 </script>
 
 </head>
@@ -102,7 +108,9 @@
 				href="javascript:search()" class="easyui-linkbutton"
 				data-options="iconCls:'icon-search'">查询</a> <a
 				href="${path}/orders/new" class="easyui-linkbutton"
-				data-options="iconCls:'icon-add'">新增</a>
+				data-options="iconCls:'icon-add'">新增订单</a> <a
+				href="javascript:appendStockIn()" class="easyui-linkbutton"
+				data-options="iconCls:'icon-add'">按订单入仓</a>
 		</div>
 		<table id="dg" class="easyui-datagrid" fit="true"
 			data-options="url:'${path}/orders',toolbar:'#toolbar',method:'get',fitColumns:true,singleSelect:true,pagination:true,rownumbers:true,onDblClickRow:dgDblClick">

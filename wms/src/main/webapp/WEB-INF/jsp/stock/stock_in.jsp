@@ -77,6 +77,11 @@
 	function autocode() {
 		$('#e_code').textbox('clear');
 	}
+	
+	function appendSubmit(){
+		$('#dg').datagrid('loadData', {});
+		submitForm(0);
+	}
 
 	function submitForm(flag) {
 		if (!$('#fm').form('validate'))
@@ -116,7 +121,7 @@
 				//var result = eval('(' + result + ')');
 				if (result.success) {
 					alert('已保存!');
-					location.href = '${path}/stock_ins/billpage/' + $('#e_orderId').combogrid("getValue");
+					//location.href = '${path}/stock_ins/billpage/' + $('#e_orderId').combogrid("getValue");
 				} else {
 					alert(result.msg);
 				}
@@ -255,6 +260,7 @@
 		
 		if ($('#d_orderId').val() != '') {
 			var orderId = $('#d_orderId').val();
+			var flag = $('#d_flag').val();//is append?
 			if (orderId>0){
 			$('#e_orderId').combogrid("setValue", orderId);
 			getOrder(orderId);
@@ -303,8 +309,9 @@
 			<form id="fm" method="post">
 				<input type="hidden" name="id" id="e_id" value="${stock_in_id}" />
 				<input type="hidden" id="d_orderId" value="${order_id}" /> <input
-					type="hidden" name="crDate" /> <input type="hidden" name="flag" />
-				<input type="hidden" name="orderCode" id="e_orderCode" />
+					type="hidden" id="d_flag" value="${flag}" /> <input type="hidden"
+					name="crDate" /> <input type="hidden" name="flag" /> <input
+					type="hidden" name="orderCode" id="e_orderCode" />
 				<table cellpadding="5">
 					<tr>
 						<td>公司:</td>
@@ -374,7 +381,8 @@
 				<a href="javascript:void(0)" class="easyui-linkbutton"
 					onclick="submitForm(0)">保存</a> <a href="javascript:void(0)"
 					class="easyui-linkbutton" onclick="submitForm(1)"
-					id="btn_save_and_verify">保存并审批</a>
+					id="btn_save_and_verify">保存并审批</a> <a href="javascript:void(0)"
+					class="easyui-linkbutton" onclick="appendSubmit()">保存并继续追加入仓</a>
 			</div>
 		</div>
 	</div>
