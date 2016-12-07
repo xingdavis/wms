@@ -79,8 +79,14 @@
 	}
 	
 	function appendSubmit(){
-		$('#dg').datagrid('loadData', {});
 		submitForm(0);
+		$('#dg').datagrid('loadData', {total:0,rows:[]});
+	}
+	
+	function viewOrderBill(){
+		var orderId =$('#e_orderId').combogrid("getValue");
+		if (orderId)
+			location.href = '${path}/stock_ins/billpage/' + orderId;
 	}
 
 	function submitForm(flag) {
@@ -383,6 +389,8 @@
 					class="easyui-linkbutton" onclick="submitForm(1)"
 					id="btn_save_and_verify">保存并审批</a> <a href="javascript:void(0)"
 					class="easyui-linkbutton" onclick="appendSubmit()">保存并继续追加入仓</a>
+					<a href="javascript:void(0)"
+					class="easyui-linkbutton" onclick="viewOrderBill()">查该订单的入仓单</a>
 			</div>
 		</div>
 	</div>

@@ -92,7 +92,7 @@
 	}
 	
 	function appendStockIn() {
-		var r = $('#dg').datagrid('getSelected');
+		var row = $('#dg').datagrid('getSelected');
 		if (row)
 			_AddTab('[新增入仓-' + row.id + ']', '${path}/stock_ins/page?orderId=' + row.id);
 	}

@@ -51,21 +51,25 @@ public class StockInController {
 	 * @return
 	 */
 	@RequestMapping(value = "/billpage/{orderId}", method = RequestMethod.GET)
-	public String list(Model model, @PathVariable Integer orderId) {
+	public String list(HttpServletRequest request,Model model, @PathVariable Integer orderId) {
 		model.addAttribute("order_id", orderId);
+		String flag = request.getParameter("flag");
+		if (!StringUtils.isNullOrEmpty(flag))// 追加标记\是否客户查看模式
+			model.addAttribute("flag", flag);
 		return "stock/query_bill";
 	}
 
 	@ResponseBody
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
-	public DataGrid getList(PageHelper page,Stock_in obj) {
+	public DataGrid getList(PageHelper page, Stock_in obj) {
 		DataGrid dg = new DataGrid();
-		List<Stock_in> list = stockInService.getDatagrid(page, obj.getCode(), "", "");
+		List<Stock_in> list = stockInService.getDatagrid(page, obj.getCode(),
+				"", "");
 		dg.setTotal(Long.getLong(String.valueOf(list.size())));
 		dg.setRows(list);
 		return dg;
 	}
-	
+
 	@ResponseBody
 	@RequestMapping(value = "/bills/{orderId}", method = RequestMethod.GET)
 	public DataGrid datagrid(PageHelper page, @PathVariable Integer orderId) {
@@ -75,27 +79,31 @@ public class StockInController {
 		dg.setRows(list);
 		return dg;
 	}
-	
+
 	@RequestMapping(value = "/detailpage/{billId}", method = RequestMethod.GET)
 	public String detailPage(Model model, @PathVariable Integer billId) {
 		model.addAttribute("bill_id", billId);
 		Stock_in obj = this.stockInService.get(billId);
-	    model.addAttribute("bill_model", obj);
+		model.addAttribute("bill_model", obj);
 		return "stock/view_detail";
 	}
-	
+
 	/**
 	 * 查看单明细
+	 * 
 	 * @param page
 	 * @param orderId
 	 * @return
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/details/{billId}", method = RequestMethod.GET)
-	public DataGrid details_datagrid(PageHelper page, @PathVariable Integer billId) {
+	public DataGrid details_datagrid(PageHelper page,
+			@PathVariable Integer billId) {
 		DataGrid dg = new DataGrid();
-		//List<Stock_in_detail> list = stockInDetailService.getDetailsByBillId(billId);
-		List<View_stock_in_detail> list = this.stockInDetailService.getDetailView(billId.intValue());
+		// List<Stock_in_detail> list =
+		// stockInDetailService.getDetailsByBillId(billId);
+		List<View_stock_in_detail> list = this.stockInDetailService
+				.getDetailView(billId.intValue());
 		dg.setTotal(Long.getLong(String.valueOf(list.size())));
 		dg.setRows(list);
 		return dg;
@@ -109,9 +117,9 @@ public class StockInController {
 	@RequestMapping(value = "/page", method = RequestMethod.GET)
 	public String addPage(HttpServletRequest request, Model model) {
 		String orderId = request.getParameter("orderId");
-//		String flag = request.getParameter("flag");
-//		if (!StringUtils.isNullOrEmpty(flag))//追加标记
-//			model.addAttribute("flag", flag);
+		// String flag = request.getParameter("flag");
+		// if (!StringUtils.isNullOrEmpty(flag))//追加标记
+		// model.addAttribute("flag", flag);
 		model.addAttribute("order_id", orderId);
 		return "stock/stock_in";
 	}
@@ -169,7 +177,8 @@ public class StockInController {
 			List<Stock_in_detail> items = obj.getItems();
 			if (items != null & items.size() > 0) {
 				obj.setCrDate(new Date());
-				obj.setUid(((User) request.getSession().getAttribute("USER")).getId());
+				obj.setUid(((User) request.getSession().getAttribute("USER"))
+						.getId());
 				obj.setFlag(0);
 				if (orderId > 0) {// 写死绑定的OrderCode
 					Order order = this.orderService.get(orderId);
@@ -186,7 +195,8 @@ public class StockInController {
 					}
 					String result = "";
 					if (flag == 1)
-						result = stockInService.updateBill(billId, "verify", flag);
+						result = stockInService.updateBill(billId, "verify",
+								flag);
 					if (result.equals("")) {
 						ok = true;
 						j.setMsg("新增成功！");
@@ -211,14 +221,16 @@ public class StockInController {
 
 	@ResponseBody
 	@RequestMapping(value = "/bills/{id}", method = RequestMethod.PUT, consumes = "application/json")
-	public Json edit(HttpServletRequest request, @PathVariable Integer id, @RequestBody Stock_in obj) {
+	public Json edit(HttpServletRequest request, @PathVariable Integer id,
+			@RequestBody Stock_in obj) {
 		Json j = new Json();
 		boolean ok = false;
 		try {
 			Stock_in oObj = stockInService.get(id);
 			if (oObj.getFlag() < 1) {
 				int orderId = obj.getOrderId();
-				obj.setUid(((User) request.getSession().getAttribute("USER")).getId());
+				obj.setUid(((User) request.getSession().getAttribute("USER"))
+						.getId());
 				List<Stock_in_detail> items = obj.getItems();
 				if (items != null & items.size() > 0) {
 					stockInService.update(obj);
@@ -271,10 +283,12 @@ public class StockInController {
 	}
 
 	@RequestMapping(value = "/report/{id}")
-	public void ExportBill(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer id) {
+	public void ExportBill(HttpServletRequest request,
+			HttpServletResponse response, @PathVariable Integer id) {
 		try {
 			Stock_in stock_in = stockInService.get(id);
-			ExcelUtils.exportStockInBill(request, response, stock_in, "sheetName", "fileName");
+			ExcelUtils.exportStockInBill(request, response, stock_in,
+					"sheetName", "fileName");
 		} catch (Exception e) {
 			logger.error(e);
 			e.printStackTrace();

@@ -131,6 +131,11 @@
 			$(me).parent().find('span.datagrid-row-expander').trigger('click');
 		}, 10);
 	}
+	
+	function dgDblClick(index, row){
+		if (row)
+			window.open('${path}/stock_ins/billpage/' + row.id + '?flag=client');
+	}
 </script>
 
 </head>
@@ -154,7 +159,7 @@
 			border="false" nowrap="false"
 			data-options="view:detailview,rownumbers:true,singleSelect:true,
                 url:'${path}/orders/my',onLoadSuccess:onLoadDataSuccess,onExpandRow:onExpandRow,
-                autoRowHeight:false,method:'GET',pagination:true,fitColumns:true,detailFormatter:detailFormatter">
+                autoRowHeight:false,method:'GET',pagination:true,fitColumns:true,detailFormatter:detailFormatter,onDblClickRow:dgDblClick">
 			<thead>
 				<tr>
 					<th field="code" width="100">单号</th>

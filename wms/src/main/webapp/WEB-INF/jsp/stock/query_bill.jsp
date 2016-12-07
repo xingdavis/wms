@@ -24,6 +24,8 @@
 		var d = new Date();
 		$('#q_sdate').datebox('setValue', FormatterDate(d));
 		$('#q_edate').datebox('setValue', FormatterDate(d));
+		if($('#q_mode').val()=='client')
+			$('#toolbar').hide();
 	});
 
 	function search() {
@@ -208,6 +210,7 @@
 <body class="easyui-layout" fit="true">
 	<div region="center" border="false" style="overflow: hidden;">
 		<div id="toolbar">
+		<input type="hidden" id="q_mode" value="${flag}">
 			<input class="easyui-textbox" type="text" id="q_key"
 				data-options="prompt:'输入客户名称或订单号查询'" /> 从：<input id="q_sdate"
 				type="text" class="easyui-datebox" /> 到：<input id="q_edate"
