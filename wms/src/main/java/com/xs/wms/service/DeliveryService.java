@@ -46,27 +46,31 @@ public class DeliveryService {
 	 * @return
 	 */
 	public List<Delivery> datagrid(PageHelper page, Delivery obj) {
+		// page.setStart((page.getPage() - 1) * page.getRows());
+		// page.setEnd(page.getPage() * page.getRows());
 		page.setStart((page.getPage() - 1) * page.getRows());
-		page.setEnd(page.getPage() * page.getRows());
+		page.setEnd(page.getRows());
 		return this.deliveryMapper.datagrid(page, obj);
 	}
-	
+
 	/**
 	 * 导出备份数据
+	 * 
 	 * @param sdate
 	 * @param edate
 	 * @return
 	 */
-	public List<BackupData> backup(String sdate,String edate){
+	public List<BackupData> backup(String sdate, String edate) {
 		return this.deliveryMapper.backup(sdate, edate);
 	}
-	
+
 	/**
 	 * 克隆提货单
+	 * 
 	 * @param dId
 	 * @return
 	 */
-	public int CloneDelivery(Integer dId){
+	public int CloneDelivery(Integer dId) {
 		return deliveryMapper.CloneDelivery(dId);
 	}
 }

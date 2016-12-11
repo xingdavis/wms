@@ -31,7 +31,7 @@ public class MenuService {
 	 */
 	public List<Menu> datagridMenu(PageHelper page) {
 		page.setStart((page.getPage() - 1) * page.getRows());
-		page.setEnd(page.getPage() * page.getRows());
+		page.setEnd(page.getRows());
 		return menuMapper.datagridMenu(page);
 	}
 
@@ -43,7 +43,7 @@ public class MenuService {
 	 */
 	public List<Menu> getAll(PageHelper page) {
 		page.setStart((page.getPage() - 1) * page.getRows());
-		page.setEnd(page.getPage() * page.getRows());
+		page.setEnd(page.getRows());
 		return menuMapper.getAll(page);
 	}
 

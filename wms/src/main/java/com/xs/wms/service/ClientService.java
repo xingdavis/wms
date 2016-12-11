@@ -62,7 +62,7 @@ public class ClientService {
 
 	public List<Client> datagridClient(PageHelper page, Client client) {
 		page.setStart((page.getPage() - 1) * page.getRows());
-		page.setEnd(page.getPage() * page.getRows());
+		page.setEnd(page.getRows());
 		return clientMapper.datagridClient(page, client);
 	}
 

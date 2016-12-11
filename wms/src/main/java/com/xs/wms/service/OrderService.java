@@ -66,7 +66,7 @@ public class OrderService {
 	 */
 	public List<Order> datagridOrder(PageHelper page, Order order) {
 		page.setStart((page.getPage() - 1) * page.getRows());
-		page.setEnd(page.getPage() * page.getRows());
+		page.setEnd(page.getRows());
 		return orderMapper.datagridOrder(page, order);
 	}
 
@@ -95,7 +95,7 @@ public class OrderService {
 			client = clientId;
 
 		page.setStart((page.getPage() - 1) * page.getRows());
-		page.setEnd(page.getPage() * page.getRows());
+		page.setEnd(page.getRows());
 		return orderMapper.selfDatagridOrder(page, client, code);
 	}
 }

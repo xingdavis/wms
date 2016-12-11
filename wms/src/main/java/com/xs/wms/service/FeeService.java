@@ -48,7 +48,7 @@ public class FeeService {
 	public List<Fee> datagrid(PageHelper page, String client, String key,
 			String sdate, String edate, String billId, String ftype) {
 		page.setStart((page.getPage() - 1) * page.getRows());
-		page.setEnd(page.getPage() * page.getRows());
+		page.setEnd(page.getRows());
 		return feeMapper.datagrid(page, client, key, sdate, edate, billId,
 				ftype);
 	}
@@ -71,7 +71,7 @@ public class FeeService {
 	public List<Fee> datagridDeliveryBill(PageHelper page, String fflag,
 			String bflag, String client, String key, String sdate, String edate) {
 		page.setStart((page.getPage() - 1) * page.getRows());
-		page.setEnd(page.getPage() * page.getRows());
+		page.setEnd(page.getRows());
 		return feeMapper.datagridDeliveryBill(page, fflag, bflag, client, key,
 				sdate, edate);
 	}
@@ -85,7 +85,7 @@ public class FeeService {
 	public List<Fee> datagridStockInBill(PageHelper page, String fflag,
 			String bflag, String client, String key, String sdate, String edate) {
 		page.setStart((page.getPage() - 1) * page.getRows());
-		page.setEnd(page.getPage() * page.getRows());
+		page.setEnd(page.getRows());
 		return feeMapper.datagridStockInBill(page, fflag, bflag, client, key,
 				sdate, edate);
 	}
@@ -97,7 +97,7 @@ public class FeeService {
 	public List<Bill> datagridBill(PageHelper page, String client,
 			String sdate, String edate) {
 		page.setStart((page.getPage() - 1) * page.getRows());
-		page.setEnd(page.getPage() * page.getRows());
+		page.setEnd(page.getRows());
 		return feeMapper.datagridBill(page, client, sdate, edate);
 	}
 

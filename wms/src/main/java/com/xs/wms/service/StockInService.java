@@ -54,7 +54,7 @@ public class StockInService {
 	 */
 	public List<Stock_in> getDatagrid(PageHelper page, String key, String sdate, String edate) {
 		page.setStart((page.getPage() - 1) * page.getRows());
-		page.setEnd(page.getPage() * page.getRows());
+		page.setEnd(page.getRows());
 		return stockInMapper.getDatagrid(page, key, sdate, edate);
 	}
 	
@@ -77,7 +77,7 @@ public class StockInService {
 
 	public List<SumStock> getSumStock(PageHelper page, String key) {
 		page.setStart((page.getPage() - 1) * page.getRows());
-		page.setEnd(page.getPage() * page.getRows());
+		page.setEnd(page.getRows());
 		return stockInMapper.getSumStock(page, key);
 	}
 	
